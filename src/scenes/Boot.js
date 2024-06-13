@@ -26,6 +26,16 @@ export class Boot extends Scene {
             { frameWidth: 512, frameHeight: 512 }
         );
 
+        this.load.spritesheet('shield-throw',
+            'assets/sprites/captain/shield-throw.png',
+            { frameWidth: 600, frameHeight: 512 }
+        );
+
+        this.load.spritesheet('shield-fly',
+            'assets/sprites/captain/shield-fly.png',
+            { frameWidth: 256, frameHeight: 160 }
+        );
+
 
         // this.load.image('tilemapImage', 'assets/tiles/tilemap_packed.png');
         // this.load.tilemapTiledJSON('tilemapJson', 'assets/tiles/suelo.json');

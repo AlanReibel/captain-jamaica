@@ -5,8 +5,23 @@ export class Player {
         this.scene = scene;
         this.sprite = scene.physics.add.sprite(x, y, texture);
         this.sprite.setBounce(0.2).setCollideWorldBounds(true).setScale(0.2);
+        console.log('player', this.sprite);
         this.createAnimations();
         this.sprite.anims.play('idle', true);
+
+        this.shield = scene.physics.add.sprite(this.x, this.y, 'shield-fly');
+        this.shield.body.setAllowGravity(false);
+        this.shield.setScale(0.4);
+        // this.shield.setSize(100, 100)
+        // scene.physics.world.enable(this.shield);
+        this.shield.setVisible(false);
+
+        this.shield.on('animationcomplete-fly', (anim, frame) => {
+            console.log(`animation ${anim.key} complete`);
+            if (anim.key === 'fly') {
+                this.scene.fightEnds = true;
+            }
+        });
     }
 
     createAnimations() {
@@ -45,10 +60,42 @@ export class Player {
             repeat: 0
         });
 
+        this.scene.anims.create({
+            key: 'throw',
+            frames: this.scene.anims.generateFrameNumbers('shield-throw', { start: 0, end: 5 }),
+            frameRate: 12,
+            repeat: 0
+        });
+
+        this.scene.anims.create({
+            key: 'catch',
+            frames: this.scene.anims.generateFrameNumbers('shield-throw', { start: 12, end: 15 }),
+            frameRate: 12,
+            repeat: 0
+        });
+
+        this.scene.anims.create({
+            key: 'fly',
+            frames: this.scene.anims.generateFrameNumbers('shield-fly', { start: 0, end: 7 }),
+            frameRate: 12,
+            repeat: 0
+        });
+
+        let fightAnimations = [
+            'punch',
+            'kick',
+            'shield',
+            'fly',
+            'catch'
+        ];
+
         this.sprite.on('animationcomplete', (anim, frame) => {
-            if (anim.key === 'punch' || anim.key === 'kick' || anim.key === 'shield') {
+
+            if (fightAnimations.includes(anim.key)) {
                 this.scene.fightEnds = true;
             }
         });
+
+
     }
 }
