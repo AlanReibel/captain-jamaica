@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
-import { Player } from '../objects/Player';
-import { InputHandler } from '../objects/InputHandler';
+import { Player } from '../objects/Player.js';
+import { InputHandler } from '../objects/InputHandler.js';
 
 export class Game extends Scene {
     constructor() {
