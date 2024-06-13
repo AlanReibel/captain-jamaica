@@ -26,6 +26,7 @@ export class Game extends Scene {
         this.gameOver = false;
         this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'background');
         this.add.image(400, 300, 'background');
+        this.showGuideText();
 
         this.player = new Player(this, 100, 400, 'captain-idle');
         this.inputHandler = new InputHandler(this);
@@ -190,5 +191,21 @@ export class Game extends Scene {
         if (currentAnim === 'punch' || currentAnim === 'kick' || currentAnim === 'shield') {
             this.destroyEnemy( null,enemy);
         }
+    }
+
+    showGuideText() {
+        let fontSetup = {
+            fontFamily: 'Arial Black', 
+            fontSize: 15, 
+            color: '#000000',
+            // stroke: '#000000', 
+            // strokeThickness: 2,
+            align: 'center'
+        };
+        this.add.text(20, 20, 'WSAD or arrow keys to move', fontSetup);
+        this.add.text(20, 40, 'Q key for punch', fontSetup);
+        this.add.text(20, 60, 'E key for kick', fontSetup);
+        this.add.text(20, 80, 'SPACE key for shield attack', fontSetup);
+        this.add.text(20, 100, 'F key for shield throw', fontSetup);
     }
 }
