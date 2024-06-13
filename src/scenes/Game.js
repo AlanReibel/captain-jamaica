@@ -30,6 +30,7 @@ export class Game extends Scene {
 
         this.player = new Player(this, 100, 400, 'captain-idle');
         this.inputHandler = new InputHandler(this);
+        this.inputHandler.addVirtualJoystick();
 
         this.createEnemy();
     }
@@ -44,7 +45,7 @@ export class Game extends Scene {
         if (this.inputHandler.isFightActionPressed() && !this.blockedFight) {
             this.handleFightActions();
         }
-        // end of fight action
+        // move if end of fight action
         if (this.fightEnds) {
             this.handleMovement();
         }
@@ -96,13 +97,21 @@ export class Game extends Scene {
 
     handleMovement() {
         // pressed left or A
-        if (this.inputHandler.cursors.left.isDown || this.inputHandler.aKey.isDown) {
+        if (
+            this.inputHandler.cursors.left.isDown || 
+            this.inputHandler.aKey.isDown ||
+            this.inputHandler.joystickKeys.left.isDown
+        ) {
             this.movingDirection = 'left';
             this.player.sprite.setVelocityX(-200);
             this.player.sprite.anims.play('run', true).setFlipX(true);
         }
         // pressed right or D
-        else if (this.inputHandler.cursors.right.isDown || this.inputHandler.dKey.isDown) {
+        else if (
+            this.inputHandler.cursors.right.isDown || 
+            this.inputHandler.dKey.isDown ||
+            this.inputHandler.joystickKeys.right.isDown
+        ) {
             this.movingDirection = 'right';
             this.player.sprite.setVelocityX(200);
             this.player.sprite.anims.play('run', true).setFlipX(false);
@@ -208,4 +217,5 @@ export class Game extends Scene {
         this.add.text(20, 80, 'SPACE key for shield attack', fontSetup);
         this.add.text(20, 100, 'F key for shield throw', fontSetup);
     }
+
 }

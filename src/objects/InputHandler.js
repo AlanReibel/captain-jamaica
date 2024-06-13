@@ -27,7 +27,8 @@ export class InputHandler {
 
     isJumpKeyPressed() {
         return this.cursors.up.isDown || 
-        this.wKey.isDown;
+            this.wKey.isDown ||
+            this.joystickKeys.up.isDown;
     }
 
     isFightActionLeaved() {
@@ -35,5 +36,34 @@ export class InputHandler {
         this.qKey.isUp && 
         this.fKey.isUp && 
         this.eKey.isUp;
+    }
+
+    addVirtualJoystick() {
+
+        const x = 100;
+        const y = this.scene.game.config.height - 100;
+        const base = this.scene.add.circle(x, y, 100, 0x888888).setAlpha(0.5);
+        const thumb = this.scene.add.circle(x, y, 50, 0xcccccc).setAlpha(0.8);
+    
+        const config = {
+            x: x,
+            y: y,
+            radius: 100,
+            base: base,
+            thumb: thumb,
+            dir: '8dir',
+            fixed: true,
+            enable: true
+        };
+    
+        // Obtén el plugin rexVirtualJoystick
+        const joystickPlugin = this.scene.plugins.get('rexVirtualJoystick');
+    
+        // Añade el joystick a la escena
+        this.joystick = joystickPlugin.add(this.scene, config);
+    
+        // Crear cursor keys desde el joystick
+        this.joystickKeys = this.joystick.createCursorKeys();
+        
     }
 }

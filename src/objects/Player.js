@@ -5,7 +5,7 @@ export class Player {
         this.scene = scene;
         this.sprite = scene.physics.add.sprite(x, y, texture);
         this.sprite.setBounce(0.2).setCollideWorldBounds(true).setScale(0.2);
-        console.log('player', this.sprite);
+        // console.log('player', this.sprite);
         this.createAnimations();
         this.sprite.anims.play('idle', true);
 
