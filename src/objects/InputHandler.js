@@ -16,10 +16,13 @@ export class InputHandler {
             'Y': false
         };
 
-        // if(this.isMobileDevice() || this.isTouchDevice()) {
-        this.addVirtualJoystick();
-        this.addVirtualButtons();
-        // }
+        this.isMobile = true;
+        this.isMobile = this.isMobileDevice() || this.isTouchDevice();
+
+        if(this.isMobile) {
+            this.addVirtualJoystick();
+            this.addVirtualButtons();
+        }
     }
 
     isFightActionPressed() {

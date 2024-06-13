@@ -30,7 +30,6 @@ export class Game extends Scene {
 
         this.player = new Player(this, 100, 400, 'captain-idle');
         this.inputHandler = new InputHandler(this);
-        this.inputHandler.addVirtualJoystick();
 
         this.createEnemy();
     }
@@ -112,7 +111,7 @@ export class Game extends Scene {
         if (
             this.inputHandler.cursors.left.isDown || 
             this.inputHandler.aKey.isDown ||
-            this.inputHandler.joystickKeys.left.isDown
+            this.inputHandler.joystickKeys?.left.isDown
         ) {
             this.movingDirection = 'left';
             this.player.sprite.setVelocityX(-200);
@@ -122,7 +121,7 @@ export class Game extends Scene {
         else if (
             this.inputHandler.cursors.right.isDown || 
             this.inputHandler.dKey.isDown ||
-            this.inputHandler.joystickKeys.right.isDown
+            this.inputHandler.joystickKeys?.right.isDown
         ) {
             this.movingDirection = 'right';
             this.player.sprite.setVelocityX(200);
