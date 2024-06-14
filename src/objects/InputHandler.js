@@ -17,11 +17,17 @@ export class InputHandler {
         };
 
         this.isMobile = true;
-        this.isMobile = this.isMobileDevice() || this.isTouchDevice();
+        // this.isMobile = this.isMobileDevice() || this.isTouchDevice();
 
         if(this.isMobile) {
-            this.addVirtualJoystick();
-            this.addVirtualButtons();
+            this.scene.game.scene.start('UIScene');
+            // this.scene.scale.setGameSize(this.scene.game.config.width, this.scene.game.config.height);
+            // set game size
+            this.resizeGame({ width: this.scene.scale.width, height: this.scene.scale.height });
+
+            this.scene.scale.updateCenter();
+            // this.addVirtualJoystick();
+            // this.addVirtualButtons();
         }
     }
 
@@ -60,72 +66,6 @@ export class InputHandler {
             this.joystickKeys?.up.isDown;
     }
 
-    addVirtualJoystick() {
-
-        const x = 100;
-        const y = this.scene.game.config.height - 100;
-        const base = this.scene.add.circle(x, y, 100, 0x888888).setAlpha(0.5);
-        const thumb = this.scene.add.circle(x, y, 50, 0xcccccc).setAlpha(0.8);
-
-        const config = {
-            x: x,
-            y: y,
-            radius: 100,
-            base: base,
-            thumb: thumb,
-            dir: '8dir',
-            fixed: true,
-            enable: true
-        };
-
-        // Obtén el plugin rexVirtualJoystick
-        const joystickPlugin = this.scene.plugins.get('rexVirtualJoystick');
-
-        // Añade el joystick a la escena
-        this.joystick = joystickPlugin.add(this.scene, config);
-
-        // Crear cursor keys desde el joystick
-        this.joystickKeys = this.joystick.createCursorKeys();
-
-    }
-
-    addVirtualButtons() {
-
-        const radius = 30;
-        const position = {
-            x: this.scene.game.config.width - (radius * 3),
-            y: this.scene.game.config.height - (radius * 3)
-        };
-        const buttons = [
-            { key: 'A', x: position.x, y: position.y + (radius * 2) },
-            { key: 'B', x: position.x + (radius * 2), y: position.y },
-            { key: 'X', x: position.x - (radius * 2), y: position.y },
-            { key: 'Y', x: position.x, y: position.y - (radius * 2) }
-        ];
-
-        buttons.forEach(button => {
-
-            const buttonCircle = this.scene.add.circle(button.x, button.y, radius)
-                .setStrokeStyle(2, 0xff0000)
-                .setInteractive()
-                .on('pointerdown', () => {
-                    this.buttons[button.key] = true;
-                })
-                .on('pointerup', () => {
-                    this.buttons[button.key] = false;
-                });
-
-            let fontSetup = {
-                fontFamily: 'Arial Black',
-                fontSize: 20,
-                color: '#ffffff',
-                align: 'center'
-            };
-            this.scene.add.text(button.x, button.y, button.key, fontSetup).setOrigin(0.5);
-        });
-
-    }
-
     isMobileDevice() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         return (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream);
@@ -133,6 +73,28 @@ export class InputHandler {
 
     isTouchDevice() {
         return ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+    }
+
+    resizeGame({ width, height }) {
+        const aspectRatio = 4 / 3;
+        let newWidth, newHeight, scale;
+
+        // Calcular el tamaño de la vista según la relación de aspecto 4:3
+        if (width / height > aspectRatio) {
+            // La pantalla es más ancha que 4:3, añadir barras laterales
+            newHeight = height;
+            newWidth = height * aspectRatio;
+        } else {
+            // La pantalla es más alta que 4:3, añadir barras superior e inferior
+            newWidth = width;
+            newHeight = width / aspectRatio;
+        }
+
+        // Calcular el escalado y la vista de la cámara
+        scale = Math.min(newWidth / this.scene.game.config.width, newHeight / this.scene.game.config.height);
+        this.scene.cameras.main.setZoom(scale);
+        this.scene.cameras.main.setViewport((width - newWidth) / 2, (height - newHeight) / 2, newWidth, newHeight);
+        this.scene.cameras.main.setBounds(0, 0, this.scene.game.config.width, this.scene.game.config.height);
     }
 
 }

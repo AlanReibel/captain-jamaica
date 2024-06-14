@@ -32,6 +32,16 @@ export class Game extends Scene {
         this.inputHandler = new InputHandler(this);
 
         this.createEnemy();
+        console.log('game scene', this);
+
+        // this.scene.scale.on('orientationchange', function(orientation) {
+        //     if (orientation === Phaser.Scale.PORTRAIT) {
+        //         // ...
+        //     } else if (orientation === Phaser.Scale.LANDSCAPE) {
+        //         // ...
+        //     }
+        // });
+
     }
 
     update() {
