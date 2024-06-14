@@ -1,18 +1,20 @@
 import { Boot } from './scenes/Boot.js';
-import { Game } from './scenes/Game.js';
-import { GameOver } from './scenes/GameOver.js';
-import { MainMenu } from './scenes/MainMenu.js';
 import { Preloader } from './scenes/Preloader.js';
+import { MainMenu } from './scenes/MainMenu.js';
+import { Game } from './scenes/Game.js';
+import { UIScene } from './scenes/UIScene.js';
+import { GameOver } from './scenes/GameOver.js';
 import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 
 const config = {
     type: Phaser.AUTO,
-    width: 792,
-    height: 594,
+    width: 800,
+    height: 600,
     parent: 'game-container',
     backgroundColor: '#028af8',
+    fullscreenTarget: 'game-container',
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
@@ -30,6 +32,7 @@ const config = {
         Preloader,
         MainMenu,
         Game,
+        UIScene,
         GameOver
     ],
     plugins: {
