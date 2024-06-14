@@ -17,7 +17,7 @@ export class InputHandler {
         };
 
         this.isMobile = true;
-        // this.isMobile = this.isMobileDevice() || this.isTouchDevice();
+        this.isMobile = this.isMobileDevice() || this.isTouchDevice();
 
         if(this.isMobile) {
             this.scene.game.scene.start('UIScene', { inputHandler: this});
