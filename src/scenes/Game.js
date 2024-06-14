@@ -211,7 +211,7 @@ export class Game extends Scene {
         this.enemy.body.setCollideWorldBounds(true);
         // this.enemy.body.setBounce(1, 1); // Ejemplo de rebote si lo necesitas
         this.physics.add.collider(this.player.shield, this.enemy, this.destroyEnemy, null, this);
-        this.physics.add.overlap(this.player.sprite, this.enemy, this.handleBodyCollision, null, this);
+        this.physics.add.collider(this.player.sprite, this.enemy, this.handleBodyCollision, null, this);
 
     }
 
