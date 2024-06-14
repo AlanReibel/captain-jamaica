@@ -20,7 +20,8 @@ export class InputHandler {
         // this.isMobile = this.isMobileDevice() || this.isTouchDevice();
 
         if(this.isMobile) {
-            this.scene.game.scene.start('UIScene');
+            this.scene.game.scene.start('UIScene', { inputHandler: this});
+
             // this.scene.scale.setGameSize(this.scene.game.config.width, this.scene.game.config.height);
             // set game size
             this.resizeGame({ width: this.scene.scale.width, height: this.scene.scale.height });
@@ -53,12 +54,13 @@ export class InputHandler {
             !this.buttons['Y'];
     }
 
-    isMovementKeyPressed() {
-        return this.cursors.left.isDown ||
-            this.cursors.right.isDown ||
-            this.aKey.isDown ||
-            this.dKey.isDown;
-    }
+//     isMovementKeyPressed() {
+// // add joystick
+//         return this.cursors.left.isDown ||
+//             this.cursors.right.isDown ||
+//             this.aKey.isDown ||
+//             this.dKey.isDown;
+//     }
 
     isJumpKeyPressed() {
         return this.cursors.up.isDown ||
@@ -95,6 +97,25 @@ export class InputHandler {
         this.scene.cameras.main.setZoom(scale);
         this.scene.cameras.main.setViewport((width - newWidth) / 2, (height - newHeight) / 2, newWidth, newHeight);
         this.scene.cameras.main.setBounds(0, 0, this.scene.game.config.width, this.scene.game.config.height);
+    }
+
+    setButtonState(button, isPressed) {
+        this.buttons[button] = isPressed;
+    }
+
+    setJoystickCursor(config) {
+        // Verificar que el plugin esté disponible
+        const joystickPlugin = this.scene.plugins.get('rexVirtualJoystick');
+        if (!joystickPlugin) {
+            console.error('Plugin rexVirtualJoystick no encontrado');
+            return;
+        }
+
+        // Configurar el joystick
+        this.joystick = joystickPlugin.add(this.scene, config);
+
+        // Crear las teclas del joystick
+        this.joystickKeys = this.joystick.createCursorKeys();
     }
 
 }

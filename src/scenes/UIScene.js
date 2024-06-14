@@ -12,12 +12,11 @@ export class UIScene extends Phaser.Scene {
         this.isPortrait;
     }
 
-    preload() {
-        // Cargar los recursos necesarios para los botones aquí si es necesario
+    init(data) {
+        this.inputHandler = data.inputHandler;
     }
 
     create() {
-        // Llamar a la función para añadir botones virtuales
         console.log('UI scene', this);
 
         this.width = this.scale.parentSize.width;
@@ -26,26 +25,26 @@ export class UIScene extends Phaser.Scene {
 
         console.log('parent size',this.width, this.height);
         // set UI layer size
-        // this.cameras.main.setBackgroundColor(0xffffff);
         this.scale.setGameSize(this.width, this.height);
+
         this.addVirtualJoystick();
         this.addVirtualButtons();
     }
 
     addVirtualJoystick() {
 
-        // const radius = Math.min(100, this.width / 2);
         const margin = this.isPortrait 
             ? this.width * 0.06
             : this.width * 0.1;
+
         const radius = this.isPortrait 
             ? (this.width - (margin * 2)) / 4
             : 100;
-        console.log('joystick radius',radius);
-        console.log('joystick margin',margin);
+
         const x = this.isPortrait 
             ? radius + margin
             : radius + (margin / 4);
+
         const y = this.height - radius - margin;
         const base = this.add.circle(x, y, radius, 0x888888).setAlpha(0.5);
         const thumb = this.add.circle(x, y, radius / 2, 0xcccccc).setAlpha(0.8);
@@ -61,14 +60,7 @@ export class UIScene extends Phaser.Scene {
             enable: true
         };
 
-        // Obtén el plugin rexVirtualJoystick
-        const joystickPlugin = this.plugins.get('rexVirtualJoystick');
-
-        // Añade el joystick a la escena
-        this.joystick = joystickPlugin.add(this, config);
-
-        // Crear cursor keys desde el joystick
-        this.joystickKeys = this.joystick.createCursorKeys();
+        this.inputHandler.setJoystickCursor(config);
 
     }
 
@@ -94,10 +86,13 @@ export class UIScene extends Phaser.Scene {
                 .setStrokeStyle(2, 0xff0000)
                 .setInteractive()
                 .on('pointerdown', () => {
-                    this.buttons[button.key] = true;
+                    // this.buttons[button.key] = true;
+                    this.inputHandler.setButtonState(button.key, true);
                 })
                 .on('pointerup', () => {
-                    this.buttons[button.key] = false;
+                    // this.buttons[button.key] = false;
+                    this.inputHandler.setButtonState(button.key, false);
+
                 });
 
             let fontSetup = {
@@ -111,39 +106,11 @@ export class UIScene extends Phaser.Scene {
 
     }
 
-    getPortraitButtonConfig() {
-        const width = this.scale.width;
-        const height = this.scale.height;
-        const radius = 30;
-        const margin = 50;
-
-        return [
-            { key: 'left', x: margin + radius, y: height - margin - radius * 2, radius: radius },
-            { key: 'right', x: margin + radius * 3, y: height - margin - radius * 2, radius: radius },
-            { key: 'up', x: width - margin - radius, y: height - margin - radius * 3, radius: radius },
-            { key: 'down', x: width - margin - radius, y: height - margin - radius, radius: radius }
-        ];
-    }
-
-    getLandscapeButtonConfig() {
-        const width = this.scale.width;
-        const height = this.scale.height;
-        const radius = 30;
-        const margin = 50;
-
-        return [
-            { key: 'left', x: margin + radius, y: height - margin - radius, radius: radius },
-            { key: 'right', x: margin + radius * 3, y: height - margin - radius, radius: radius },
-            { key: 'up', x: margin + radius * 2, y: height - margin - radius * 3, radius: radius },
-            { key: 'down', x: margin + radius * 2, y: height - margin - radius, radius: radius }
-        ];
-    }
-
     handleResize(gameSize) {
         const width = gameSize.width;
         const height = gameSize.height;
         const isPortrait = width < height;
 
-        this.scene.restart();  // Reinicia la escena para actualizar la configuración de botones
+        this.scene.restart();
     }
 }
