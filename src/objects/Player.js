@@ -81,12 +81,15 @@ export class Player {
             repeat: 0
         });
 
+        this.scene.anims.createFromAseprite('shot');
+
         let fightAnimations = [
             'punch',
             'kick',
             'shield',
             'fly',
-            'catch'
+            'catch',
+            'burst'
         ];
 
         this.sprite.on('animationcomplete', (anim, frame) => {

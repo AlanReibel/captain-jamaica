@@ -36,6 +36,17 @@ export class Boot extends Scene {
             { frameWidth: 256, frameHeight: 160 }
         );
 
+        // this.load.spritesheet('shot', 
+        //     'assets/sprites/captain/shot.png',
+        //     { frameWidth: 512, frameHeight: 512 }
+        // );
+
+        this.load.aseprite({
+            key: 'shot',
+            textureURL: 'assets/sprites/captain/shot.png',
+            atlasURL: 'assets/sprites/captain/shot.json'
+        });
+
 
         // this.load.image('tilemapImage', 'assets/tiles/tilemap_packed.png');
         // this.load.tilemapTiledJSON('tilemapJson', 'assets/tiles/suelo.json');

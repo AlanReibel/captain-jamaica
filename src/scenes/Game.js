@@ -79,7 +79,7 @@ export class Game extends Scene {
 
             this.blockedFight = true;
             this.fightEnds = false;
-            this.player.sprite.anims.play('punch', true);
+            this.player.sprite.anims.play('burst', true);
         }
         // pressed E key or B button
         else if (
