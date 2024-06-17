@@ -85,11 +85,13 @@ export class Player {
 
         let fightAnimations = [
             'punch',
+            'punch2',
             'kick',
             'shield',
             'fly',
             'catch',
-            'burst'
+            'burst',
+            'jumpKick'
         ];
 
         this.sprite.on('animationcomplete', (anim, frame) => {

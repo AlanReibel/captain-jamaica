@@ -45,7 +45,22 @@ export class Game extends Scene {
     }
 
     update() {
-        // reset fight state
+        // reset fight
+        if(this.player.sprite.body.velocity.x == 0) {
+            this.movingDirection = 'none';
+        }
+        if (this.player.sprite.body.velocity.y > 0){
+            this.movingDirection = 'down';
+            if(
+                this.inputHandler.isFightActionPressed() && 
+                !this.blockedFight
+            ) {
+                this.fightEnds = false;
+                this.blockedFight = true;
+                this.player.sprite.anims.play('jumpKick');
+            }
+        }
+
         if (this.inputHandler.isFightActionLeaved()) {
             this.blockedFight = false;
             // this.fightEnds = true;
@@ -59,17 +74,27 @@ export class Game extends Scene {
             this.handleMovement();
         }
         // jump
-        if (this.inputHandler.isJumpKeyPressed() && this.player.sprite.body.blocked.down) {
-            this.player.sprite.setVelocityY(-550);
-            this.player.sprite.body.setGravityY(600);
+        if (
+            this.inputHandler.isJumpKeyPressed() && 
+            this.player.sprite.body.blocked.down
+        ) {
+            this.handleJump();
         }
         // game over
         if (this.gameOver) {
             this.scene.start('GameOver');
         }
-
+// console.log('player velocity', this.player.sprite.body.velocity);
+// console.log('player direction', this.movingDirection);
     }
 
+    handleJump() {
+        // jumpKick
+        this.movingDirection = 'up';
+        this.player.sprite.setVelocityY(-550);
+        this.player.sprite.body.setGravityY(600);
+        this.player.sprite.anims.play('jump');
+    }
     handleFightActions() {
         // pressed Q key or A button
         if (
