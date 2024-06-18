@@ -51,6 +51,7 @@ export class Boot extends Scene {
         });
 
 
+        this.load.audio('bitest','assets/sounds/bitest.mp3');
         // this.load.image('tilemapImage', 'assets/tiles/tilemap_packed.png');
         // this.load.tilemapTiledJSON('tilemapJson', 'assets/tiles/suelo.json');
 

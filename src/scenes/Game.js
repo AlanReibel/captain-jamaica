@@ -43,7 +43,7 @@ export class Game extends Scene {
 
         this.createEnemy();
 
-
+        this.playMusic();
         // this.scene.scale.on('orientationchange', function(orientation) {
         //     if (orientation === Phaser.Scale.PORTRAIT) {
         //         // ...
@@ -316,6 +316,14 @@ export class Game extends Scene {
     handleBulletCollision( bullet, enemy) {
         this.destroyEnemy(null, enemy);
         bullet.destroy();
+    }
+
+    playMusic() {
+        let music = this.sound.add('bitest');
+        // music.on('play', listener);
+        music.play();
+        music.setLoop(true);
+
     }
 
 }
