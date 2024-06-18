@@ -350,7 +350,7 @@ export class Game extends Scene {
         this.cameras.main.setBounds(0, 0, 800, 600);  
         this.physics.world.setBounds(0, 0, 800, 600); 
         this.cameras.main.setSize(800, 600);
-        this.cameras.main.startFollow(this.player.sprite);
+        this.cameras.main.startFollow(this.player.sprite, true, 0.5, 0, 200, 0);
         this.cameras.main.setFollowOffset(-200, 0);
 
     }
