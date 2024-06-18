@@ -36,6 +36,9 @@ export class Boot extends Scene {
             { frameWidth: 256, frameHeight: 160 }
         );
 
+        this.load.image('bullet', 'assets/sprites/captain/bullet.png');
+
+
         // this.load.spritesheet('shot', 
         //     'assets/sprites/captain/shot.png',
         //     { frameWidth: 512, frameHeight: 512 }

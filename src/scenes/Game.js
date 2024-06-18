@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { Player } from '../objects/Player.js';
 import { InputHandler } from '../objects/InputHandler.js';
+import { Bullet } from '../objects/Bullet.js';
 
 export class Game extends Scene {
     constructor() {
@@ -16,11 +17,13 @@ export class Game extends Scene {
     gameOver = false;
     map;
     movingDirection = 'right';
+    focusTo = 'right';
     blockedFight = false;
     fightEnds = true;
     shieldThrown = false;
     shieldCached = true;
     enemy;
+    bulletFired = false;
 
     create() {
         this.gameOver = false;
@@ -34,6 +37,11 @@ export class Game extends Scene {
         this.createEnemy();
         console.log('game scene', this);
 
+        this.bullets = this.physics.add.group({
+            classType: Bullet,
+            runChildUpdate: true
+        });
+
         // this.scene.scale.on('orientationchange', function(orientation) {
         //     if (orientation === Phaser.Scale.PORTRAIT) {
         //         // ...
@@ -46,13 +54,13 @@ export class Game extends Scene {
 
     update() {
         // reset fight
-        if(this.player.sprite.body.velocity.x == 0) {
+        if (this.player.sprite.body.velocity.x == 0) {
             this.movingDirection = 'none';
         }
-        if (this.player.sprite.body.velocity.y > 0){
+        if (this.player.sprite.body.velocity.y > 0) {
             this.movingDirection = 'down';
-            if(
-                this.inputHandler.isFightActionPressed() && 
+            if (
+                this.inputHandler.isFightActionPressed() &&
                 !this.blockedFight
             ) {
                 this.fightEnds = false;
@@ -75,7 +83,7 @@ export class Game extends Scene {
         }
         // jump
         if (
-            this.inputHandler.isJumpKeyPressed() && 
+            this.inputHandler.isJumpKeyPressed() &&
             this.player.sprite.body.blocked.down
         ) {
             this.handleJump();
@@ -84,8 +92,33 @@ export class Game extends Scene {
         if (this.gameOver) {
             this.scene.start('GameOver');
         }
-// console.log('player velocity', this.player.sprite.body.velocity);
-// console.log('player direction', this.movingDirection);
+
+        // console.log('currentAnim',this.player.sprite.anims.currentAnim.key);
+        if (this.player.sprite.anims.currentAnim.key === 'burst') {
+
+            let currentFrame = this.player.sprite.anims.currentFrame;
+
+            if (
+                currentFrame.index >= 3 &&
+                currentFrame.index % 2 == 1
+            ) {
+
+                if (!this.bulletFired) {
+
+                    this.fireBullet(this);
+                    this.bulletFired = true;
+                }
+                // Marcar que la bala ya ha sido disparada en este fotograma
+            } else {
+                this.bulletFired = false;
+
+            }
+        } else {
+            this.bulletFired = false;
+            // Reiniciar el estado para permitir el próximo disparo
+        }
+        // console.log('player velocity', this.player.sprite.body.velocity);
+        // console.log('player direction', this.movingDirection);
     }
 
     handleJump() {
@@ -105,6 +138,7 @@ export class Game extends Scene {
             this.blockedFight = true;
             this.fightEnds = false;
             this.player.sprite.anims.play('burst', true);
+            // this.fireBullet(this);
         }
         // pressed E key or B button
         else if (
@@ -141,24 +175,42 @@ export class Game extends Scene {
         }
     }
 
+    fireBullet(scene) {
+        let playerBodyoffest = this.focusTo == 'right'
+            ? this.player.sprite.body.width * 0.5
+            : this.player.sprite.body.width * -0.5;
+
+        let bulletOrigin = scene.player.sprite.x + playerBodyoffest;
+        let bullet = scene.bullets.get(bulletOrigin, scene.player.sprite.y);
+        if (bullet) {
+            bullet.fire(bulletOrigin, scene.player.sprite.y, this.focusTo);
+
+        } else {
+            console.log('No hay balas disponibles');
+        }
+    }
+
+
     handleMovement() {
         // pressed left or A
         if (
-            this.inputHandler.cursors.left.isDown || 
+            this.inputHandler.cursors.left.isDown ||
             this.inputHandler.aKey.isDown ||
             this.inputHandler.joystickKeys?.left.isDown
         ) {
             this.movingDirection = 'left';
+            this.focusTo = 'left';
             this.player.sprite.setVelocityX(-200);
             this.player.sprite.anims.play('run', true).setFlipX(true);
         }
         // pressed right or D
         else if (
-            this.inputHandler.cursors.right.isDown || 
+            this.inputHandler.cursors.right.isDown ||
             this.inputHandler.dKey.isDown ||
             this.inputHandler.joystickKeys?.right.isDown
         ) {
             this.movingDirection = 'right';
+            this.focusTo = 'right';
             this.player.sprite.setVelocityX(200);
             this.player.sprite.anims.play('run', true).setFlipX(false);
         }
@@ -204,7 +256,7 @@ export class Game extends Scene {
     flyBackTween() {
         this.tweens.add({
             targets: this.player.shield,
-            x: this.player.sprite.x, // Regresa el escudo al jugador
+            x: this.player.sprite.x,
             y: this.player.sprite.y,
             duration: 333,
             ease: 'Power1',
@@ -244,14 +296,14 @@ export class Game extends Scene {
         // Verifica si el jugador está en una animación de lucha
         const currentAnim = player.anims.currentAnim.key;
         if (currentAnim === 'punch' || currentAnim === 'kick' || currentAnim === 'shield') {
-            this.destroyEnemy( null,enemy);
+            this.destroyEnemy(null, enemy);
         }
     }
 
     showGuideText() {
         let fontSetup = {
-            fontFamily: 'Arial Black', 
-            fontSize: 15, 
+            fontFamily: 'Arial Black',
+            fontSize: 15,
             color: '#000000',
             // stroke: '#000000', 
             // strokeThickness: 2,
