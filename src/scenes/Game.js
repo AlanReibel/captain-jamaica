@@ -26,14 +26,16 @@ export class Game extends Scene {
     bulletFired = false;
 
     create() {
-        this.gameOver = false;
-        // this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'background');
         this.addBackground();
+
+        this.gameOver = false;
+        this.player = new Player(this, 100, 400, 'captain-idle');
+        this.inputHandler = new InputHandler(this);
+
+        // this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'background');
         // this.add.image(400, 300, 'background');
         this.showGuideText();
 
-        this.player = new Player(this, 100, 400, 'captain-idle');
-        this.inputHandler = new InputHandler(this);
 
         console.log('game scene', this);
 
@@ -45,13 +47,8 @@ export class Game extends Scene {
         this.createEnemy();
 
         this.playMusic();
-        // this.scene.scale.on('orientationchange', function(orientation) {
-        //     if (orientation === Phaser.Scale.PORTRAIT) {
-        //         // ...
-        //     } else if (orientation === Phaser.Scale.LANDSCAPE) {
-        //         // ...
-        //     }
-        // });
+
+        this.createCamera();
 
     }
 
@@ -342,10 +339,20 @@ export class Game extends Scene {
     }
 
     moveBackground(direction) {
-        this.bg.tilePositionX += 0.5 * direction;
-        this.farBuildings.tilePositionX += 1 * direction;
-        this.buildings.tilePositionX += 2 * direction;
-        this.foreground.tilePositionX += 3 * direction;
+        this.bg.tilePositionX += 0.2 * direction;
+        this.farBuildings.tilePositionX += 0.5 * direction;
+        this.buildings.tilePositionX += 1 * direction;
+        this.foreground.tilePositionX += 2 * direction;
+    }
+
+    createCamera() {
+
+        this.cameras.main.setBounds(0, 0, 800, 600);  
+        this.physics.world.setBounds(0, 0, 800, 600); 
+        this.cameras.main.setSize(800, 600);
+        this.cameras.main.startFollow(this.player.sprite);
+        this.cameras.main.setFollowOffset(-200, 0);
+
     }
 
 }
