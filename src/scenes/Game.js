@@ -34,13 +34,15 @@ export class Game extends Scene {
         this.player = new Player(this, 100, 400, 'captain-idle');
         this.inputHandler = new InputHandler(this);
 
-        this.createEnemy();
         console.log('game scene', this);
 
         this.bullets = this.physics.add.group({
             classType: Bullet,
             runChildUpdate: true
         });
+
+        this.createEnemy();
+
 
         // this.scene.scale.on('orientationchange', function(orientation) {
         //     if (orientation === Phaser.Scale.PORTRAIT) {
@@ -98,31 +100,27 @@ export class Game extends Scene {
 
             let currentFrame = this.player.sprite.anims.currentFrame;
 
-            if (
-                currentFrame.index >= 3 &&
-                currentFrame.index % 2 == 1
-            ) {
+            if (currentFrame.index >= 3 &&
+                currentFrame.index % 2 == 1) {
 
                 if (!this.bulletFired) {
 
                     this.fireBullet(this);
                     this.bulletFired = true;
                 }
-                // Marcar que la bala ya ha sido disparada en este fotograma
+
             } else {
                 this.bulletFired = false;
 
             }
         } else {
             this.bulletFired = false;
-            // Reiniciar el estado para permitir el próximo disparo
         }
         // console.log('player velocity', this.player.sprite.body.velocity);
         // console.log('player direction', this.movingDirection);
     }
 
     handleJump() {
-        // jumpKick
         this.movingDirection = 'up';
         this.player.sprite.setVelocityY(-550);
         this.player.sprite.body.setGravityY(600);
@@ -190,7 +188,6 @@ export class Game extends Scene {
         }
     }
 
-
     handleMovement() {
         // pressed left or A
         if (
@@ -239,11 +236,11 @@ export class Game extends Scene {
             let shieldTarget = this.movingDirection == 'right'
                 ? shieldPosition.x + 300
                 : shieldPosition.x - 300;
-            // Configurar el movimiento del escudo
+
             this.tweens.add({
                 targets: this.player.shield,
-                x: shieldTarget, // Ajusta la distancia según tus necesidades
-                y: shieldPosition.y, // Ajusta la trayectoria según tus necesidades
+                x: shieldTarget,
+                y: shieldPosition.y,
                 duration: 333,
                 ease: 'Power1',
                 onComplete: () => {
@@ -271,7 +268,6 @@ export class Game extends Scene {
 
     destroyEnemy(shield, enemy) {
         enemy.destroy();
-        console.log('enemy overlap');
         this.createEnemy();
     }
 
@@ -289,6 +285,7 @@ export class Game extends Scene {
         // this.enemy.body.setBounce(1, 1); // Ejemplo de rebote si lo necesitas
         this.physics.add.collider(this.player.shield, this.enemy, this.destroyEnemy, null, this);
         this.physics.add.collider(this.player.sprite, this.enemy, this.handleBodyCollision, null, this);
+        this.physics.add.collider(this.bullets, this.enemy, this.handleBulletCollision, null, this);
 
     }
 
@@ -314,6 +311,11 @@ export class Game extends Scene {
         this.add.text(20, 60, 'E key for kick', fontSetup);
         this.add.text(20, 80, 'SPACE key for shield attack', fontSetup);
         this.add.text(20, 100, 'F key for shield throw', fontSetup);
+    }
+
+    handleBulletCollision( bullet, enemy) {
+        this.destroyEnemy(null, enemy);
+        bullet.destroy();
     }
 
 }

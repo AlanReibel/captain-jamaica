@@ -17,7 +17,6 @@ export class Player {
         this.shield.setVisible(false);
 
         this.shield.on('animationcomplete-fly', (anim, frame) => {
-            console.log(`animation ${anim.key} complete`);
             if (anim.key === 'fly') {
                 this.scene.fightEnds = true;
             }
