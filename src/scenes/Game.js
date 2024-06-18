@@ -27,8 +27,9 @@ export class Game extends Scene {
 
     create() {
         this.gameOver = false;
-        this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'background');
-        this.add.image(400, 300, 'background');
+        // this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'background');
+        this.addBackground();
+        // this.add.image(400, 300, 'background');
         this.showGuideText();
 
         this.player = new Player(this, 100, 400, 'captain-idle');
@@ -199,6 +200,7 @@ export class Game extends Scene {
             this.focusTo = 'left';
             this.player.sprite.setVelocityX(-200);
             this.player.sprite.anims.play('run', true).setFlipX(true);
+            this.moveBackground(-1);
         }
         // pressed right or D
         else if (
@@ -210,6 +212,7 @@ export class Game extends Scene {
             this.focusTo = 'right';
             this.player.sprite.setVelocityX(200);
             this.player.sprite.anims.play('run', true).setFlipX(false);
+            this.moveBackground(1);
         }
         // idle if else
         else {
@@ -313,7 +316,7 @@ export class Game extends Scene {
         this.add.text(20, 100, 'F key for shield throw', fontSetup);
     }
 
-    handleBulletCollision( bullet, enemy) {
+    handleBulletCollision(bullet, enemy) {
         this.destroyEnemy(null, enemy);
         bullet.destroy();
     }
@@ -324,6 +327,25 @@ export class Game extends Scene {
         music.play();
         music.setLoop(true);
 
+    }
+
+    addBackground() {
+
+        this.bg = this.add.tileSprite(0, 0, 800, 600, 'bg')
+            .setOrigin(0, 0);
+        this.farBuildings = this.add.tileSprite(0, 0, 800, 600, 'farBuildings')
+            .setOrigin(0, 0);
+        this.buildings = this.add.tileSprite(0, 100, 800, 600, 'buildings')
+            .setOrigin(0, 0);
+        this.foreground = this.add.tileSprite(0, 0, 800, 600, 'foreground')
+            .setOrigin(0, 0);
+    }
+
+    moveBackground(direction) {
+        this.bg.tilePositionX += 0.5 * direction;
+        this.farBuildings.tilePositionX += 1 * direction;
+        this.buildings.tilePositionX += 2 * direction;
+        this.foreground.tilePositionX += 3 * direction;
     }
 
 }

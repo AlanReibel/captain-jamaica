@@ -6,11 +6,24 @@ export class Boot extends Scene {
     }
 
     preload() {
-        //  The Boot Scene is typically used to load in any assets you require for your Preloader, such as a game logo or background.
-        //  The smaller the file size of the assets, the better, as the Boot Scene itself has no preloader.
 
-        this.load.image('background', 'assets/orange-skyline.png');
+        this.loadAudios();
+        this.loadImages();
+        this.loadSpriteSheets();
+        this.loadTileMaps();
 
+    }
+
+    create() {
+        this.scene.start('Preloader');
+    }
+
+    loadAudios() {
+        this.load.audio('bitest','assets/sounds/bitest.mp3');
+
+    }
+
+    loadSpriteSheets() {
         this.load.spritesheet('captain-idle',
             'assets/sprites/captain/idle.png',
             { frameWidth: 512, frameHeight: 465 }
@@ -36,28 +49,26 @@ export class Boot extends Scene {
             { frameWidth: 256, frameHeight: 160 }
         );
 
-        this.load.image('bullet', 'assets/sprites/captain/bullet.png');
-
-
-        // this.load.spritesheet('shot', 
-        //     'assets/sprites/captain/shot.png',
-        //     { frameWidth: 512, frameHeight: 512 }
-        // );
-
         this.load.aseprite({
             key: 'shot',
             textureURL: 'assets/sprites/captain/shot.png',
             atlasURL: 'assets/sprites/captain/shot.json'
         });
-
-
-        this.load.audio('bitest','assets/sounds/bitest.mp3');
-        // this.load.image('tilemapImage', 'assets/tiles/tilemap_packed.png');
-        // this.load.tilemapTiledJSON('tilemapJson', 'assets/tiles/suelo.json');
-
     }
 
-    create() {
-        this.scene.start('Preloader');
+    loadImages() {
+        this.load.image('background', 'assets/orange-skyline.png');
+        this.load.image('bullet', 'assets/sprites/captain/bullet.png');
+
+
+        this.load.image('foreground', 'assets/background/0000_foreground.png');
+        this.load.image('buildings', 'assets/background/0001_buildings.png');
+        this.load.image('farBuildings', 'assets/background/0002_far-buildings.png');
+        this.load.image('bg', 'assets/background/0003_bg.png');
+    }
+
+    loadTileMaps() {
+        // this.load.image('tilemapImage', 'assets/tiles/tilemap_packed.png');
+        // this.load.tilemapTiledJSON('tilemapJson', 'assets/tiles/suelo.json');
     }
 }
