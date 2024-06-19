@@ -175,7 +175,7 @@ export class Game extends Scene {
 
     fireBullet(scene) {
         let laserSound = this.sound.add('laser');
-        
+        laserSound.setVolume(0.5);
         let playerBodyoffest = this.focusTo == 'right'
             ? this.player.sprite.body.width * 0.5
             : this.player.sprite.body.width * -0.5;
@@ -225,12 +225,14 @@ export class Game extends Scene {
 
     throwShield() {
         let boomerangSound = this.sound.add('boomerang');
-        boomerangSound.play();
+        this.time.delayedCall(400, () => {
+            boomerangSound.play();
+        });
         this.player.sprite.anims.play('throw', true);
         this.time.delayedCall(375, () => {
             // calcula posicion del escudo desde el player
             let shieldPosition = {
-                x: this.movingDirection == 'right'
+                x: this.focusTo == 'right'
                     ? this.player.sprite.x + (this.player.sprite.body.width / 2)
                     : this.player.sprite.x - (this.player.sprite.body.width / 2),
                 y: this.player.sprite.y
@@ -240,7 +242,7 @@ export class Game extends Scene {
             this.player.shield.setVisible(true);
             this.player.shield.play('fly', true);
 
-            let shieldTarget = this.movingDirection == 'right'
+            let shieldTarget = this.focusTo == 'right'
                 ? shieldPosition.x + 300
                 : shieldPosition.x - 300;
 
