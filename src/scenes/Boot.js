@@ -23,6 +23,7 @@ export class Boot extends Scene {
         this.load.audio('laser','assets/sounds/laser2.mp3');
         this.load.audio('punch','assets/sounds/punch.mp3');
         this.load.audio('boomerang','assets/sounds/boomerang2.mp3');
+        this.load.audio('die','assets/sounds/retro_die_02.mp3');
 
     }
 
