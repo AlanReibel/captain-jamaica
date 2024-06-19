@@ -125,6 +125,7 @@ export class Game extends Scene {
         this.player.sprite.anims.play('jump');
     }
     handleFightActions() {
+        let punchSound = this.sound.add('punch');
         // pressed Q key or A button
         if (
             this.inputHandler.qKey.isDown ||
@@ -145,6 +146,7 @@ export class Game extends Scene {
             this.blockedFight = true;
             this.fightEnds = false;
             this.player.sprite.anims.play('kick', true);
+            punchSound.play();
         }
         // pressed F key or Y button
         else if (
@@ -172,6 +174,8 @@ export class Game extends Scene {
     }
 
     fireBullet(scene) {
+        let laserSound = this.sound.add('laser');
+        
         let playerBodyoffest = this.focusTo == 'right'
             ? this.player.sprite.body.width * 0.5
             : this.player.sprite.body.width * -0.5;
@@ -180,6 +184,7 @@ export class Game extends Scene {
         let bullet = scene.bullets.get(bulletOrigin, scene.player.sprite.y);
         if (bullet) {
             bullet.fire(bulletOrigin, scene.player.sprite.y, this.focusTo);
+            laserSound.play();
 
         } else {
             console.log('No hay balas disponibles');
@@ -219,6 +224,8 @@ export class Game extends Scene {
     }
 
     throwShield() {
+        let boomerangSound = this.sound.add('boomerang');
+        boomerangSound.play();
         this.player.sprite.anims.play('throw', true);
         this.time.delayedCall(375, () => {
             // calcula posicion del escudo desde el player
