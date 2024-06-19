@@ -170,6 +170,9 @@ export class Game extends Scene {
             this.blockedFight = true;
             this.fightEnds = false;
             this.player.sprite.anims.play('shield', true);
+            this.time.delayedCall( 100, () => {
+                punchSound.play();
+            });
         }
     }
 
