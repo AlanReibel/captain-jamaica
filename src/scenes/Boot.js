@@ -30,27 +30,27 @@ export class Boot extends Scene {
     loadSpriteSheets() {
         this.load.spritesheet('captain-idle',
             'assets/sprites/captain/idle.png',
-            { frameWidth: 512, frameHeight: 465 }
+            { frameWidth: 64, frameHeight: 58 }
         );
 
         this.load.spritesheet('captain-run',
             'assets/sprites/captain/run.png',
-            { frameWidth: 512, frameHeight: 465 }
+            { frameWidth: 64, frameHeight: 58 }
         );
 
         this.load.spritesheet('captain-fight',
             'assets/sprites/captain/fight.png',
-            { frameWidth: 512, frameHeight: 512 }
+            { frameWidth: 64, frameHeight: 64 }
         );
 
         this.load.spritesheet('shield-throw',
             'assets/sprites/captain/shield-throw.png',
-            { frameWidth: 600, frameHeight: 512 }
+            { frameWidth: 75, frameHeight: 64 }
         );
 
         this.load.spritesheet('shield-fly',
             'assets/sprites/captain/shield-fly.png',
-            { frameWidth: 256, frameHeight: 160 }
+            { frameWidth: 64, frameHeight: 40 }
         );
 
         this.load.aseprite({
