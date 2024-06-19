@@ -34,7 +34,7 @@ export class Game extends Scene {
 
         // this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'background');
         // this.add.image(400, 300, 'background');
-        this.showGuideText();
+        // this.showGuideText();
 
 
         console.log('game scene', this);
@@ -178,7 +178,7 @@ export class Game extends Scene {
 
     fireBullet(scene) {
         let laserSound = this.sound.add('laser');
-        laserSound.setVolume(0.5);
+        laserSound.setVolume(0.4);
         let playerBodyoffest = this.focusTo == 'right'
             ? this.player.sprite.body.width * 0.5
             : this.player.sprite.body.width * -0.5;
