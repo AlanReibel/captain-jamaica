@@ -280,7 +280,7 @@ export class Game extends Scene {
 
     destroyEnemy(shield, enemy) {
         let dieSound = this.sound.add('die');
-        dieSound.setVolume(0.4);
+        // dieSound.setVolume(0.4);
         enemy.destroy();
         dieSound.play();
         this.createEnemy();
