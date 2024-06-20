@@ -122,8 +122,8 @@ export class Game extends Scene {
 
     handleJump() {
         this.movingDirection = 'up';
-        this.player.sprite.setVelocityY(-550);
-        this.player.sprite.body.setGravityY(600);
+        this.player.sprite.setVelocityY(-400);
+        this.player.sprite.body.setGravityY(400);
         this.player.sprite.anims.play('jump');
     }
     handleFightActions() {
@@ -198,6 +198,7 @@ export class Game extends Scene {
 
     handleMovement() {
         // pressed left or A
+        let velocity = 100;
         if (
             this.inputHandler.cursors.left.isDown ||
             this.inputHandler.aKey.isDown ||
@@ -205,7 +206,7 @@ export class Game extends Scene {
         ) {
             this.movingDirection = 'left';
             this.focusTo = 'left';
-            this.player.sprite.setVelocityX(-200);
+            this.player.sprite.setVelocityX(velocity * -1);
             this.player.sprite.anims.play('run', true).setFlipX(true);
             this.moveBackground(-1);
             // this.cameras.main.scrollX -= 5;
@@ -218,7 +219,7 @@ export class Game extends Scene {
         ) {
             this.movingDirection = 'right';
             this.focusTo = 'right';
-            this.player.sprite.setVelocityX(200);
+            this.player.sprite.setVelocityX(velocity);
             this.player.sprite.anims.play('run', true).setFlipX(false);
             this.moveBackground(1);
             // this.cameras.main.scrollX += 5;
@@ -366,7 +367,6 @@ export class Game extends Scene {
 
     moveBackground(direction) {
         // Actualiza la posición del tileSprite en función de la posición de la cámara
-        console.log('scroll X', this.cameras.main.scrollX);
 
         let scroll = this.cameras.main.scrollX / 20;
 
@@ -379,11 +379,19 @@ export class Game extends Scene {
 
     createCamera() {
 
-        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.cameras.main.setSize(800, 600);
-        this.cameras.main.startFollow(this.player.sprite, true, 0.5, 0, 200, 0);
-        this.cameras.main.setFollowOffset(-200, 0);
+        this.physics.world
+            .setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+
+        this.cameras.main
+            // .setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
+            .setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
+            // .startFollow(this.player.sprite, true, 0.5, 0, 200, 0)
+            .startFollow(this.player.sprite, true, 1, 0.1, 0, 0)
+            .setZoom(2)
+            // .zoomTo(this.player.sprite, 1000)
+            // .centerOn(0,this.map.heightInPixels)
+            // .setSize(800, 600)
+            // .setFollowOffset(-200, 0);
 
     }
 

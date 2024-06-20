@@ -7,14 +7,14 @@ export class Player {
         this.sprite
             .setBounce(0.2)
             .setCollideWorldBounds(true)
-            .setScale(1.5);
+            .setScale(0.5);
         // console.log('player', this.sprite);
         this.createAnimations();
         this.sprite.anims.play('idle', true);
 
         this.shield = scene.physics.add.sprite(this.x, this.y, 'shield-fly');
         this.shield.body.setAllowGravity(false);
-        this.shield.setScale(1.5);
+        this.shield.setScale(0.5);
         // this.shield.setSize(100, 100)
         // scene.physics.world.enable(this.shield);
         this.shield.setVisible(false);
