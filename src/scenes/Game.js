@@ -389,8 +389,13 @@ export class Game extends Scene {
 
     addTileMaps() {
         this.map = this.make.tilemap({ key: 'tilemapJson' });
+
         const tiles = this.map.addTilesetImage('Tileset', 'tilemapImage');
         const groundLayer = this.map.createLayer('ground', tiles);
+
+        const objectTiles = this.map.addTilesetImage('objects', 'objectsTilemap');
+        const treesLayer = this.map.createLayer('trees', objectTiles);
+        
         groundLayer.setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player.sprite, groundLayer);
     }
