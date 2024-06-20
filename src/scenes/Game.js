@@ -48,6 +48,8 @@ export class Game extends Scene {
 
         this.playMusic();
 
+
+        this.addTileMaps();
         this.createCamera();
 
     }
@@ -170,7 +172,7 @@ export class Game extends Scene {
             this.blockedFight = true;
             this.fightEnds = false;
             this.player.sprite.anims.play('shield', true);
-            this.time.delayedCall( 100, () => {
+            this.time.delayedCall(100, () => {
                 punchSound.play();
             });
         }
@@ -206,6 +208,7 @@ export class Game extends Scene {
             this.player.sprite.setVelocityX(-200);
             this.player.sprite.anims.play('run', true).setFlipX(true);
             this.moveBackground(-1);
+            // this.cameras.main.scrollX -= 5;
         }
         // pressed right or D
         else if (
@@ -218,6 +221,7 @@ export class Game extends Scene {
             this.player.sprite.setVelocityX(200);
             this.player.sprite.anims.play('run', true).setFlipX(false);
             this.moveBackground(1);
+            // this.cameras.main.scrollX += 5;
         }
         // idle if else
         else {
@@ -343,31 +347,52 @@ export class Game extends Scene {
 
     addBackground() {
 
-        this.bg = this.add.tileSprite(0, 0, 800, 600, 'bg')
+        this.bg1 = this.add.tileSprite(0, 0, 800, 600, 'bg1')
+            .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.farBuildings = this.add.tileSprite(0, 0, 800, 600, 'farBuildings')
+        this.bg2 = this.add.tileSprite(0, 0, 800, 600, 'bg2')
+            .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.buildings = this.add.tileSprite(0, 100, 800, 600, 'buildings')
+        this.bg3 = this.add.tileSprite(0, 0, 800, 600, 'bg3')
+            .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.foreground = this.add.tileSprite(0, 0, 800, 600, 'foreground')
+        this.bg4 = this.add.tileSprite(0, 0, 800, 600, 'bg4')
+            .setScrollFactor(0)
+            .setOrigin(0, 0);
+        this.bg5 = this.add.tileSprite(0, 0, 800, 600, 'bg5')
+            .setScrollFactor(0)
             .setOrigin(0, 0);
     }
 
     moveBackground(direction) {
-        this.bg.tilePositionX += 0.2 * direction;
-        this.farBuildings.tilePositionX += 0.5 * direction;
-        this.buildings.tilePositionX += 1 * direction;
-        this.foreground.tilePositionX += 2 * direction;
+        // Actualiza la posición del tileSprite en función de la posición de la cámara
+        console.log('scroll X', this.cameras.main.scrollX);
+
+        let scroll = this.cameras.main.scrollX / 20;
+
+        this.bg1.tilePositionX = scroll * 0.2;
+        this.bg2.tilePositionX = scroll * 0.5;
+        this.bg3.tilePositionX = scroll * 1;
+        this.bg4.tilePositionX = scroll * 2;
+        this.bg5.tilePositionX = scroll * 3;
     }
 
     createCamera() {
 
-        this.cameras.main.setBounds(0, 0, 800, 600);  
-        this.physics.world.setBounds(0, 0, 800, 600); 
+        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+        this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.setSize(800, 600);
         this.cameras.main.startFollow(this.player.sprite, true, 0.5, 0, 200, 0);
         this.cameras.main.setFollowOffset(-200, 0);
 
+    }
+
+    addTileMaps() {
+        this.map = this.make.tilemap({ key: 'tilemapJson' });
+        const tiles = this.map.addTilesetImage('Tileset', 'tilemapImage');
+        const groundLayer = this.map.createLayer('ground', tiles);
+        groundLayer.setCollisionByProperty({ collider: true });
+        this.physics.add.collider(this.player.sprite, groundLayer);
     }
 
 }

@@ -65,14 +65,16 @@ export class Boot extends Scene {
         this.load.image('bullet', 'assets/sprites/captain/bullet.png');
 
 
-        this.load.image('foreground', 'assets/background/0000_foreground.png');
-        this.load.image('buildings', 'assets/background/0001_buildings.png');
-        this.load.image('farBuildings', 'assets/background/0002_far-buildings.png');
-        this.load.image('bg', 'assets/background/0003_bg.png');
+        this.load.image('bg1', 'assets/background/1.png');
+        this.load.image('bg2', 'assets/background/2.png');
+        this.load.image('bg3', 'assets/background/3.png');
+        this.load.image('bg4', 'assets/background/4.png');
+        this.load.image('bg5', 'assets/background/5.png');
     }
-
+    
     loadTileMaps() {
-        // this.load.image('tilemapImage', 'assets/tiles/tilemap_packed.png');
-        // this.load.tilemapTiledJSON('tilemapJson', 'assets/tiles/suelo.json');
+        
+        this.load.image('tilemapImage', 'assets/tiles/Tileset.png');
+        this.load.tilemapTiledJSON('tilemapJson', 'assets/tiles/world.json');
     }
 }
