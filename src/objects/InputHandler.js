@@ -54,6 +54,14 @@ export class InputHandler {
             !this.buttons['Y'];
     }
 
+    isJumpLeaved() {
+        
+        let joystickExist = this.joystickKeys ? this.joystickKeys.up.isUp : true;
+        return this.wKey.isUp &&
+            this.cursors.up.isUp &&
+            joystickExist;
+    }
+
 //     isMovementKeyPressed() {
 // // add joystick
 //         return this.cursors.left.isDown ||

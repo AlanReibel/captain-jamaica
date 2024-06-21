@@ -19,6 +19,7 @@ export class Game extends Scene {
     movingDirection = 'right';
     focusTo = 'right';
     blockedFight = false;
+    blockedJump = false;
     fightEnds = true;
     shieldThrown = false;
     shieldCached = true;
@@ -55,6 +56,7 @@ export class Game extends Scene {
     }
 
     update() {
+        console.log('this.blockedJump',this.inputHandler.isJumpLeaved());
         // reset fight
         if (this.player.sprite.body.velocity.x == 0) {
             this.movingDirection = 'none';
@@ -75,6 +77,10 @@ export class Game extends Scene {
             this.blockedFight = false;
             // this.fightEnds = true;
         }
+        if (this.inputHandler.isJumpLeaved()) {
+            this.blockedJump = false;
+            // this.fightEnds = true;
+        }
         // fighting
         if (this.inputHandler.isFightActionPressed() && !this.blockedFight) {
             this.handleFightActions();
@@ -84,9 +90,10 @@ export class Game extends Scene {
             this.handleMovement();
         }
         // jump
-        if (
+        if (    
             this.inputHandler.isJumpKeyPressed() &&
-            this.player.sprite.body.blocked.down
+            this.player.sprite.body.blocked.down &&
+            !this.blockedJump
         ) {
             this.handleJump();
         }
@@ -121,6 +128,7 @@ export class Game extends Scene {
     }
 
     handleJump() {
+        this.blockedJump = true;
         this.movingDirection = 'up';
         this.player.sprite.setVelocityY(-400);
         this.player.sprite.body.setGravityY(400);
