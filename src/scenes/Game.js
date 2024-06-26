@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { Player } from '../objects/Player.js';
 import { InputHandler } from '../objects/InputHandler.js';
 import { Bullet } from '../objects/Bullet.js';
+import { Enemy } from '../objects/Enemy.js';
 
 export class Game extends Scene {
     constructor() {
@@ -56,7 +57,6 @@ export class Game extends Scene {
     }
 
     update() {
-        console.log('this.blockedJump',this.inputHandler.isJumpLeaved());
         // reset fight
         if (this.player.sprite.body.velocity.x == 0) {
             this.movingDirection = 'none';
@@ -90,7 +90,7 @@ export class Game extends Scene {
             this.handleMovement();
         }
         // jump
-        if (    
+        if (
             this.inputHandler.isJumpKeyPressed() &&
             this.player.sprite.body.blocked.down &&
             !this.blockedJump
@@ -303,18 +303,54 @@ export class Game extends Scene {
         let position = this.player.sprite.x < (this.game.config.width / 2)
             ? this.game.config.width - 50
             : 50;
-        this.enemy = this.add.rectangle(position, this.game.config.height - 50, 50, 50, 0x00ff00);
 
+        this.anims.create({
+            key: 'enemy1-idle',
+            frames: this.anims.generateFrameNumbers('enemy1-idle', { start: 0, end: 3 }),
+            frameRate: 12,
+            repeat: -1
+        });
+
+        // this.enemy = this.add.rectangle(position, this.game.config.height - 50, 50, 50, 0x00ff00);
+        let x = this.player.sprite.x;
+        let y = this.player.sprite.y - 50;
+        this.enemy = this.physics.add.sprite(x, y, 'enemy1-idle');
+        this.enemy.anims.play('enemy1-idle');
         // Opcional: Habilitar física para el enemigo
-        this.physics.add.existing(this.enemy);
+        // this.physics.add.existing(this.enemy);
 
         // Configurar propiedades físicas si es necesario
         this.enemy.body.setCollideWorldBounds(true);
+        this.enemy.body.setAllowGravity(false);
         // this.enemy.body.setBounce(1, 1); // Ejemplo de rebote si lo necesitas
         this.physics.add.collider(this.player.shield, this.enemy, this.destroyEnemy, null, this);
         this.physics.add.collider(this.player.sprite, this.enemy, this.handleBodyCollision, null, this);
         this.physics.add.collider(this.bullets, this.enemy, this.handleBulletCollision, null, this);
 
+    }
+
+    createMultipleEnemies() {
+        this.enemies = this.physics.add.group();
+
+        // Crear varios enemigos con diferentes configuraciones
+        let enemy1 = new Enemy(this, 100, 100, 'enemy1', {
+            health: 50,
+            speed: 50,
+            behavior: () => {
+                enemy1.setVelocity(0, Phaser.Math.Between(-100, 100));
+            }
+        });
+
+        let enemy2 = new Enemy(this, 200, 200, 'enemy', {
+            health: 100,
+            speed: 200,
+            behavior: () => {
+                enemy2.setVelocityX(Phaser.Math.Between(-100, 100));
+            }
+        });
+
+        this.enemies.add(enemy1);
+        this.enemies.add(enemy2);
     }
 
     handleBodyCollision(player, enemy) {
@@ -396,10 +432,10 @@ export class Game extends Scene {
             // .startFollow(this.player.sprite, true, 0.5, 0, 200, 0)
             .startFollow(this.player.sprite, true, 1, 0.1, 0, 0)
             .setZoom(2)
-            // .zoomTo(this.player.sprite, 1000)
-            // .centerOn(0,this.map.heightInPixels)
-            // .setSize(800, 600)
-            // .setFollowOffset(-200, 0);
+        // .zoomTo(this.player.sprite, 1000)
+        // .centerOn(0,this.map.heightInPixels)
+        // .setSize(800, 600)
+        // .setFollowOffset(-200, 0);
 
     }
 
@@ -411,7 +447,7 @@ export class Game extends Scene {
 
         const objectTiles = this.map.addTilesetImage('objects', 'objectsTilemap');
         const treesLayer = this.map.createLayer('trees', objectTiles);
-        
+
         groundLayer.setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player.sprite, groundLayer);
     }

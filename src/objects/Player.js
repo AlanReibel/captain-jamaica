@@ -83,6 +83,20 @@ export class Player {
             repeat: 0
         });
 
+        this.scene.anims.create({
+            key: 'whip',
+            frames: this.scene.anims.generateFrameNumbers('whip', { start: 0, end: 27 }),
+            frameRate: 12,
+            repeat: 0
+        });
+
+        this.scene.anims.create({
+            key: 'special',
+            frames: this.scene.anims.generateFrameNumbers('special', { start: 0, end: 56 }),
+            frameRate: 12,
+            repeat: 0
+        });
+
         this.scene.anims.createFromAseprite('shot');
 
         let fightAnimations = [

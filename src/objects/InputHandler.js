@@ -47,7 +47,7 @@ export class InputHandler {
         return this.cursors.space.isUp &&
             this.qKey.isUp &&
             this.fKey.isUp &&
-            this.eKey.isUp &&
+            // this.eKey.isUp &&
             !this.buttons['A'] &&
             !this.buttons['B'] &&
             !this.buttons['X'] &&
