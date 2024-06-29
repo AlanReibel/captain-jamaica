@@ -303,7 +303,6 @@ export class Game extends Scene {
         // dieSound.setVolume(0.4);
         enemy.destroy();
         dieSound.play();
-        this.createEnemy();
     }
 
     createMultipleEnemies() {
@@ -315,11 +314,17 @@ export class Game extends Scene {
         let x = this.player.sprite.x;
         let y = this.player.sprite.y;
 
-        let flyingRobot = new Enemy(this, x, y - 100, 'flyingRobot');
+        let flyingRobot = new Enemy(this, x, y - 50, 'flyingRobot');
         let weelRobot = new Enemy(this, x + 100, y, 'weelRobot');
+        let basebolHitter = new Enemy(this, x + 200, y, 'basebolHitter');
+        let mutantDog = new Enemy(this, x + 300, y, 'mutantDog');
+        let brainTank = new Enemy(this, x - 50, y, 'brainTank');
 
         this.flyingEnemies.add(flyingRobot);
         this.landEnemies.add(weelRobot);
+        this.landEnemies.add(basebolHitter);
+        this.landEnemies.add(mutantDog);
+        this.landEnemies.add(brainTank);
 
         this.physics.add.collider(this.player.shield, this.landEnemies, this.destroyEnemy, null, this);
         this.physics.add.collider(this.player.sprite, this.landEnemies, this.handleBodyCollision, null, this);

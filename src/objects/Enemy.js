@@ -16,7 +16,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.health = enemies[name].health || 100;
         this.speed = enemies[name].speed || 100;
-        this.behavior = enemies[name].behavior || this.defaultBehavior;
+        this.behavior = enemies[name].behavior;
         this.setCollideWorldBounds(true);
 
 
