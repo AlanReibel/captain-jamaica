@@ -24,8 +24,9 @@ export class Game extends Scene {
     fightEnds = true;
     shieldThrown = false;
     shieldCached = true;
-    enemy;
+    enemies;
     bulletFired = false;
+    groundLayer;
 
     create() {
         this.addBackground();
@@ -46,13 +47,15 @@ export class Game extends Scene {
             runChildUpdate: true
         });
 
-        this.createEnemy();
 
         this.playMusic();
 
 
         this.addTileMaps();
         this.createCamera();
+
+        this.createMultipleEnemies();
+
 
     }
 
@@ -123,6 +126,10 @@ export class Game extends Scene {
         } else {
             this.bulletFired = false;
         }
+
+        this.landEnemies.children.iterate((enemy) => {
+            enemy.update();
+        });
         // console.log('player velocity', this.player.sprite.body.velocity);
         // console.log('player direction', this.movingDirection);
     }
@@ -299,58 +306,30 @@ export class Game extends Scene {
         this.createEnemy();
     }
 
-    createEnemy() {
-        let position = this.player.sprite.x < (this.game.config.width / 2)
-            ? this.game.config.width - 50
-            : 50;
-
-        this.anims.create({
-            key: 'enemy1-idle',
-            frames: this.anims.generateFrameNumbers('enemy1-idle', { start: 0, end: 3 }),
-            frameRate: 12,
-            repeat: -1
-        });
-
-        // this.enemy = this.add.rectangle(position, this.game.config.height - 50, 50, 50, 0x00ff00);
-        let x = this.player.sprite.x;
-        let y = this.player.sprite.y - 50;
-        this.enemy = this.physics.add.sprite(x, y, 'enemy1-idle');
-        this.enemy.anims.play('enemy1-idle');
-        // Opcional: Habilitar física para el enemigo
-        // this.physics.add.existing(this.enemy);
-
-        // Configurar propiedades físicas si es necesario
-        this.enemy.body.setCollideWorldBounds(true);
-        this.enemy.body.setAllowGravity(false);
-        // this.enemy.body.setBounce(1, 1); // Ejemplo de rebote si lo necesitas
-        this.physics.add.collider(this.player.shield, this.enemy, this.destroyEnemy, null, this);
-        this.physics.add.collider(this.player.sprite, this.enemy, this.handleBodyCollision, null, this);
-        this.physics.add.collider(this.bullets, this.enemy, this.handleBulletCollision, null, this);
-
-    }
-
     createMultipleEnemies() {
-        this.enemies = this.physics.add.group();
-
-        // Crear varios enemigos con diferentes configuraciones
-        let enemy1 = new Enemy(this, 100, 100, 'enemy1', {
-            health: 50,
-            speed: 50,
-            behavior: () => {
-                enemy1.setVelocity(0, Phaser.Math.Between(-100, 100));
-            }
+        this.landEnemies = this.physics.add.group();
+        this.flyingEnemies = this.physics.add.group({
+            allowGravity: false,
         });
+        
+        let x = this.player.sprite.x;
+        let y = this.player.sprite.y;
 
-        let enemy2 = new Enemy(this, 200, 200, 'enemy', {
-            health: 100,
-            speed: 200,
-            behavior: () => {
-                enemy2.setVelocityX(Phaser.Math.Between(-100, 100));
-            }
-        });
+        let flyingRobot = new Enemy(this, x, y - 100, 'flyingRobot');
+        let weelRobot = new Enemy(this, x + 100, y, 'weelRobot');
 
-        this.enemies.add(enemy1);
-        this.enemies.add(enemy2);
+        this.flyingEnemies.add(flyingRobot);
+        this.landEnemies.add(weelRobot);
+
+        this.physics.add.collider(this.player.shield, this.landEnemies, this.destroyEnemy, null, this);
+        this.physics.add.collider(this.player.sprite, this.landEnemies, this.handleBodyCollision, null, this);
+        this.physics.add.collider(this.bullets, this.landEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.collider(this.groundLayer, this.landEnemies, null, null, this);
+
+        this.physics.add.collider(this.player.shield, this.flyingEnemies, this.destroyEnemy, null, this);
+        this.physics.add.collider(this.player.sprite, this.flyingEnemies, this.handleBodyCollision, null, this);
+        this.physics.add.collider(this.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.collider(this.groundLayer, this.flyingEnemies, null, null, this);
     }
 
     handleBodyCollision(player, enemy) {
@@ -443,13 +422,13 @@ export class Game extends Scene {
         this.map = this.make.tilemap({ key: 'tilemapJson' });
 
         const tiles = this.map.addTilesetImage('Tileset', 'tilemapImage');
-        const groundLayer = this.map.createLayer('ground', tiles);
+        this.groundLayer = this.map.createLayer('ground', tiles);
 
         const objectTiles = this.map.addTilesetImage('objects', 'objectsTilemap');
         const treesLayer = this.map.createLayer('trees', objectTiles);
 
-        groundLayer.setCollisionByProperty({ collider: true });
-        this.physics.add.collider(this.player.sprite, groundLayer);
+        this.groundLayer.setCollisionByProperty({ collider: true });
+        this.physics.add.collider(this.player.sprite, this.groundLayer);
     }
 
 }

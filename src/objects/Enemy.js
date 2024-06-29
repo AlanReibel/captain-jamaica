@@ -1,58 +1,51 @@
-export class Enemy extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, options = {}) {
-        super(scene, x, y, texture);
+import { enemies } from './enemyConfig';
 
-        this.animations = [
-            { 'idle': 4, 'walk': 4, 'attack': 4, 'death': 4, 'hurt': 2 }, //0
-            { 'idle': 4, 'walk': 4, 'attack': 4, 'death': 4, 'hurt': 2 }, //1
-            { 'idle': 4, 'walk': 4, 'attack': 4, 'death': 4, 'hurt': 2 }, //2
-            { 'idle': 4, 'walk': 4, 'attack': 4, 'death': 4, 'hurt': 2 }, //3
-            { 'idle': 4, 'walk': 4, 'attack': 4, 'death': 4, 'hurt': 2 }, //4
-            { 'idle': 4, 'walk': 4, 'attack': 4, 'death': 4, 'hurt': 2 }  //5
-        ];
+export class Enemy extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, x, y, name) {
+
+        super(scene, x, y, `${name}-Idle`);
+
         // Agregar el sprite a la escena
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
+        this.createAnimations(scene, name);
+        this.anims.play(`${name}-Idle`);
+
         // Establecer propiedades básicas
         this.scene = scene;
-        this.health = options.health || 100;
-        this.speed = options.speed || 100;
-        this.behavior = options.behavior || this.defaultBehavior;
+        this.health = enemies[name].health || 100;
+        this.speed = enemies[name].speed || 100;
+        this.behavior = enemies[name].behavior || this.defaultBehavior;
+        this.setCollideWorldBounds(true);
 
-        // Añadir animaciones si se han proporcionado
-        this.addAnimations();
-
-        // Configurar otros atributos y comportamientos
-        this.setInteractive();
-        this.on('pointerdown', () => {
-            this.takeDamage(10);
-        });
 
         // Configurar física
-        this.setCollideWorldBounds(true);
-        this.setVelocity(Phaser.Math.Between(-this.speed, this.speed), Phaser.Math.Between(-this.speed, this.speed));
+        // this.setVelocity(Phaser.Math.Between(-this.speed, this.speed), Phaser.Math.Between(-this.speed, this.speed));
+        console.log(`enemy ${name} created`,this);
+
     }
 
-    // Método para añadir animaciones
-    addAnimations() {
-        for (let animKey in this.animations[0]) {
-            this.anims.create({
-                key: `${this.texture}-${animKey}`,
-                frames:this.scene.anims.generateFrameNumbers('special', { start: 0, end: this.animations[0][animKey] - 1 }),
-                frameRate: 12,
-                // repeat: animations[animKey].repeat || -1
-            });
-        }
+    update() {
+        this.behavior();
     }
+
 
     // Comportamiento predeterminado del enemigo
     defaultBehavior() {
-        // Movimiento simple de izquierda a derecha
-        if (this.x < 50 || this.x > this.scene.scale.width - 50) {
+        // Obtener las dimensiones del mundo visible de la cámara
+        let worldView = this.scene.cameras.main.worldView;
+    
+        // Verificar los límites horizontales
+        if (this.x < worldView.x + 50 || this.x > worldView.x + worldView.width - 50) {
             this.setVelocityX(this.body.velocity.x * -1);
         }
+        // Verificar los límites verticales
+        if (this.y < worldView.y + 50 || this.y > worldView.y + worldView.height - 50) {
+            this.setVelocityY(this.body.velocity.y * -1);
+        }
     }
+    
 
     // Método para recibir daño
     takeDamage(amount) {
@@ -69,6 +62,32 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     // Actualización del enemigo
     update() {
-        this.behavior();
+        // this.behavior();
+    }
+
+    static loadResources(scene) {
+        for (const [enemyName, enemyData] of Object.entries(enemies)) {
+            for (const [animationName, animationData] of Object.entries(enemyData.animations)) {
+                scene.load.spritesheet(
+                    `${enemyName}-${animationName}`,
+                    `assets/sprites/enemies/${enemyName}/${animationName}.png`,
+                    { frameWidth: animationData.frameWidth, frameHeight: animationData.frameHeight }
+                );
+            }
+        }
+    }
+
+    createAnimations(scene, enemyName) {
+            for (const [animationName, animationData] of Object.entries(enemies[enemyName].animations)) {
+                scene.anims.create({
+                    key: `${enemyName}-${animationName}`,
+                    frames: scene.anims.generateFrameNumbers(`${enemyName}-${animationName}`, {
+                        start: 0,
+                        end: animationData.frames - 1
+                    }),
+                    frameRate: animationData.frameRate,
+                    repeat: animationData.repeat
+                });
+            }
     }
 }

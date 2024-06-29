@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { Enemy } from '../objects/Enemy';
 
 export class Boot extends Scene {
     constructor() {
@@ -96,25 +97,11 @@ export class Boot extends Scene {
     }
 
     enemiesSprites() {
-        this.load.spritesheet('enemy1-idle',
-            'assets/sprites/enemies/5/Idle.png',
-            { frameWidth: 32, frameHeight: 32 }
-        );
-        this.load.spritesheet('enemy1-death',
-            'assets/sprites/enemies/5/Death.png',
-            { frameWidth: 32, frameHeight: 32 }
-        );
-        this.load.spritesheet('enemy1-attack',
-            'assets/sprites/enemies/5/Attack.png',
-            { frameWidth: 32, frameHeight: 38 }
-        );
-        this.load.spritesheet('enemy1-hurt',
-            'assets/sprites/enemies/5/Hurt.png',
-            { frameWidth: 32, frameHeight: 32 }
-        );
-        this.load.spritesheet('enemy1-walk',
-            'assets/sprites/enemies/5/Walk.png',
-            { frameWidth: 32, frameHeight: 32 }
-        );
+
+        Enemy.loadResources(this);
+        // this.load.once('complete', () => {
+        //     Enemy.createAnimations(this);
+        // });
+        // this.load.start(); // Empieza la carga de recursos
     }
 }
