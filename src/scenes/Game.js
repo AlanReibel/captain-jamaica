@@ -130,6 +130,10 @@ export class Game extends Scene {
         this.landEnemies.children.iterate((enemy) => {
             enemy.update();
         });
+
+        this.flyingEnemies.children.iterate((enemy) => {
+            enemy.update();
+        });
         // console.log('player velocity', this.player.sprite.body.velocity);
         // console.log('player direction', this.movingDirection);
     }

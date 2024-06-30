@@ -16,10 +16,13 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.health = enemies[name].health || 100;
         this.speed = enemies[name].speed || 100;
+        this.focusTo = 'right';
+        // this.behavior = enemies[name].behavior || this.defaultBehavior();
         this.behavior = enemies[name].behavior;
         this.setCollideWorldBounds(true);
 
 
+        this.moveEnemy();
         // Configurar física
         // this.setVelocity(Phaser.Math.Between(-this.speed, this.speed), Phaser.Math.Between(-this.speed, this.speed));
         console.log(`enemy ${name} created`,this);
@@ -27,23 +30,13 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        this.behavior();
+        this.behavior(this.scene, this);
     }
 
+    moveEnemy( direction ) {
+        console.log('speed',this.speed);
+        this.setVelocityX( - this.speed);
 
-    // Comportamiento predeterminado del enemigo
-    defaultBehavior() {
-        // Obtener las dimensiones del mundo visible de la cámara
-        let worldView = this.scene.cameras.main.worldView;
-    
-        // Verificar los límites horizontales
-        if (this.x < worldView.x + 50 || this.x > worldView.x + worldView.width - 50) {
-            this.setVelocityX(this.body.velocity.x * -1);
-        }
-        // Verificar los límites verticales
-        if (this.y < worldView.y + 50 || this.y > worldView.y + worldView.height - 50) {
-            this.setVelocityY(this.body.velocity.y * -1);
-        }
     }
     
 
@@ -58,11 +51,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     // Método para la muerte del enemigo
     die() {
         this.destroy();
-    }
-
-    // Actualización del enemigo
-    update() {
-        // this.behavior();
     }
 
     static loadResources(scene) {

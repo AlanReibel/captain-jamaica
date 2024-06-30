@@ -10,9 +10,33 @@ export const enemies = {
         fly: true,
         speed: 100,
         health: 100,
-        behavior: scene => {
+        behavior: (scene, enemy) => {
+            let worldView = scene.cameras.main.worldView;
+            let bounds = {
+                left: worldView.x + 50,
+                right: worldView.x + worldView.width - 50
+            };
 
-            console.log('behavior', scene);
+            console.log('behavior',enemy.body.velocity.x);
+            // Verificar los límites horizontales
+            if (enemy.focusTo == 'right' ) {
+                enemy.setVelocityX(50);
+            }
+            if (enemy.focusTo == 'left' ) {
+                enemy.setVelocityX(-50);
+            }
+            if (enemy.x < bounds.left) {
+                // enemy.setVelocityX(enemy.body.velocity.x * -1);
+                enemy.focusTo = 'right';
+            }
+            if (enemy.x > bounds.right) {
+                // enemy.setVelocityX(enemy.body.velocity.x * -1);
+                enemy.focusTo = 'left';
+            }
+            // Verificar los límites verticales
+            if (enemy.y < worldView.y + 50 || enemy.y > worldView.y + worldView.height - 50) {
+                enemy.setVelocityY(enemy.body.velocity.y * -1);
+            }
         }
     },
     weelRobot: {
@@ -23,6 +47,10 @@ export const enemies = {
             Hurt: { frameWidth: 32, frameHeight: 24, frames: 2, frameRate: 12, repeat: 0 },
             Walk: { frameWidth: 32, frameHeight: 24, frames: 4, frameRate: 12, repeat: -1 },
         },
+        behavior: scene => {
+
+            // console.log('behavior', scene);
+        }
     },
     basebolHitter: {
         animations: {
@@ -37,7 +65,7 @@ export const enemies = {
         health: 100,
         behavior: scene => {
 
-            console.log('behavior', scene);
+            // console.log('behavior', scene);
         }
     },
     mutantDog: {
@@ -53,7 +81,7 @@ export const enemies = {
         health: 100,
         behavior: scene => {
 
-            console.log('behavior', scene);
+            // console.log('behavior', scene);
         }
     },
     brainTank: {
@@ -69,7 +97,7 @@ export const enemies = {
         health: 100,
         behavior: scene => {
 
-            console.log('behavior', scene);
+            // console.log('behavior', scene);
         }
     },
 };
