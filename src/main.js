@@ -10,8 +10,8 @@ import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-p
 
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 400,
+    height: 300,
     parent: 'game-container',
     // backgroundColor: '#028af8',
     fullscreenTarget: 'game-container',

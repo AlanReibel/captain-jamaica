@@ -380,19 +380,22 @@ export class Game extends Scene {
 
     addBackground() {
 
-        this.bg1 = this.add.tileSprite(0, 0, 800, 600, 'bg1')
+        let width = this.game.config.width;
+        let health = this.game.config.health;
+
+        this.bg1 = this.add.tileSprite(0, 0, width, health, 'bg1')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg2 = this.add.tileSprite(0, 0, 800, 600, 'bg2')
+        this.bg2 = this.add.tileSprite(0, 0, width, health, 'bg2')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg3 = this.add.tileSprite(0, 0, 800, 600, 'bg3')
+        this.bg3 = this.add.tileSprite(0, 0, width, health, 'bg3')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg4 = this.add.tileSprite(0, 0, 800, 600, 'bg4')
+        this.bg4 = this.add.tileSprite(0, 0, width, health, 'bg4')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg5 = this.add.tileSprite(0, 0, 800, 600, 'bg5')
+        this.bg5 = this.add.tileSprite(0, 0, width, health, 'bg5')
             .setScrollFactor(0)
             .setOrigin(0, 0);
     }
@@ -419,25 +422,95 @@ export class Game extends Scene {
             .setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
             // .startFollow(this.player.sprite, true, 0.5, 0, 200, 0)
             .startFollow(this.player.sprite, true, 1, 0.1, 0, 0)
-            .setZoom(2)
+            // .setZoom(1.5)
         // .zoomTo(this.player.sprite, 1000)
         // .centerOn(0,this.map.heightInPixels)
         // .setSize(800, 600)
-        // .setFollowOffset(-200, 0);
+        .setFollowOffset(0, -50);
 
     }
 
     addTileMaps() {
         this.map = this.make.tilemap({ key: 'tilemapJson' });
-
+        
         const tiles = this.map.addTilesetImage('Tileset', 'tilemapImage');
         this.groundLayer = this.map.createLayer('ground', tiles);
+        
+        const greenTiles = this.map.addTilesetImage('greenTiles', 'tilemapImage2');
+        this.greenTilesLayer = this.map.createLayer('greenPlatforms', greenTiles);
+        
+        this.shapeGraphics = this.drawCollisionShapes(this.greenTilesLayer);
+        const collisionLayer = this.greenTilesLayer.setCollisionFromCollisionGroup();
+        // this.matter.world.convertTilemapLayer(this.greenTilesLayer);
 
         const objectTiles = this.map.addTilesetImage('objects', 'objectsTilemap');
         const treesLayer = this.map.createLayer('trees', objectTiles);
 
+
+        // this.greenTilesLayer.setCollisionByProperty({ collider: true });
         this.groundLayer.setCollisionByProperty({ collider: true });
+        this.greenTilesLayer.setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player.sprite, this.groundLayer);
+        this.physics.add.collider(this.player.sprite,  this.greenTilesLayer);
+    }
+
+    drawCollisionShapes (layer)
+    {
+        let graphics = this.add.graphics()
+
+        // Loop over each tile and visualize its collision shape (if it has one)
+        layer.forEachTile(tile =>
+        {
+            const tileWorldX = tile.getLeft();
+            const tileWorldY = tile.getTop();
+            const collisionGroup = tile.getCollisionGroup();
+
+            console.log('collisionGroup',collisionGroup);
+
+            if (!collisionGroup || collisionGroup.objects.length === 0) { return; }
+
+            // The group will have an array of objects - these are the individual collision shapes
+            const objects = collisionGroup.objects;
+
+            for (let i = 0; i < objects.length; i++)
+            {
+                const object = objects[i];
+                const objectX = tileWorldX + object.x;
+                const objectY = tileWorldY + object.y;
+
+                // When objects are parsed by Phaser, they will be guaranteed to have one of the
+                // following properties if they are a rectangle/ellipse/polygon/polyline.
+                if (object.rectangle)
+                {
+                    graphics.strokeRect(objectX, objectY, object.width, object.height);
+                }
+                else if (object.ellipse)
+                {
+                    // Ellipses in Tiled have a top-left origin, while ellipses in Phaser have a center
+                    // origin
+                    graphics.strokeEllipse(
+                        objectX + object.width / 2, objectY + object.height / 2,
+                        object.width, object.height
+                    );
+                }
+                else if (object.polygon || object.polyline)
+                {
+                    const originalPoints = object.polygon ? object.polygon : object.polyline;
+                    const points = [];
+                    for (let j = 0; j < originalPoints.length; j++)
+                    {
+                        const point = originalPoints[j];
+                        points.push({
+                            x: objectX + point.x,
+                            y: objectY + point.y
+                        });
+                    }
+                    graphics.strokePoints(points);
+                }
+            }
+        });
+
+        return graphics;
     }
 
 }

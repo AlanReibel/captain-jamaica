@@ -4,7 +4,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, name) {
 
         super(scene, x, y, `${name}-Idle`);
-
+        this.name = name;
         // Agregar el sprite a la escena
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -22,10 +22,9 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setCollideWorldBounds(true);
 
 
-        this.moveEnemy();
         // Configurar física
         // this.setVelocity(Phaser.Math.Between(-this.speed, this.speed), Phaser.Math.Between(-this.speed, this.speed));
-        console.log(`enemy ${name} created`,this);
+        // console.log(`enemy ${name} created`,this);
 
     }
 
@@ -33,9 +32,28 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.behavior(this.scene, this);
     }
 
-    moveEnemy( direction ) {
-        console.log('speed',this.speed);
-        this.setVelocityX( - this.speed);
+    attack() {
+        this.anims.play(`${this.name}-Attack`, true);
+    }
+
+    hurt() {
+        this.anims.play(`${this.name}-Hurt`, true);
+    }
+
+    attack() {
+        this.anims.play(`${this.name}-Attack`, true);
+    }
+
+    move( direction = this.focusTo ) {
+        
+        if(direction === 'left') {
+            this.setVelocityX( - this.speed );
+            this.anims.play(`${this.name}-Walk`, true).setFlipX(true);
+        }
+        if(direction === 'right') {
+            this.setVelocityX( this.speed );
+            this.anims.play(`${this.name}-Walk`, true);
+        }
 
     }
     

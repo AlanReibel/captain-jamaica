@@ -8,7 +8,7 @@ export const enemies = {
             Walk: { frameWidth: 32, frameHeight: 32, frames: 4, frameRate: 12, repeat: -1 },
         },
         fly: true,
-        speed: 100,
+        speed: 50,
         health: 100,
         behavior: (scene, enemy) => {
             let worldView = scene.cameras.main.worldView;
@@ -16,15 +16,10 @@ export const enemies = {
                 left: worldView.x + 50,
                 right: worldView.x + worldView.width - 50
             };
+            let speed = enemy.speed;
 
-            console.log('behavior',enemy.body.velocity.x);
-            // Verificar los límites horizontales
-            if (enemy.focusTo == 'right' ) {
-                enemy.setVelocityX(50);
-            }
-            if (enemy.focusTo == 'left' ) {
-                enemy.setVelocityX(-50);
-            }
+            enemy.move(enemy.focusTo);
+            
             if (enemy.x < bounds.left) {
                 // enemy.setVelocityX(enemy.body.velocity.x * -1);
                 enemy.focusTo = 'right';
@@ -47,9 +42,11 @@ export const enemies = {
             Hurt: { frameWidth: 32, frameHeight: 24, frames: 2, frameRate: 12, repeat: 0 },
             Walk: { frameWidth: 32, frameHeight: 24, frames: 4, frameRate: 12, repeat: -1 },
         },
-        behavior: scene => {
+        speed: 50,
+        health: 100,
+        behavior: (scene, enemy) => {
 
-            // console.log('behavior', scene);
+            enemy.move('right');
         }
     },
     basebolHitter: {
