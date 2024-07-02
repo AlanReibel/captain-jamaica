@@ -320,29 +320,39 @@ export class Game extends Scene {
             allowGravity: false,
         });
 
-        let x = this.player.sprite.x;
-        let y = this.player.sprite.y;
+        const enemiesList = [
+            'flyingRobot',
+            'weelRobot',
+            'basebolHitter',
+            'mutantDog',
+            'brainTank'
+        ];
 
-        let flyingRobot = new Enemy(this, x, y - 50, 'flyingRobot');
-        let weelRobot = new Enemy(this, x + 500, y, 'weelRobot');
-        let basebolHitter = new Enemy(this, x + 200, y, 'basebolHitter');
-        let mutantDog = new Enemy(this, x + 300, y, 'mutantDog');
-        let brainTank = new Enemy(this, x - 50, y, 'brainTank');
+        enemiesList.forEach( enemyName => {
+            Enemy.createAnimations(this, enemyName);
+        });
 
-        this.flyingEnemies.add(flyingRobot);
-        this.landEnemies.add(weelRobot);
-        this.landEnemies.add(basebolHitter);
-        this.landEnemies.add(mutantDog);
-        this.landEnemies.add(brainTank);
+        let enemiesPositions = this.map.getObjectLayer('enemies');
+        console.log('enemiesPositions',enemiesPositions);
+        enemiesPositions.objects.forEach(enemyData => {
+            let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
 
-        this.physics.add.collider(this.player.shield, this.landEnemies, this.hitEnemy, null, this);
-        this.physics.add.collider(this.player.sprite, this.landEnemies, this.handleBodyCollision, null, this);
-        this.physics.add.collider(this.bullets, this.landEnemies, this.handleBulletCollision, null, this);
+            if(enemyData.name === 'flyingRobot') {
+                this.flyingEnemies.add(newEnemy);
+            } else {
+                this.landEnemies.add(newEnemy);
+            }
+            
+        });
+
+        this.physics.add.overlap(this.player.shield, this.landEnemies, this.hitEnemy, null, this);
+        this.physics.add.overlap(this.player.sprite, this.landEnemies, this.handleBodyCollision, null, this);
+        this.physics.add.overlap(this.bullets, this.landEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
 
-        this.physics.add.collider(this.player.shield, this.flyingEnemies, this.hitEnemy, null, this);
-        this.physics.add.collider(this.player.sprite, this.flyingEnemies, this.handleBodyCollision, null, this);
-        this.physics.add.collider(this.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.hitEnemy, null, this);
+        this.physics.add.overlap(this.player.sprite, this.flyingEnemies, this.handleBodyCollision, null, this);
+        this.physics.add.overlap(this.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
     }
 

@@ -9,7 +9,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.createAnimations(scene, name);
         this.anims.play(`${name}-Idle`);
         this.state = 'idle';
         this.invulnerable = false;
@@ -118,7 +117,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    createAnimations(scene, enemyName) {
+    static createAnimations(scene, enemyName) {
         for (const [animationName, animationData] of Object.entries(enemies[enemyName].animations)) {
             scene.anims.create({
                 key: `${enemyName}-${animationName}`,
