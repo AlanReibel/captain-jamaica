@@ -11,62 +11,82 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         this.createAnimations(scene, name);
         this.anims.play(`${name}-Idle`);
-
+        this.state = 'idle';
+        this.invulnerable = false;
         // Establecer propiedades básicas
         this.scene = scene;
         this.health = enemies[name].health || 100;
         this.speed = enemies[name].speed || 100;
         this.focusTo = 'right';
-        // this.behavior = enemies[name].behavior || this.defaultBehavior();
         this.behavior = enemies[name].behavior;
         this.setCollideWorldBounds(true);
-
-
-        // Configurar física
-        // this.setVelocity(Phaser.Math.Between(-this.speed, this.speed), Phaser.Math.Between(-this.speed, this.speed));
-        // console.log(`enemy ${name} created`,this);
 
     }
 
     update() {
-        this.behavior(this.scene, this);
+        if (this.state !== 'hurt' && this.state !== 'dying') {
+            this.behavior(this.scene, this);
+        }
     }
 
     attack() {
-        this.anims.play(`${this.name}-Attack`, true);
+
+        if (this.state !== 'attacking') {
+            this.state = 'attacking';
+            this.anims.stop();
+            if (this.turn) {
+                this.anims.play(`${this.name}-Attack`, true).setFlipX(true);
+            } else {
+                this.anims.play(`${this.name}-Attack`, true).setFlipX(false);
+            }
+            this.once('animationcomplete', () => {
+                this.state = 'idle';
+            });
+        }
     }
 
     hurt() {
-        this.anims.play(`${this.name}-Hurt`, true);
+        if (this.state !== 'hurt' && !this.invulnerable) {
+            this.state = 'hurt';
+            this.invulnerable = true; // Enemigo es invulnerable después de ser golpeado
+            this.anims.stop();
+            this.anims.play(`${this.name}-Hurt`, true);
+            this.takeDamage(50);
+            // Después de un tiempo, permite que el enemigo pueda recibir daño de nuevo
+            this.once('animationcomplete', () => {
+                this.invulnerable = false;
+                this.state = 'idle';
+            });
+
+        }
     }
 
-    attack() {
-        this.anims.play(`${this.name}-Attack`, true);
-    }
-
-    move( direction = this.focusTo ) {
-        let turn = direction !== this.focusTo;
-
-        if(direction === 'left') {
-            this.setVelocityX( - this.speed );
+    move(direction = this.focusTo) {
+        this.turn = direction !== this.focusTo;
+        this.state = 'walk';
+        if (direction === 'left') {
+            this.setVelocityX(- this.speed);
         }
-        if(direction === 'right') {
-            this.setVelocityX( this.speed );
+        if (direction === 'right') {
+            this.setVelocityX(this.speed);
         }
 
-        if(turn) {
+        if (this.turn) {
             this.anims.play(`${this.name}-Walk`, true).setFlipX(true);
         } else {
             this.anims.play(`${this.name}-Walk`, true).setFlipX(false);
         }
     }
-    
+
 
     stop() {
-        this.setVelocityX(0);
-        this.anims.play(`${this.name}-Idle`, true);
+        if (this.state !== 'attacking' && this.state !== 'hurt' && this.state !== 'dying') {
+            this.setVelocityX(0);
+            this.state = 'idle';
+            this.anims.play(`${this.name}-Idle`, true);
+        }
     }
-    // Método para recibir daño
+
     takeDamage(amount) {
         this.health -= amount;
         if (this.health <= 0) {
@@ -74,9 +94,16 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    // Método para la muerte del enemigo
     die() {
-        this.destroy();
+        if (this.state !== 'dying') {
+            this.state = 'dying';
+            this.anims.stop();
+            this.anims.play(`${this.name}-Death`, true);
+            this.once('animationcomplete', () => {
+                this.destroy();
+                console.log(`${this.name} death`);
+            });
+        }
     }
 
     static loadResources(scene) {
@@ -92,16 +119,16 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     createAnimations(scene, enemyName) {
-            for (const [animationName, animationData] of Object.entries(enemies[enemyName].animations)) {
-                scene.anims.create({
-                    key: `${enemyName}-${animationName}`,
-                    frames: scene.anims.generateFrameNumbers(`${enemyName}-${animationName}`, {
-                        start: 0,
-                        end: animationData.frames - 1
-                    }),
-                    frameRate: animationData.frameRate,
-                    repeat: animationData.repeat
-                });
-            }
+        for (const [animationName, animationData] of Object.entries(enemies[enemyName].animations)) {
+            scene.anims.create({
+                key: `${enemyName}-${animationName}`,
+                frames: scene.anims.generateFrameNumbers(`${enemyName}-${animationName}`, {
+                    start: 0,
+                    end: animationData.frames - 1
+                }),
+                frameRate: animationData.frameRate,
+                repeat: animationData.repeat
+            });
+        }
     }
 }

@@ -307,10 +307,10 @@ export class Game extends Scene {
         });
     }
 
-    destroyEnemy(shield, enemy) {
+    hitEnemy(shield, enemy) {
         let dieSound = this.sound.add('die');
         // dieSound.setVolume(0.4);
-        enemy.destroy();
+        enemy.hurt();
         dieSound.play();
     }
 
@@ -335,12 +335,12 @@ export class Game extends Scene {
         this.landEnemies.add(mutantDog);
         this.landEnemies.add(brainTank);
 
-        this.physics.add.collider(this.player.shield, this.landEnemies, this.destroyEnemy, null, this);
+        this.physics.add.collider(this.player.shield, this.landEnemies, this.hitEnemy, null, this);
         this.physics.add.collider(this.player.sprite, this.landEnemies, this.handleBodyCollision, null, this);
         this.physics.add.collider(this.bullets, this.landEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
 
-        this.physics.add.collider(this.player.shield, this.flyingEnemies, this.destroyEnemy, null, this);
+        this.physics.add.collider(this.player.shield, this.flyingEnemies, this.hitEnemy, null, this);
         this.physics.add.collider(this.player.sprite, this.flyingEnemies, this.handleBodyCollision, null, this);
         this.physics.add.collider(this.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
@@ -350,7 +350,7 @@ export class Game extends Scene {
         // Verifica si el jugador está en una animación de lucha
         const currentAnim = player.anims.currentAnim.key;
         if (currentAnim === 'punch' || currentAnim === 'kick' || currentAnim === 'shield') {
-            this.destroyEnemy(null, enemy);
+            this.hitEnemy(null, enemy);
         }
     }
 
@@ -371,7 +371,7 @@ export class Game extends Scene {
     }
 
     handleBulletCollision(bullet, enemy) {
-        this.destroyEnemy(null, enemy);
+        this.hitEnemy(null, enemy);
         bullet.destroy();
     }
 
