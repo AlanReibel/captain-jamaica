@@ -49,7 +49,7 @@ export class Boot extends Scene {
     
     loadTileMaps() {
         this.load.image('tilemapImage', 'assets/tiles/Tileset.png');
-        this.load.image('tilemapImage2', 'assets/tiles/greenTiles.png');
+        this.load.image('tilemapImage2', 'assets/tiles/greenTiles2.png');
         this.load.image('objectsTilemap', 'assets/tiles/objects.png');
         this.load.tilemapTiledJSON('tilemapJson', 'assets/tiles/world.json');
     }

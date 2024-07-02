@@ -33,10 +33,9 @@ export class Game extends Scene {
 
         this.gameOver = false;
         this.player = new Player(this, 100, 400, 'captain-idle');
+        this.player.sprite.setDepth(1);
         this.inputHandler = new InputHandler(this);
 
-        // this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'background');
-        // this.add.image(400, 300, 'background');
         // this.showGuideText();
 
 
@@ -54,7 +53,7 @@ export class Game extends Scene {
         this.addTileMaps();
         this.createCamera();
 
-        this.createMultipleEnemies();
+        // this.createMultipleEnemies();
 
 
     }
@@ -127,13 +126,19 @@ export class Game extends Scene {
             this.bulletFired = false;
         }
 
-        this.landEnemies.children.iterate((enemy) => {
-            enemy.update();
-        });
+        if( this.landEnemies ) {
 
-        this.flyingEnemies.children.iterate((enemy) => {
-            enemy.update();
-        });
+            this.landEnemies.children.iterate((enemy) => {
+                enemy.update();
+            });
+        }
+
+        if(this.flyingEnemies) {
+
+            this.flyingEnemies.children.iterate((enemy) => {
+                enemy.update();
+            });
+        }
         // console.log('player velocity', this.player.sprite.body.velocity);
         // console.log('player direction', this.movingDirection);
     }
@@ -314,7 +319,7 @@ export class Game extends Scene {
         this.flyingEnemies = this.physics.add.group({
             allowGravity: false,
         });
-        
+
         let x = this.player.sprite.x;
         let y = this.player.sprite.y;
 
@@ -423,25 +428,26 @@ export class Game extends Scene {
             // .startFollow(this.player.sprite, true, 0.5, 0, 200, 0)
             .startFollow(this.player.sprite, true, 1, 0.1, 0, 0)
             // .setZoom(1.5)
-        // .zoomTo(this.player.sprite, 1000)
-        // .centerOn(0,this.map.heightInPixels)
-        // .setSize(800, 600)
-        .setFollowOffset(0, -50);
+            // .zoomTo(this.player.sprite, 1000)
+            // .centerOn(0,this.map.heightInPixels)
+            // .setSize(800, 600)
+            .setFollowOffset(0, -50);
 
     }
 
     addTileMaps() {
         this.map = this.make.tilemap({ key: 'tilemapJson' });
-        
+
         const tiles = this.map.addTilesetImage('Tileset', 'tilemapImage');
         this.groundLayer = this.map.createLayer('ground', tiles);
-        
-        const greenTiles = this.map.addTilesetImage('greenTiles', 'tilemapImage2');
+
+        const greenTiles = this.map.addTilesetImage('greenTiles2', 'tilemapImage2');
         this.greenTilesLayer = this.map.createLayer('greenPlatforms', greenTiles);
-        
-        this.shapeGraphics = this.drawCollisionShapes(this.greenTilesLayer);
-        const collisionLayer = this.greenTilesLayer.setCollisionFromCollisionGroup();
+
+        // const collisionLayer = this.greenTilesLayer.setCollisionFromCollisionGroup();
+        // this-this.greenTilesLayer.setCollisionByExclusion([-1]);
         // this.matter.world.convertTilemapLayer(this.greenTilesLayer);
+        // this.greenTilesLayer.renderDebug(this.add.graphics());
 
         const objectTiles = this.map.addTilesetImage('objects', 'objectsTilemap');
         const treesLayer = this.map.createLayer('trees', objectTiles);
@@ -449,68 +455,14 @@ export class Game extends Scene {
 
         // this.greenTilesLayer.setCollisionByProperty({ collider: true });
         this.groundLayer.setCollisionByProperty({ collider: true });
-        this.greenTilesLayer.setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player.sprite, this.groundLayer);
+
+        this.greenTilesLayer
+            .setDepth(0)
+            .setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player.sprite,  this.greenTilesLayer);
+        // this.physics.add.collider(this.player.sprite, collisionBoxes);
     }
 
-    drawCollisionShapes (layer)
-    {
-        let graphics = this.add.graphics()
-
-        // Loop over each tile and visualize its collision shape (if it has one)
-        layer.forEachTile(tile =>
-        {
-            const tileWorldX = tile.getLeft();
-            const tileWorldY = tile.getTop();
-            const collisionGroup = tile.getCollisionGroup();
-
-            console.log('collisionGroup',collisionGroup);
-
-            if (!collisionGroup || collisionGroup.objects.length === 0) { return; }
-
-            // The group will have an array of objects - these are the individual collision shapes
-            const objects = collisionGroup.objects;
-
-            for (let i = 0; i < objects.length; i++)
-            {
-                const object = objects[i];
-                const objectX = tileWorldX + object.x;
-                const objectY = tileWorldY + object.y;
-
-                // When objects are parsed by Phaser, they will be guaranteed to have one of the
-                // following properties if they are a rectangle/ellipse/polygon/polyline.
-                if (object.rectangle)
-                {
-                    graphics.strokeRect(objectX, objectY, object.width, object.height);
-                }
-                else if (object.ellipse)
-                {
-                    // Ellipses in Tiled have a top-left origin, while ellipses in Phaser have a center
-                    // origin
-                    graphics.strokeEllipse(
-                        objectX + object.width / 2, objectY + object.height / 2,
-                        object.width, object.height
-                    );
-                }
-                else if (object.polygon || object.polyline)
-                {
-                    const originalPoints = object.polygon ? object.polygon : object.polyline;
-                    const points = [];
-                    for (let j = 0; j < originalPoints.length; j++)
-                    {
-                        const point = originalPoints[j];
-                        points.push({
-                            x: objectX + point.x,
-                            y: objectY + point.y
-                        });
-                    }
-                    graphics.strokePoints(points);
-                }
-            }
-        });
-
-        return graphics;
-    }
 
 }
