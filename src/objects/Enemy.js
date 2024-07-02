@@ -58,6 +58,10 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
     
 
+    stop() {
+        this.setVelocityX(0);
+        this.anims.play(`${this.name}-Idle`, true);
+    }
     // Método para recibir daño
     takeDamage(amount) {
         this.health -= amount;

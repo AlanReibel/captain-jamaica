@@ -46,7 +46,21 @@ export const enemies = {
         health: 100,
         behavior: (scene, enemy) => {
 
-            enemy.move('right');
+            let player = scene.player.sprite;
+            let distance = 200;
+            let isNear = Phaser.Math.Distance.BetweenPoints(player, enemy) <= distance;
+            let difference = Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x);
+            if( isNear ) {
+                console.log('distance', Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x));
+                let direction = player.x < enemy.x ? 'left' : 'right';
+                if(difference < 10 && difference > -10) {
+                    enemy.stop();
+                } else {
+                    enemy.move(direction);
+                }
+            } else {
+                enemy.stop();
+            }
         }
     },
     basebolHitter: {

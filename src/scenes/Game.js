@@ -53,7 +53,7 @@ export class Game extends Scene {
         this.addTileMaps();
         this.createCamera();
 
-        // this.createMultipleEnemies();
+        this.createMultipleEnemies();
 
 
     }
@@ -324,7 +324,7 @@ export class Game extends Scene {
         let y = this.player.sprite.y;
 
         let flyingRobot = new Enemy(this, x, y - 50, 'flyingRobot');
-        let weelRobot = new Enemy(this, x + 100, y, 'weelRobot');
+        let weelRobot = new Enemy(this, x + 500, y, 'weelRobot');
         let basebolHitter = new Enemy(this, x + 200, y, 'basebolHitter');
         let mutantDog = new Enemy(this, x + 300, y, 'mutantDog');
         let brainTank = new Enemy(this, x - 50, y, 'brainTank');
@@ -338,12 +338,12 @@ export class Game extends Scene {
         this.physics.add.collider(this.player.shield, this.landEnemies, this.destroyEnemy, null, this);
         this.physics.add.collider(this.player.sprite, this.landEnemies, this.handleBodyCollision, null, this);
         this.physics.add.collider(this.bullets, this.landEnemies, this.handleBulletCollision, null, this);
-        this.physics.add.collider(this.groundLayer, this.landEnemies, null, null, this);
+        this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
 
         this.physics.add.collider(this.player.shield, this.flyingEnemies, this.destroyEnemy, null, this);
         this.physics.add.collider(this.player.sprite, this.flyingEnemies, this.handleBodyCollision, null, this);
         this.physics.add.collider(this.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
-        this.physics.add.collider(this.groundLayer, this.flyingEnemies, null, null, this);
+        this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
     }
 
     handleBodyCollision(player, enemy) {
