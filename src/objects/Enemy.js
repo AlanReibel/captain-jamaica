@@ -45,16 +45,20 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     move( direction = this.focusTo ) {
-        
+        let turn = direction !== this.focusTo;
+
         if(direction === 'left') {
             this.setVelocityX( - this.speed );
-            this.anims.play(`${this.name}-Walk`, true).setFlipX(true);
         }
         if(direction === 'right') {
             this.setVelocityX( this.speed );
-            this.anims.play(`${this.name}-Walk`, true);
         }
 
+        if(turn) {
+            this.anims.play(`${this.name}-Walk`, true).setFlipX(true);
+        } else {
+            this.anims.play(`${this.name}-Walk`, true).setFlipX(false);
+        }
     }
     
 

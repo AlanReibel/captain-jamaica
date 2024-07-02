@@ -51,7 +51,6 @@ export const enemies = {
             let isNear = Phaser.Math.Distance.BetweenPoints(player, enemy) <= distance;
             let difference = Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x);
             if( isNear ) {
-                console.log('distance', Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x));
                 let direction = player.x < enemy.x ? 'left' : 'right';
                 if(difference < 10 && difference > -10) {
                     enemy.stop();
@@ -72,11 +71,24 @@ export const enemies = {
             Walk: { frameWidth: 38, frameHeight: 34, frames: 6, frameRate: 12, repeat: -1 },
         },
         fly: false,
-        speed: 100,
+        speed: 50,
         health: 100,
-        behavior: scene => {
+        behavior: (scene, enemy) => {
 
-            // console.log('behavior', scene);
+            let player = scene.player.sprite;
+            let distance = 200;
+            let isNear = Phaser.Math.Distance.BetweenPoints(player, enemy) <= distance;
+            let difference = Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x);
+            if( isNear ) {
+                let direction = player.x < enemy.x ? 'left' : 'right';
+                if(difference < 10 && difference > -10) {
+                    enemy.stop();
+                } else {
+                    enemy.move(direction);
+                }
+            } else {
+                enemy.stop();
+            }
         }
     },
     mutantDog: {
@@ -88,11 +100,24 @@ export const enemies = {
             Walk: { frameWidth: 38, frameHeight: 40, frames: 6, frameRate: 12, repeat: -1 },
         },
         fly: false,
-        speed: 100,
+        speed: 50,
         health: 100,
-        behavior: scene => {
+        behavior: (scene, enemy) => {
 
-            // console.log('behavior', scene);
+            let player = scene.player.sprite;
+            let distance = 200;
+            let isNear = Phaser.Math.Distance.BetweenPoints(player, enemy) <= distance;
+            let difference = Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x);
+            if( isNear ) {
+                let direction = player.x < enemy.x ? 'left' : 'right';
+                if(difference < 10 && difference > -10) {
+                    enemy.stop();
+                } else {
+                    enemy.move(direction);
+                }
+            } else {
+                enemy.stop();
+            }
         }
     },
     brainTank: {
@@ -104,11 +129,24 @@ export const enemies = {
             Walk: { frameWidth: 30, frameHeight: 34, frames: 4, frameRate: 12, repeat: -1 },
         },
         fly: false,
-        speed: 100,
+        speed: 50,
         health: 100,
-        behavior: scene => {
+        behavior: (scene, enemy) => {
 
-            // console.log('behavior', scene);
+            let player = scene.player.sprite;
+            let distance = 200;
+            let isNear = Phaser.Math.Distance.BetweenPoints(player, enemy) <= distance;
+            let difference = Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x);
+            if( isNear ) {
+                let direction = player.x < enemy.x ? 'left' : 'right';
+                if(difference < 10 && difference > -10) {
+                    enemy.stop();
+                } else {
+                    enemy.move(direction);
+                }
+            } else {
+                enemy.stop();
+            }
         }
     },
 };
