@@ -8,20 +8,22 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
         this.scene.add.existing(this);
         // this.postFX.addBloom(0xffffff, 1, 1, 0.5, 1);
         this.setCollideWorldBounds(true);
-        this.on('animationcomplete', this.animationComplete, this);
     }
 
     fire(x, y,direction) {
+        let directionX = direction === 'right' 
+            ? 1
+            : -1;
+        let flip = direction === 'left';
 
         this.bulletFlash( x, y);
         this.body.reset(x, y);
         this.body.setAllowGravity(false);
         this.setActive(true);
         this.setVisible(true);
-        let directionX = direction == 'right' 
-            ? 1
-            : -1;
+        this.setScale(0.5);
         this.setVelocityX(1000 * directionX);
+        this.setFlipX(flip);
 
     }
 
@@ -39,7 +41,7 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
     bulletFlash( x, y) {
         let graphics = this.scene.add.graphics();
         graphics.fillStyle(0xffffff, 1); 
-        graphics.fillCircle(x, y, 15); 
+        graphics.fillCircle(x, y, 10); 
         graphics.postFX.addBloom(0xffffff, 1, 1, 1, 2);
     
         // graphics.postFX.addBloom();

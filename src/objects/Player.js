@@ -49,11 +49,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             runChildUpdate: true
         });
 
-        this.shield.on('animationcomplete-fly', (anim, frame) => {
-            if (anim.key === 'fly') {
-                this.scene.fightEnds = true;
-            }
-        });
     }
 
     idle() {
@@ -212,6 +207,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                     this.flyBackTween();
                 }
             });
+        });
+
+        this.shield.on('animationcomplete-fly', (anim, frame) => {
+            if (anim.key === 'fly') {
+                this.scene.fightEnds = true;
+            }
         });
     }
 
