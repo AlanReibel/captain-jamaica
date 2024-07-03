@@ -46,7 +46,7 @@ export const enemies = {
         health: 100,
         behavior: (scene, enemy) => {
 
-            let player = scene.player.sprite;
+            let player = scene.player;
             let distance = 200;
             let isNear = Phaser.Math.Distance.BetweenPoints(player, enemy) <= distance;
             let difference = Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x);
@@ -75,7 +75,7 @@ export const enemies = {
         health: 100,
         behavior: (scene, enemy) => {
 
-            let player = scene.player.sprite;
+            let player = scene.player;
             let treshhold = 200;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;
@@ -113,7 +113,7 @@ export const enemies = {
         health: 100,
         behavior: (scene, enemy) => {
 
-            let player = scene.player.sprite;
+            let player = scene.player;
             let treshhold = 200;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;
@@ -151,7 +151,7 @@ export const enemies = {
         health: 100,
         behavior: (scene, enemy) => {
 
-            let player = scene.player.sprite;
+            let player = scene.player;
             let treshhold = 200;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;

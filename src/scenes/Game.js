@@ -1,7 +1,6 @@
 import { Scene } from 'phaser';
 import { Player } from '../objects/Player.js';
 import { InputHandler } from '../objects/InputHandler.js';
-import { Bullet } from '../objects/Bullet.js';
 import { Enemy } from '../objects/Enemy.js';
 
 export class Game extends Scene {
@@ -17,15 +16,12 @@ export class Game extends Scene {
     textLives;
     gameOver = false;
     map;
-    movingDirection = 'right';
-    focusTo = 'right';
+
     blockedFight = false;
     blockedJump = false;
     fightEnds = true;
-    shieldThrown = false;
-    shieldCached = true;
+
     enemies;
-    bulletFired = false;
     groundLayer;
     healthBar;
 
@@ -34,7 +30,6 @@ export class Game extends Scene {
 
         this.gameOver = false;
         this.player = new Player(this, 100, 400, 'captain-idle');
-        this.player.sprite.setDepth(1);
         this.inputHandler = new InputHandler(this);
 
         // this.showGuideText();
@@ -42,10 +37,6 @@ export class Game extends Scene {
 
         console.log('game scene', this);
 
-        this.bullets = this.physics.add.group({
-            classType: Bullet,
-            runChildUpdate: true
-        });
 
 
         this.playMusic();
@@ -55,26 +46,23 @@ export class Game extends Scene {
         this.createCamera();
         this.addHealthBar();
 
-        this.createMultipleEnemies();
+        this.createEnemies();
 
 
     }
 
     update() {
-
         // reset fight
-        if (this.player.sprite.body.velocity.x == 0) {
-            this.movingDirection = 'none';
+        if (this.player.body.velocity.x == 0) {
+            this.player.movingDirection = 'none';
         }
-        if (this.player.sprite.body.velocity.y > 0) {
-            this.movingDirection = 'down';
+        if (this.player.state === 'jump' && this.player.body.velocity.y > 0) {
+            this.player.movingDirection = 'down';
             if (
                 this.inputHandler.isFightActionPressed() &&
                 !this.blockedFight
             ) {
-                this.fightEnds = false;
-                this.blockedFight = true;
-                this.player.sprite.anims.play('jumpKick');
+                this.player.jumpKick();
             }
         }
 
@@ -83,7 +71,7 @@ export class Game extends Scene {
             // this.fightEnds = true;
         }
         if (this.inputHandler.isJumpLeaved()) {
-            this.blockedJump = false;
+            this.player.blockedJump = false;
             // this.fightEnds = true;
         }
         // fighting
@@ -97,36 +85,36 @@ export class Game extends Scene {
         // jump
         if (
             this.inputHandler.isJumpKeyPressed() &&
-            this.player.sprite.body.blocked.down &&
-            !this.blockedJump
+            this.player.body.blocked.down &&
+            !this.player.blockedJump
         ) {
-            this.handleJump();
+            this.player.handleJump();
         }
         // game over
         if (this.gameOver) {
             this.scene.start('GameOver');
         }
 
-        // console.log('currentAnim',this.player.sprite.anims.currentAnim.key);
-        if (this.player.sprite.anims.currentAnim.key === 'burst') {
+        // console.log('currentAnim',this.player.anims.currentAnim.key);
+        if (this.player.anims.currentAnim.key === 'burst') {
 
-            let currentFrame = this.player.sprite.anims.currentFrame;
+            let currentFrame = this.player.anims.currentFrame;
 
             if (currentFrame.index >= 3 &&
                 currentFrame.index % 2 == 1) {
 
-                if (!this.bulletFired) {
+                if (!this.player.bulletFired) {
 
-                    this.fireBullet(this);
-                    this.bulletFired = true;
+                    this.player.fireBullet(this);
+                    this.player.bulletFired = true;
                 }
 
             } else {
-                this.bulletFired = false;
+                this.player.bulletFired = false;
 
             }
         } else {
-            this.bulletFired = false;
+            this.player.bulletFired = false;
         }
 
         if( this.landEnemies ) {
@@ -142,30 +130,17 @@ export class Game extends Scene {
                 enemy.update();
             });
         }
-        // console.log('player velocity', this.player.sprite.body.velocity);
-        // console.log('player direction', this.movingDirection);
-    }
 
-    handleJump() {
-        this.blockedJump = true;
-        this.movingDirection = 'up';
-        this.player.sprite.setVelocityY(-400);
-        this.player.sprite.body.setGravityY(400);
-        this.player.sprite.anims.play('jump');
     }
 
     handleFightActions() {
-        let punchSound = this.sound.add('punch');
         // pressed Q key or A button
         if (
             this.inputHandler.qKey.isDown ||
             this.inputHandler.buttons['A']
         ) {
 
-            this.blockedFight = true;
-            this.fightEnds = false;
-            this.player.sprite.anims.play('burst', true);
-            // this.fireBullet(this);
+            this.player.burst();
         }
         // pressed E key or B button
         else if (
@@ -173,23 +148,14 @@ export class Game extends Scene {
             this.inputHandler.buttons['B']
         ) {
 
-            this.blockedFight = true;
-            this.fightEnds = false;
-            this.player.sprite.anims.play('kick', true);
-            punchSound.play();
+            this.player.kick();
         }
         // pressed F key or Y button
         else if (
             this.inputHandler.fKey.isDown ||
             this.inputHandler.buttons['Y']
         ) {
-            this.blockedFight = true;
-            this.fightEnds = false;
-
-            if (this.shieldCached && !this.shieldThrown) {
-                this.shieldThrown = true;
-                this.throwShield();
-            }
+            this.player.shieldAttack();
 
         }
         // pressed space key or X button
@@ -197,45 +163,18 @@ export class Game extends Scene {
             this.inputHandler.cursors.space.isDown ||
             this.inputHandler.buttons['X']
         ) {
-            this.blockedFight = true;
-            this.fightEnds = false;
-            this.player.sprite.anims.play('shield', true);
-            this.time.delayedCall(100, () => {
-                punchSound.play();
-            });
-        }
-    }
-
-    fireBullet(scene) {
-        let laserSound = this.sound.add('laser');
-        laserSound.setVolume(0.4);
-        let playerBodyoffest = this.focusTo == 'right'
-            ? this.player.sprite.body.width * 0.5
-            : this.player.sprite.body.width * -0.5;
-
-        let bulletOrigin = scene.player.sprite.x + playerBodyoffest;
-        let bullet = scene.bullets.get(bulletOrigin, scene.player.sprite.y);
-        if (bullet) {
-            bullet.fire(bulletOrigin, scene.player.sprite.y, this.focusTo);
-            laserSound.play();
-
-        } else {
-            console.log('No hay balas disponibles');
+            this.player.shieldHit();
         }
     }
 
     handleMovement() {
         // pressed left or A
-        let velocity = 100;
         if (
             this.inputHandler.cursors.left.isDown ||
             this.inputHandler.aKey.isDown ||
             this.inputHandler.joystickKeys?.left.isDown
         ) {
-            this.movingDirection = 'left';
-            this.focusTo = 'left';
-            this.player.sprite.setVelocityX(velocity * -1);
-            this.player.sprite.anims.play('run', true).setFlipX(true);
+            this.player.move('left');
             this.moveBackground(-1);
             // this.cameras.main.scrollX -= 5;
         }
@@ -245,82 +184,17 @@ export class Game extends Scene {
             this.inputHandler.dKey.isDown ||
             this.inputHandler.joystickKeys?.right.isDown
         ) {
-            this.movingDirection = 'right';
-            this.focusTo = 'right';
-            this.player.sprite.setVelocityX(velocity);
-            this.player.sprite.anims.play('run', true).setFlipX(false);
+            this.player.move('right');
             this.moveBackground(1);
             // this.cameras.main.scrollX += 5;
         }
         // idle if else
         else {
-            this.player.sprite.setVelocityX(0);
-            this.player.sprite.anims.play('idle', true);
+            this.player.idle();
         }
     }
 
-    throwShield() {
-        let boomerangSound = this.sound.add('boomerang');
-        this.time.delayedCall(400, () => {
-            boomerangSound.play();
-        });
-        this.player.sprite.anims.play('throw', true);
-        this.time.delayedCall(375, () => {
-            // calcula posicion del escudo desde el player
-            let shieldPosition = {
-                x: this.focusTo == 'right'
-                    ? this.player.sprite.x + (this.player.sprite.body.width / 2)
-                    : this.player.sprite.x - (this.player.sprite.body.width / 2),
-                y: this.player.sprite.y
-            };
-            this.player.shield.setPosition(shieldPosition.x, shieldPosition.y);
-
-            this.player.shield.setVisible(true);
-            this.player.shield.play('fly', true);
-
-            let shieldTarget = this.focusTo == 'right'
-                ? shieldPosition.x + 300
-                : shieldPosition.x - 300;
-
-            this.tweens.add({
-                targets: this.player.shield,
-                x: shieldTarget,
-                y: shieldPosition.y,
-                duration: 333,
-                ease: 'Power1',
-                onComplete: () => {
-                    this.flyBackTween();
-                }
-            });
-        });
-    }
-
-    flyBackTween() {
-        this.tweens.add({
-            targets: this.player.shield,
-            x: this.player.sprite.x,
-            y: this.player.sprite.y,
-            duration: 333,
-            ease: 'Power1',
-            onComplete: () => {
-                this.player.shield.setVisible(false); // Hace que el escudo sea invisible después de regresar
-                this.shieldThrown = false;
-                this.shieldCached = true;
-                this.player.sprite.anims.play('catch', true);
-            }
-        });
-    }
-
-    hitEnemy(enemy) {
-        console.log('enemy hit', enemy);
-        let dieSound = this.sound.add('die');
-        // dieSound.setVolume(0.4);
-        enemy.hurt();
-        dieSound.play();
-
-    }
-
-    createMultipleEnemies() {
+    createEnemies() {
         this.landEnemies = this.physics.add.group();
         this.flyingEnemies = this.physics.add.group({
             allowGravity: false,
@@ -351,22 +225,27 @@ export class Game extends Scene {
             
         });
 
-        this.physics.add.overlap(this.player.shield, this.landEnemies, this.hitEnemy, null, this);
-        this.physics.add.overlap(this.player.sprite, this.landEnemies, this.handleBodyCollision, null, this);
-        this.physics.add.overlap(this.bullets, this.landEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.overlap(this.player.shield, this.landEnemies, this.player.hitEnemy, null, this);
+        this.physics.add.overlap(this.player, this.landEnemies, this.handleBodyCollision, null, this);
+        this.physics.add.overlap(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
 
-        this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.hitEnemy, null, this);
-        this.physics.add.overlap(this.player.sprite, this.flyingEnemies, this.handleBodyCollision, null, this);
-        this.physics.add.overlap(this.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.player.hitEnemy, null, this);
+        this.physics.add.overlap(this.player, this.flyingEnemies, this.handleBodyCollision, null, this);
+        this.physics.add.overlap(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
+    }
+
+    handleBulletCollision(bullet, enemy) {
+        this.player.hitEnemy(enemy);
+        bullet.destroy();
     }
 
     handleBodyCollision(player, enemy) {
         // Verifica si el jugador está en una animación de lucha
         const playerAnim = player.anims.currentAnim.key;
         if (playerAnim === 'punch' || playerAnim === 'kick' || playerAnim === 'shield') {
-            this.hitEnemy(null, enemy);
+            this.player.hitEnemy(enemy);
         }
 
         if (enemy.state === 'attacking' && this.player.vulnerable) {
@@ -393,11 +272,6 @@ export class Game extends Scene {
         this.add.text(20, 60, 'E key for kick', fontSetup);
         this.add.text(20, 80, 'SPACE key for shield attack', fontSetup);
         this.add.text(20, 100, 'F key for shield throw', fontSetup);
-    }
-
-    handleBulletCollision(bullet, enemy) {
-        this.hitEnemy(null, enemy);
-        bullet.destroy();
     }
 
     playMusic() {
@@ -450,10 +324,10 @@ export class Game extends Scene {
         this.cameras.main
             // .setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
             .setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
-            // .startFollow(this.player.sprite, true, 0.5, 0, 200, 0)
-            .startFollow(this.player.sprite, true, 1, 0.1, 0, 0)
+            // .startFollow(this.player, true, 0.5, 0, 200, 0)
+            .startFollow(this.player, true, 1, 0.1, 0, 0)
             // .setZoom(1.5)
-            // .zoomTo(this.player.sprite, 1000)
+            // .zoomTo(this.player, 1000)
             // .centerOn(0,this.map.heightInPixels)
             // .setSize(800, 600)
             .setFollowOffset(0, -50);
@@ -480,13 +354,13 @@ export class Game extends Scene {
 
         // this.greenTilesLayer.setCollisionByProperty({ collider: true });
         this.groundLayer.setCollisionByProperty({ collider: true });
-        this.physics.add.collider(this.player.sprite, this.groundLayer);
+        this.physics.add.collider(this.player, this.groundLayer);
 
         this.greenTilesLayer
             .setDepth(0)
             .setCollisionByProperty({ collider: true });
-        this.physics.add.collider(this.player.sprite,  this.greenTilesLayer);
-        // this.physics.add.collider(this.player.sprite, collisionBoxes);
+        this.physics.add.collider(this.player,  this.greenTilesLayer);
+        // this.physics.add.collider(this.player, collisionBoxes);
     }
 
     addHealthBar() {
