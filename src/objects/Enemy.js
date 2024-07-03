@@ -32,7 +32,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         if (this.state !== 'attacking') {
             this.state = 'attacking';
-            this.anims.stop();
             if (this.turn) {
                 this.anims.play(`${this.name}-Attack`, true).setFlipX(true);
             } else {
@@ -48,7 +47,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         if (this.state !== 'hurt' && !this.invulnerable) {
             this.state = 'hurt';
             this.invulnerable = true; // Enemigo es invulnerable después de ser golpeado
-            this.anims.stop();
             this.anims.play(`${this.name}-Hurt`, true);
             this.takeDamage(50);
             // Después de un tiempo, permite que el enemigo pueda recibir daño de nuevo
@@ -96,7 +94,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     die() {
         if (this.state !== 'dying') {
             this.state = 'dying';
-            this.anims.stop();
             this.anims.play(`${this.name}-Death`, true);
             this.once('animationcomplete', () => {
                 this.destroy();

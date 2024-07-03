@@ -17,10 +17,6 @@ export class Game extends Scene {
     gameOver = false;
     map;
 
-    blockedFight = false;
-    blockedJump = false;
-    fightEnds = true;
-
     enemies;
     groundLayer;
     healthBar;
@@ -53,33 +49,40 @@ export class Game extends Scene {
 
     update() {
         // reset fight
-        if (this.player.body.velocity.x == 0) {
+        if (this.player.body.velocity.x == 0 && this.player.body.blocked.down) {
             this.player.movingDirection = 'none';
         }
-        if (this.player.state === 'jump' && this.player.body.velocity.y > 0) {
+
+        if (this.player.state === 'jump' && this.player.body.velocity.y >= 0) {
+
             this.player.movingDirection = 'down';
+
             if (
                 this.inputHandler.isFightActionPressed() &&
-                !this.blockedFight
+                !this.player.blockedFight
             ) {
                 this.player.jumpKick();
             }
+
+        }
+
+        if(this.player.state === 'jump' && this.player.body.blocked.down) {
+                this.player.land();
         }
 
         if (this.inputHandler.isFightActionLeaved()) {
-            this.blockedFight = false;
-            // this.fightEnds = true;
+            this.player.blockedFight = false;
         }
+        
         if (this.inputHandler.isJumpLeaved()) {
             this.player.blockedJump = false;
-            // this.fightEnds = true;
         }
         // fighting
-        if (this.inputHandler.isFightActionPressed() && !this.blockedFight) {
+        if (this.inputHandler.isFightActionPressed() && !this.player.blockedFight) {
             this.handleFightActions();
         }
         // move if end of fight action
-        if (this.fightEnds) {
+        if (this.player.fightEnds) {
             this.handleMovement();
         }
         // jump
@@ -95,7 +98,6 @@ export class Game extends Scene {
             this.scene.start('GameOver');
         }
 
-        // console.log('currentAnim',this.player.anims.currentAnim.key);
         if (this.player.anims.currentAnim.key === 'burst') {
 
             let currentFrame = this.player.anims.currentFrame;
@@ -167,6 +169,13 @@ export class Game extends Scene {
         }
     }
 
+    hitEnemy(enemy) {
+        let dieSound = this.sound.add('die');
+        // dieSound.setVolume(0.4);
+        enemy.hurt();
+        dieSound.play();
+    }
+
     handleMovement() {
         // pressed left or A
         if (
@@ -225,27 +234,31 @@ export class Game extends Scene {
             
         });
 
-        this.physics.add.overlap(this.player.shield, this.landEnemies, this.player.hitEnemy, null, this);
+        this.physics.add.overlap(this.player.shield, this.landEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.landEnemies, this.handleBodyCollision, null, this);
         this.physics.add.overlap(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
 
-        this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.player.hitEnemy, null, this);
+        this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.flyingEnemies, this.handleBodyCollision, null, this);
         this.physics.add.overlap(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
     }
 
     handleBulletCollision(bullet, enemy) {
-        this.player.hitEnemy(enemy);
+        this.hitEnemy(enemy);
         bullet.destroy();
+    }
+
+    handleHitCollision( shield, enemy) {
+        this.hitEnemy(enemy);
     }
 
     handleBodyCollision(player, enemy) {
         // Verifica si el jugador está en una animación de lucha
         const playerAnim = player.anims.currentAnim.key;
         if (playerAnim === 'punch' || playerAnim === 'kick' || playerAnim === 'shield') {
-            this.player.hitEnemy(enemy);
+            this.hitEnemy(enemy);
         }
 
         if (enemy.state === 'attacking' && this.player.vulnerable) {

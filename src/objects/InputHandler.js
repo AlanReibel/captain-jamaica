@@ -27,8 +27,7 @@ export class InputHandler {
             this.resizeGame({ width: this.scene.scale.width, height: this.scene.scale.height });
 
             this.scene.scale.updateCenter();
-            // this.addVirtualJoystick();
-            // this.addVirtualButtons();
+
         }
     }
 
@@ -47,7 +46,7 @@ export class InputHandler {
         return this.cursors.space.isUp &&
             this.qKey.isUp &&
             this.fKey.isUp &&
-            // this.eKey.isUp &&
+            this.eKey.isUp &&
             !this.buttons['A'] &&
             !this.buttons['B'] &&
             !this.buttons['X'] &&
