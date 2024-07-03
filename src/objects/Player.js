@@ -19,11 +19,18 @@ export class Player {
         // scene.physics.world.enable(this.shield);
         this.shield.setVisible(false);
 
+        this.health = 100;
+
+        this.vulnerable = true;
         this.shield.on('animationcomplete-fly', (anim, frame) => {
             if (anim.key === 'fly') {
                 this.scene.fightEnds = true;
             }
         });
+    }
+
+    takeDamage(amount) {
+        this.health -= amount;
     }
 
     createAnimations() {

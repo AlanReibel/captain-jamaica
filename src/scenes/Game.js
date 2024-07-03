@@ -27,6 +27,7 @@ export class Game extends Scene {
     enemies;
     bulletFired = false;
     groundLayer;
+    healthBar;
 
     create() {
         this.addBackground();
@@ -52,6 +53,7 @@ export class Game extends Scene {
 
         this.addTileMaps();
         this.createCamera();
+        this.addHealthBar();
 
         this.createMultipleEnemies();
 
@@ -59,6 +61,7 @@ export class Game extends Scene {
     }
 
     update() {
+
         // reset fight
         if (this.player.sprite.body.velocity.x == 0) {
             this.movingDirection = 'none';
@@ -150,6 +153,7 @@ export class Game extends Scene {
         this.player.sprite.body.setGravityY(400);
         this.player.sprite.anims.play('jump');
     }
+
     handleFightActions() {
         let punchSound = this.sound.add('punch');
         // pressed Q key or A button
@@ -307,11 +311,13 @@ export class Game extends Scene {
         });
     }
 
-    hitEnemy(shield, enemy) {
+    hitEnemy(enemy) {
+        console.log('enemy hit', enemy);
         let dieSound = this.sound.add('die');
         // dieSound.setVolume(0.4);
         enemy.hurt();
         dieSound.play();
+
     }
 
     createMultipleEnemies() {
@@ -358,9 +364,18 @@ export class Game extends Scene {
 
     handleBodyCollision(player, enemy) {
         // Verifica si el jugador está en una animación de lucha
-        const currentAnim = player.anims.currentAnim.key;
-        if (currentAnim === 'punch' || currentAnim === 'kick' || currentAnim === 'shield') {
+        const playerAnim = player.anims.currentAnim.key;
+        if (playerAnim === 'punch' || playerAnim === 'kick' || playerAnim === 'shield') {
             this.hitEnemy(null, enemy);
+        }
+
+        if (enemy.state === 'attacking' && this.player.vulnerable) {
+            this.player.takeDamage(10);
+            this.player.vulnerable = false;
+            this.healthbarUpdate();
+            this.time.delayedCall( 800, () => {
+                this.player.vulnerable = true;
+            });
         }
     }
 
@@ -472,6 +487,38 @@ export class Game extends Scene {
             .setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player.sprite,  this.greenTilesLayer);
         // this.physics.add.collider(this.player.sprite, collisionBoxes);
+    }
+
+    addHealthBar() {
+        this.uiContainer = this.add.container(0, 0);
+        this.uiContainer.setScrollFactor(0);
+
+        let health = this.player.health;
+        let healthbarBackground = this.add.graphics();
+        healthbarBackground
+            .fillStyle( 0xff0000, 1)
+            .fillRect(10, 10, health, 15);
+        // Crear un gráfico para la barra de vida
+        this.healthBar = this.add.graphics();
+        this.healthBar
+            .fillStyle(0x00ff00, 1)
+            .fillRect(10, 10, health, 15);
+
+        this.uiContainer.add(healthbarBackground);
+        this.uiContainer.add(this.healthBar);
+
+    }
+
+    healthbarUpdate() {
+        console.log('health',this.player.health);
+        this.healthBar.clear();
+        this.healthBar
+            .fillStyle(0x00ff00, 1)
+            .fillRect(10, 10, this.player.health, 15);
+
+        if(this.player.health === 0) {
+            this.gameOver = true;
+        }
     }
 
 
