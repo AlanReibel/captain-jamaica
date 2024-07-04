@@ -248,10 +248,10 @@ export class Game extends Scene {
 
     playerFired( player, bullet) {
         // console.log('player',player);
-        // console.log('bullet',bullet);
+        console.log('bullet',bullet);
         if(this.player.vulnerable) {
             this.player.vulnerable = false;
-            this.player.takeDamage(10);
+            this.player.takeDamage(bullet.damage);
             this.healthbarUpdate();
             bullet.destroy();
         }

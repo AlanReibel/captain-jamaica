@@ -111,30 +111,32 @@ export const enemies = {
         fly: false,
         speed: 50,
         health: 100,
+        bulletImage: 'ball2',
+        bulletDamage: 10,
         behavior: (scene, enemy) => {
 
             let player = scene.player;
-            let treshhold = 200;
+            let treshhold = 150;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;
             let difference = Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x);
-            if( isNear ) {
+
+            if(difference < 0) {
+                enemy.focusTo = 'left';
+            } else {
+                enemy.focusTo = 'right';
+            }
+            // console.log('difference',difference);
+            if( isNear && distance >= 100) {
+                
                 let direction = player.x < enemy.x ? 'left' : 'right';
-                if(difference < 10 && difference > -10) {
-                    enemy.stop();
-                } else {
-                    if(distance <= 40) {
-                        enemy.stop();
-                        enemy.attack();
-                    } else {
-                        enemy.move(direction);
-                    }
-                }
+                enemy.move(direction);
+
             } else {
                 enemy.stop();
+                enemy.attack();
+                enemy.fire(scene)
             }
-
-
 
         }
     },
@@ -147,17 +149,25 @@ export const enemies = {
             Walk: { frameWidth: 30, frameHeight: 34, frames: 4, frameRate: 12, repeat: -1 },
         },
         fly: false,
-        speed: 50,
-        health: 100,
+        speed: 30,
+        health: 150,
+        bulletImage: 'ball1',
+        bulletDamage: 20,
         behavior: (scene, enemy) => {
 
             let player = scene.player;
-            let treshhold = 300;
+            let treshhold = 250;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;
             let difference = Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x);
+
+            if(difference < 0) {
+                enemy.focusTo = 'left';
+            } else {
+                enemy.focusTo = 'right';
+            }
             // console.log('difference',difference);
-            if( isNear && distance >= 200) {
+            if( isNear && distance >= 150) {
                 
                 let direction = player.x < enemy.x ? 'left' : 'right';
                 enemy.move(direction);
@@ -167,8 +177,6 @@ export const enemies = {
                 enemy.attack();
                 enemy.fire(scene)
             }
-
-
 
         }
     },

@@ -7,6 +7,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     focusTo = 'right';
     bulletFired = false;
     bullets;
+    bulletImage;
+    bulletDamage;
 
     constructor(scene, x, y, name) {
 
@@ -23,6 +25,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.health = enemies[name].health || 100;
         this.speed = enemies[name].speed || 100;
         this.behavior = enemies[name].behavior;
+        this.bulletImage = enemies[name].bulletImage;
+        this.bulletDamage = enemies[name].bulletDamage;
         this.setCollideWorldBounds(true);
 
         this.bullets = this.scene.physics.add.group();
@@ -55,7 +59,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
             let directionX = this.focusTo === 'right' ? 1 : -1;
             this.bulletFired = true;
-            let bullet = scene.physics.add.image(this.x, this.y, 'ball1');
+            let bullet = scene.physics.add.image(this.x, this.y, this.bulletImage);
+            bullet.damage = this.bulletDamage;
             this.bullets.add(bullet);
             bullet.setVelocityX(500 * directionX);
             bullet.body.setAllowGravity(false);
