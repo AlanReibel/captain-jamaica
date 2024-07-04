@@ -45,7 +45,7 @@ export const enemies = {
                 enemy.movingDirectionY !== 'up'
             ) {
                 enemy.movingDirectionY = 'down';
-                enemy.setVelocityY(100);
+                enemy.setVelocityY(120);
                 enemy.setVelocityX(0);
             }
 
