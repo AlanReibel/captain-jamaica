@@ -230,19 +230,35 @@ export class Game extends Scene {
                 this.flyingEnemies.add(newEnemy);
             } else {
                 this.landEnemies.add(newEnemy);
+                this.physics.add.collider(newEnemy.bullets, this.player, this.playerFired, null, this);
             }
             
         });
 
         this.physics.add.overlap(this.player.shield, this.landEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.landEnemies, this.handleBodyCollision, null, this);
-        this.physics.add.overlap(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.collider(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
 
         this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.flyingEnemies, this.handleBodyCollision, null, this);
-        this.physics.add.overlap(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.collider(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
+    }
+
+    playerFired( player, bullet) {
+        // console.log('player',player);
+        // console.log('bullet',bullet);
+        if(this.player.vulnerable) {
+            this.player.vulnerable = false;
+            this.player.takeDamage(10);
+            this.healthbarUpdate();
+            bullet.destroy();
+        }
+
+        this.time.delayedCall( 800, () => {
+            this.player.vulnerable = true;
+        });
     }
 
     handleBulletCollision(bullet, enemy) {

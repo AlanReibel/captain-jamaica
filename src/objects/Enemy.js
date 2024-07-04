@@ -1,6 +1,13 @@
 import { enemies } from './enemyConfig';
 
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
+
+    invulnerable = false;
+    state = 'idle';
+    focusTo = 'right';
+    bulletFired = false;
+    bullets;
+
     constructor(scene, x, y, name) {
 
         super(scene, x, y, `${name}-Idle`);
@@ -10,15 +17,15 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
 
         this.anims.play(`${name}-Idle`);
-        this.state = 'idle';
-        this.invulnerable = false;
+
         // Establecer propiedades básicas
         this.scene = scene;
         this.health = enemies[name].health || 100;
         this.speed = enemies[name].speed || 100;
-        this.focusTo = 'right';
         this.behavior = enemies[name].behavior;
         this.setCollideWorldBounds(true);
+
+        this.bullets = this.scene.physics.add.group();
 
     }
 
@@ -32,13 +39,29 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         if (this.state !== 'attacking') {
             this.state = 'attacking';
-            if (this.turn) {
-                this.anims.play(`${this.name}-Attack`, true).setFlipX(true);
-            } else {
-                this.anims.play(`${this.name}-Attack`, true).setFlipX(false);
-            }
+            let flip = this.focusTo === 'left';
+
+            this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
+
             this.once('animationcomplete', () => {
                 this.state = 'idle';
+            });
+        }
+    }
+
+    fire(scene) {
+
+        if( !this.bulletFired ) {
+
+            let directionX = this.focusTo === 'right' ? 1 : -1;
+            this.bulletFired = true;
+            let bullet = scene.physics.add.image(this.x, this.y, 'ball1');
+            this.bullets.add(bullet);
+            bullet.setVelocityX(500 * directionX);
+            bullet.body.setAllowGravity(false);
+
+            scene.time.delayedCall( 800, () => {
+                this.bulletFired = false;
             });
         }
     }
@@ -59,20 +82,23 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     move(direction = this.focusTo) {
-        this.turn = direction !== this.focusTo;
-        this.state = 'walk';
-        if (direction === 'left') {
-            this.setVelocityX(- this.speed);
-        }
-        if (direction === 'right') {
-            this.setVelocityX(this.speed);
+        if(this.state !== 'attacking') {
+
+            this.turn = direction !== this.focusTo;
+            this.focusTo = direction;
+            this.state = 'walk';
+            if (direction === 'left') {
+                this.setVelocityX(- this.speed);
+                this.anims.play(`${this.name}-Walk`, true).setFlipX(true);
+    
+            }
+            if (direction === 'right') {
+                this.setVelocityX(this.speed);
+                this.anims.play(`${this.name}-Walk`, true).setFlipX(false);
+    
+            }
         }
 
-        if (this.turn) {
-            this.anims.play(`${this.name}-Walk`, true).setFlipX(true);
-        } else {
-            this.anims.play(`${this.name}-Walk`, true).setFlipX(false);
-        }
     }
 
 
@@ -80,7 +106,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         if (this.state !== 'attacking' && this.state !== 'hurt' && this.state !== 'dying') {
             this.setVelocityX(0);
             this.state = 'idle';
-            this.anims.play(`${this.name}-Idle`, true);
+            let flip = this.focusTo === 'left';
+            this.anims.play(`${this.name}-Idle`, true).setFlipX(flip);
         }
     }
 
@@ -112,6 +139,10 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
                 );
             }
         }
+
+        scene.load.image('ball1', 'assets/sprites/enemies/bullets/Ball1.png');
+        scene.load.image('ball2', 'assets/sprites/enemies/bullets/Ball2.png');
+
     }
 
     static createAnimations(scene, enemyName) {
