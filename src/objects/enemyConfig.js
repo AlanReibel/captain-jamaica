@@ -14,8 +14,8 @@ export const enemies = {
             let player = scene.player;
             let worldView = scene.cameras.main.worldView;
             let bounds = {
-                left: worldView.x + 50,
-                right: worldView.x + worldView.width - 50
+                left: worldView.x + 30,
+                right: worldView.x + worldView.width - 30
             };
             let distance = 50;
             let isNear = Phaser.Math.Distance.BetweenPoints(player, enemy) <= distance;
@@ -31,7 +31,7 @@ export const enemies = {
                 enemy.focusTo = 'left';
             }
             // Verificar los límites verticales
-            if (enemy.y < worldView.y + 50 || enemy.y > worldView.y + worldView.height - 50) {
+            if (enemy.y < worldView.y + 30 || enemy.y > worldView.y + worldView.height - 30) {
                 enemy.setVelocityY(0);
                 enemy.movingDirectionY = 'none';
             }
