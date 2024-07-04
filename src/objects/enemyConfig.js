@@ -22,7 +22,6 @@ export const enemies = {
             let limitHeight = player.y - (player.height / 2);
             enemy.move(enemy.focusTo);
             
-            console.log('moving dir', enemy.movingDirectionY);
             if (enemy.x < bounds.left) {
                 // enemy.setVelocityX(enemy.body.velocity.x * -1);
                 enemy.focusTo = 'right';

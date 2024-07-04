@@ -170,7 +170,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     move(direction) {
         if(!this.blockedMovement) {
 
-            console.log('moving');
             this.movingDirection = direction;
             this.focusTo = direction;
             let xMovement = direction === 'left' ? -1 : 1;
