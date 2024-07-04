@@ -79,6 +79,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     hurt(damage) {
+        console.log('enemy hurt', damage);
         if (this.state !== 'hurt' && !this.invulnerable) {
             this.state = 'hurt';
             this.invulnerable = true; // Enemigo es invulnerable después de ser golpeado

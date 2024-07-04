@@ -172,7 +172,7 @@ export class Game extends Scene {
     hitEnemy(enemy, damage) {
         let dieSound = this.sound.add('die');
         // dieSound.setVolume(0.4);
-        enemy.hurt();
+        enemy.hurt(damage);
         dieSound.play();
     }
 
