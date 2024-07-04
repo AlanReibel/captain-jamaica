@@ -240,6 +240,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.on('animationcomplete-catch', (anim, frame) => {
             this.state = 'idle';
+            this.fightEnds = true;
         });
 
     }
