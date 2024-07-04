@@ -169,7 +169,7 @@ export class Game extends Scene {
         }
     }
 
-    hitEnemy(enemy) {
+    hitEnemy(enemy, damage) {
         let dieSound = this.sound.add('die');
         // dieSound.setVolume(0.4);
         enemy.hurt();
@@ -246,22 +246,21 @@ export class Game extends Scene {
     }
 
     playerFired( player, bullet) {
-        // console.log('player',player);
-        if(this.player.vulnerable) {
+        if(this.player.vulnerable && this.player.state !== 'special') {
             this.player.vulnerable = false;
             this.player.takeDamage(bullet.damage);
             this.healthbarUpdate();
             bullet.destroy();
         }
 
-        this.time.delayedCall( 800, () => {
+        this.time.delayedCall( 1000, () => {
             this.player.vulnerable = true;
         });
     }
 
     handleBulletCollision(bullet, enemy) {
 
-        this.hitEnemy(enemy);
+        this.hitEnemy(enemy, 20);
 
         if(bullet.texture.key === 'bullet') {
             bullet.destroy();
@@ -275,10 +274,20 @@ export class Game extends Scene {
 
     handleBodyCollision(player, enemy) {
         // Verifica si el jugador está en una animación de lucha
-        const playerAnim = player.anims.currentAnim.key;
-        if (playerAnim === 'punch' || playerAnim === 'kick' || playerAnim === 'shield') {
-            this.hitEnemy(enemy);
-            console.log('enemy hit');
+        let damage = {
+            punch: 20,
+            kick: 30,
+            specialExplosion: 100,
+            shield: 50,
+        };
+        console.log('collision', player.state);
+        if (
+            player.state === 'punch' || 
+            player.state === 'kick' || 
+            player.state === 'specialExplosion' || 
+            player.state === 'shield'
+        ) {
+            this.hitEnemy(enemy, damage[player.state]);
         }
 
         if (enemy.state === 'attacking' && this.player.vulnerable) {
@@ -417,7 +426,6 @@ export class Game extends Scene {
     }
 
     healthbarUpdate() {
-        console.log('health',this.player.health);
         this.healthBar.clear();
         this.healthBar
             .fillStyle(0x00ff00, 1)

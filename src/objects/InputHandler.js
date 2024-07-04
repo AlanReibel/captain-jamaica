@@ -19,6 +19,7 @@ export class InputHandler {
         this.isMobile = true;
         this.isMobile = this.isMobileDevice() || this.isTouchDevice();
 
+        this.createCombos();
         if(this.isMobile) {
             this.scene.game.scene.start('UIScene', { inputHandler: this});
 
@@ -123,6 +124,22 @@ export class InputHandler {
 
         // Crear las teclas del joystick
         this.joystickKeys = this.joystick.createCursorKeys();
+    }
+
+    createCombos() {
+
+        let combos = {
+            'combo1': [81,81],
+            'combo2': [70,70]
+        };
+        this.scene.input.keyboard.createCombo('CC', { resetOnMatch: true });//67
+        this.scene.input.keyboard.createCombo('QQ', { resetOnMatch: true });//81
+        this.scene.input.keyboard.createCombo('FF', { resetOnMatch: true });//70
+        this.scene.input.keyboard.on('keycombomatch', (event) => {
+
+            console.log('Combo',event.keyCodes);
+            this.scene.player.runCombo();
+        });
     }
 
 }

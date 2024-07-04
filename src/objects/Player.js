@@ -41,14 +41,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.play('idle', true);
         this.punchSound = this.scene.sound.add('punch');
 
-
         // this.shield.setSize(100, 100)
         // scene.physics.world.enable(this.shield);
         // this.shield.setVisible(false);
 
         this.laserSound = scene.sound.add('laser');
         this.laserSound.setVolume(0.4);
-        
+
         this.bullets = this.scene.physics.add.group({
             classType: Bullet,
             runChildUpdate: true,
@@ -123,7 +122,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.anims.create({
             key: 'special',
-            frames: this.scene.anims.generateFrameNumbers('special', { start: 0, end: 56 }),
+            frames: this.scene.anims.generateFrameNumbers('special', { start: 11, end: 56 }),
+            frameRate: 18,
+            repeat: 0
+        });
+
+        this.scene.anims.create({
+            key: 'block',
+            frames: this.scene.anims.generateFrameNumbers('special', { start: 0, end: 10 }),
             frameRate: 12,
             repeat: 0
         });
@@ -160,6 +166,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.state !== 'kick' &&
             this.state !== 'shield' &&
             this.state !== 'catch' &&
+            this.state !== 'special' &&
             this.state !== 'burst'
         ) {
             this.anims.play('idle', true);
@@ -168,14 +175,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     move(direction) {
-        if(!this.blockedMovement) {
+        if (!this.blockedMovement) {
 
             this.movingDirection = direction;
             this.focusTo = direction;
             let xMovement = direction === 'left' ? -1 : 1;
             let flip = direction === 'left';
             this.setVelocityX(this.velocity * xMovement);
-            if(this.state !== 'jump') {
+            if (this.state !== 'jump') {
                 this.anims.play('run', true).setFlipX(flip);
                 this.state = 'running';
             }
@@ -283,7 +290,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.fightEnds = false;
         this.anims.play('burst', true);
         this.state = 'burst';
-        
+
         this.on('animationcomplete-burst', (anim, frame) => {
             this.state = 'idle';
             this.fightEnds = true;
@@ -315,7 +322,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     shieldHit() {
-        if(
+        if (
             this.movingDirection !== 'up' &&
             this.movingDirection !== 'down'
         ) {
@@ -327,8 +334,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.punchSound.play();
             });
             this.on('animationcomplete-shield', (anim, frame) => {
-                this.state = 'idle';
-                this.fightEnds = true;
+                this.scene.time.delayedCall( 200, () => {
+                    this.state = 'idle';
+                    this.fightEnds = true;
+                });
             });
         }
     }
@@ -340,7 +349,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setGravityY(400);
         this.anims.play('jump');
 
-        if(this.state === 'running') {
+        if (this.state === 'running') {
             this.state = 'runningJump';
         } else {
             this.state = 'jump';
@@ -353,7 +362,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     jumpKick() {
-        console.log('jumpKick',this.anims);
+        console.log('jumpKick', this.anims);
         this.fightEnds = false;
         this.blockedFight = true;
         this.anims.play('jumpKick', true);
@@ -364,6 +373,58 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
+    special() {
+        
+        this.vulnerable = false;
+        let originalX = this.x;
+        let originalY = this.y;
+        let width = this.width;
+        let height = this.height;
+        let directionX = this.focusTo === 'left' ? -1 : 1;
+        let flip = this.focusTo === 'left';
+        
+        this.state = 'special';
+        this.setVisible(false);
+
+        let special = this.scene.physics.add.sprite(originalX + 3, (originalY - height / 2) + 3, 'special');
+        special.setFlipX(flip);
+        special.anims.play('special', true);
+        this.scene.tweens.add({
+            targets: special,
+            x: originalX + 50 * directionX,
+            y: originalY - 80,
+            duration: 2055.55,
+            ease: 'Power1',
+            onComplete: () => {
+                this.scene.tweens.add({
+                    targets: special,
+                    x: originalX + 50 * directionX,
+                    y: originalY - 27,
+                    duration: 200,
+                    ease: 'Power1',
+                });
+            }
+        });
+
+        special.body.setAllowGravity(false);
+        special.setScale(0.95);
+
+        this.scene.time.delayedCall( 2300, () => {
+            this.state = 'specialExplosion';
+            this.body.setSize(128,64);
+        });
+
+        this.scene.time.delayedCall( 2555.55, () => {
+            special.destroy();
+            this.setPosition(originalX + 50 * directionX, originalY);
+            this.body.setSize(width,height);
+            this.setVisible(true);
+            this.state = 'idle';
+            this.vulnerable = true;
+        });
+
+    }
+
     land() {
         this.anims.play('land', true);
         this.on('animationcomplete-land', (anim, frame) => {
@@ -371,5 +432,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.idle();
             this.movingDirection = this.focusTo;
         });
+    }
+
+    runCombo() {
+        this.special();
     }
 }

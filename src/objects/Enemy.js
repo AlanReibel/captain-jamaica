@@ -78,12 +78,12 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    hurt() {
+    hurt(damage) {
         if (this.state !== 'hurt' && !this.invulnerable) {
             this.state = 'hurt';
             this.invulnerable = true; // Enemigo es invulnerable después de ser golpeado
             this.anims.play(`${this.name}-Hurt`, true);
-            this.takeDamage(50);
+            this.takeDamage(damage);
             // Después de un tiempo, permite que el enemigo pueda recibir daño de nuevo
             this.once('animationcomplete', () => {
                 this.invulnerable = false;
