@@ -15,6 +15,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     movingDirection = 'right';
     focusTo = 'right';
+    blockedMovement = false;
 
     bulletFired = false;
     bullets;
@@ -46,7 +47,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         // scene.physics.world.enable(this.shield);
         this.shield.setVisible(false);
 
-
+        this.laserSound = scene.sound.add('laser');
+        this.laserSound.setVolume(0.4);
+        
         this.bullets = this.scene.physics.add.group({
             classType: Bullet,
             runChildUpdate: true
@@ -165,14 +168,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     move(direction) {
-        this.movingDirection = direction;
-        this.focusTo = direction;
-        let xMovement = direction === 'left' ? -1 : 1;
-        let flip = direction === 'left';
-        this.setVelocityX(this.velocity * xMovement);
-        if(this.state !== 'jump') {
-            this.anims.play('run', true).setFlipX(flip);
-            this.state = 'running';
+        if(!this.blockedMovement) {
+
+            console.log('moving');
+            this.movingDirection = direction;
+            this.focusTo = direction;
+            let xMovement = direction === 'left' ? -1 : 1;
+            let flip = direction === 'left';
+            this.setVelocityX(this.velocity * xMovement);
+            if(this.state !== 'jump') {
+                this.anims.play('run', true).setFlipX(flip);
+                this.state = 'running';
+            }
         }
     }
 
@@ -181,6 +188,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     throwShield() {
+        this.blockedMovement = true;
         let boomerangSound = this.scene.sound.add('boomerang');
         this.scene.time.delayedCall(400, () => {
             boomerangSound.play();
@@ -241,13 +249,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.on('animationcomplete-catch', (anim, frame) => {
             this.state = 'idle';
             this.fightEnds = true;
+            this.blockedMovement = false;
         });
 
     }
 
     fireBullet(scene) {
-        let laserSound = scene.sound.add('laser');
-        laserSound.setVolume(0.4);
+
         let playerBodyoffest = this.focusTo == 'right'
             ? this.width * 0.5
             : this.width * -0.5;
@@ -256,7 +264,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         let bullet = this.bullets.get(bulletOrigin, scene.player.y);
         if (bullet) {
             bullet.fire(bulletOrigin, scene.player.y, this.focusTo);
-            laserSound.play();
+            this.laserSound.play();
 
         } else {
             console.log('No hay balas disponibles');
@@ -264,6 +272,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     burst() {
+        this.setVelocityX(0);
+        this.blockedMovement = true;
         this.blockedFight = true;
         this.fightEnds = false;
         this.anims.play('burst', true);
@@ -272,6 +282,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.on('animationcomplete-burst', (anim, frame) => {
             this.state = 'idle';
             this.fightEnds = true;
+            this.blockedMovement = false;
         });
     }
 
@@ -288,6 +299,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     shieldAttack() {
+        this.setVelocityX(0);
         this.blockedFight = true;
         this.fightEnds = false;
 
@@ -343,6 +355,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.state = 'jumpKick';
         this.on('animationcomplete-jumpKick', (anim, frame) => {
             this.state = 'idle';
+            this.fightEnds = true;
         });
     }
 
