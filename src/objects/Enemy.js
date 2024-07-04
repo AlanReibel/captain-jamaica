@@ -9,6 +9,10 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     bullets;
     bulletImage;
     bulletDamage;
+    startPosition;
+    attackDone = false;
+    movingDirectionX;
+    movingDirectionY;
 
     constructor(scene, x, y, name) {
 
@@ -18,6 +22,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
+        this.startPosition = {x: this.x, y: this.y}
         this.anims.play(`${name}-Idle`);
 
         // Establecer propiedades básicas
@@ -42,12 +47,14 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     attack() {
 
         if (this.state !== 'attacking') {
+            this.attackDone = false;
             this.state = 'attacking';
             let flip = this.focusTo === 'left';
 
             this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
 
             this.once('animationcomplete', () => {
+                this.attackDone = true;
                 this.state = 'idle';
             });
         }
@@ -88,7 +95,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     move(direction = this.focusTo) {
         if(this.state !== 'attacking') {
-
+            this.movingDirectionX = direction;
             this.turn = direction !== this.focusTo;
             this.focusTo = direction;
             this.state = 'walk';

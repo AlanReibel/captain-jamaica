@@ -222,7 +222,6 @@ export class Game extends Scene {
         });
 
         let enemiesPositions = this.map.getObjectLayer('enemies');
-        console.log('enemiesPositions',enemiesPositions);
         enemiesPositions.objects.forEach(enemyData => {
             let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
 
@@ -235,12 +234,12 @@ export class Game extends Scene {
             
         });
 
-        this.physics.add.overlap(this.player.shield, this.landEnemies, this.handleHitCollision, null, this);
+        // this.physics.add.overlap(this.player.shield, this.landEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.landEnemies, this.handleBodyCollision, null, this);
         this.physics.add.collider(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
 
-        this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.handleHitCollision, null, this);
+        // this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.flyingEnemies, this.handleBodyCollision, null, this);
         this.physics.add.collider(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
@@ -261,8 +260,13 @@ export class Game extends Scene {
     }
 
     handleBulletCollision(bullet, enemy) {
+
         this.hitEnemy(enemy);
-        bullet.destroy();
+
+        if(bullet.texture.key === 'bullet') {
+            bullet.destroy();
+        }
+
     }
 
     handleHitCollision( shield, enemy) {
@@ -274,6 +278,7 @@ export class Game extends Scene {
         const playerAnim = player.anims.currentAnim.key;
         if (playerAnim === 'punch' || playerAnim === 'kick' || playerAnim === 'shield') {
             this.hitEnemy(enemy);
+            console.log('enemy hit');
         }
 
         if (enemy.state === 'attacking' && this.player.vulnerable) {

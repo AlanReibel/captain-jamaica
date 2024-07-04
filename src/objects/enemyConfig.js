@@ -11,15 +11,18 @@ export const enemies = {
         speed: 50,
         health: 100,
         behavior: (scene, enemy) => {
+            let player = scene.player;
             let worldView = scene.cameras.main.worldView;
             let bounds = {
                 left: worldView.x + 50,
                 right: worldView.x + worldView.width - 50
             };
-            let speed = enemy.speed;
-
+            let distance = 50;
+            let isNear = Phaser.Math.Distance.BetweenPoints(player, enemy) <= distance;
+            let limitHeight = player.y - (player.height / 2);
             enemy.move(enemy.focusTo);
             
+            console.log('moving dir', enemy.movingDirectionY);
             if (enemy.x < bounds.left) {
                 // enemy.setVelocityX(enemy.body.velocity.x * -1);
                 enemy.focusTo = 'right';
@@ -30,8 +33,53 @@ export const enemies = {
             }
             // Verificar los límites verticales
             if (enemy.y < worldView.y + 50 || enemy.y > worldView.y + worldView.height - 50) {
-                enemy.setVelocityY(enemy.body.velocity.y * -1);
+                enemy.setVelocityY(0);
+                enemy.movingDirectionY = 'none';
             }
+
+            // go down
+            if(
+                player.x - enemy.x < 20 && // is over the player
+                player.x - enemy.x > - 20 && // is over the player
+                !enemy.attackDone && // pending attack
+                enemy.y < limitHeight && // is higher than player
+                enemy.movingDirectionY !== 'up'
+            ) {
+                enemy.movingDirectionY = 'down';
+                enemy.setVelocityY(100);
+                enemy.setVelocityX(0);
+            }
+
+            // attack
+            if(isNear && !enemy.attackDone) {
+                enemy.stop();
+                enemy.attack();
+            }
+
+            // go up
+            if(enemy.attackDone) {
+                //attack is done
+                if(
+                    enemy.y - enemy.startPosition.y > 10 &&
+                    enemy.y - enemy.startPosition.y < -10 
+                ) {
+                    enemy.movingDirectionY = 'up';
+                    enemy.setVelocityY(-80);
+                } else {
+                    enemy.attackDone = false;
+                }
+            } else {
+                //attack is pending
+                if(enemy.y >= limitHeight && enemy.y > enemy.startPosition.y) {
+                    enemy.movingDirectionY = 'up';
+
+                    enemy.setVelocityY(-80);
+
+                }
+            }
+
+
+
         }
     },
     weelRobot: {

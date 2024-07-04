@@ -7,6 +7,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     blockedJump = false;
     velocity = 100;
 
+    shield;
     shieldThrown = false;
     shieldCached = true;
 
@@ -40,19 +41,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.play('idle', true);
         this.punchSound = this.scene.sound.add('punch');
 
-        this.shield = scene.physics.add.sprite(this.x, this.y, 'shield-fly');
-        this.shield.body.setAllowGravity(false);
-        this.shield.setScale(0.6);
+
         // this.shield.setSize(100, 100)
         // scene.physics.world.enable(this.shield);
-        this.shield.setVisible(false);
+        // this.shield.setVisible(false);
 
         this.laserSound = scene.sound.add('laser');
         this.laserSound.setVolume(0.4);
         
         this.bullets = this.scene.physics.add.group({
             classType: Bullet,
-            runChildUpdate: true
+            runChildUpdate: true,
+            allowGravity: false,
         });
 
     }
@@ -188,6 +188,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     throwShield() {
+        this.shield = this.scene.physics.add.sprite(this.x, this.y, 'shield-fly');
+        // this.shield.body.setAllowGravity(false);
+        this.shield.setScale(0.6);
+        this.bullets.add(this.shield);
+        let distance = 150;
         this.blockedMovement = true;
         let boomerangSound = this.scene.sound.add('boomerang');
         this.scene.time.delayedCall(400, () => {
@@ -205,12 +210,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             };
             this.shield.setPosition(shieldPosition.x, shieldPosition.y);
 
-            this.shield.setVisible(true);
-            this.shield.play('fly', true);
+            // this.shield.setVisible(true);
+            this.shield.anims.play('fly', true);
 
             let shieldTarget = this.focusTo == 'right'
-                ? shieldPosition.x + 300
-                : shieldPosition.x - 300;
+                ? shieldPosition.x + distance
+                : shieldPosition.x - distance;
 
             this.scene.tweens.add({
                 targets: this.shield,
@@ -247,6 +252,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         });
 
         this.on('animationcomplete-catch', (anim, frame) => {
+            this.shield.destroy();
             this.state = 'idle';
             this.fightEnds = true;
             this.blockedMovement = false;
