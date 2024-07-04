@@ -127,16 +127,24 @@ export const enemies = {
                 enemy.focusTo = 'right';
             }
             // console.log('difference',difference);
-            if( isNear && distance >= 100) {
+            if( isNear) {
                 
-                let direction = player.x < enemy.x ? 'left' : 'right';
-                enemy.move(direction);
+                if(distance >= 150) {
+                    
+                    let direction = player.x < enemy.x ? 'left' : 'right';
+                    if(difference <= 40 || difference >= -40) {
+                        enemy.stop();
+                    } else {
+                        enemy.move(direction);
+                    }
 
-            } else {
-                enemy.stop();
-                enemy.attack();
-                enemy.fire(scene)
-            }
+                } else {
+                    enemy.stop();
+                    enemy.attack();
+                    enemy.fire(scene)
+                }
+
+            } 
 
         }
     },
@@ -156,7 +164,7 @@ export const enemies = {
         behavior: (scene, enemy) => {
 
             let player = scene.player;
-            let treshhold = 250;
+            let treshhold = 200;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;
             let difference = Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x);
@@ -167,16 +175,18 @@ export const enemies = {
                 enemy.focusTo = 'right';
             }
             // console.log('difference',difference);
-            if( isNear && distance >= 150) {
+            if( isNear) {
                 
-                let direction = player.x < enemy.x ? 'left' : 'right';
-                enemy.move(direction);
+                if(distance >= 150) {
+                    let direction = player.x < enemy.x ? 'left' : 'right';
+                    enemy.move(direction);
+                } else {
+                    enemy.stop();
+                    enemy.attack();
+                    enemy.fire(scene)
+                }
 
-            } else {
-                enemy.stop();
-                enemy.attack();
-                enemy.fire(scene)
-            }
+            } 
 
         }
     },

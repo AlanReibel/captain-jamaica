@@ -230,7 +230,7 @@ export class Game extends Scene {
                 this.flyingEnemies.add(newEnemy);
             } else {
                 this.landEnemies.add(newEnemy);
-                this.physics.add.collider(newEnemy.bullets, this.player, this.playerFired, null, this);
+                this.physics.add.overlap(newEnemy.bullets, this.player, this.playerFired, null, this);
             }
             
         });
@@ -248,7 +248,6 @@ export class Game extends Scene {
 
     playerFired( player, bullet) {
         // console.log('player',player);
-        console.log('bullet',bullet);
         if(this.player.vulnerable) {
             this.player.vulnerable = false;
             this.player.takeDamage(bullet.damage);
