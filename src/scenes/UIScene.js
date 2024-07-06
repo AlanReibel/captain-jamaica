@@ -16,8 +16,9 @@ export class UIScene extends Phaser.Scene {
         this.holdingTime = 1000;
         this.comboTimeout = null;
         this.comboList = [
-            { sequence: ['A', 'B', 'X'], action: 'Combo1' },
-            { sequence: ['Y', 'A', 'B'], action: 'Combo2' }
+            { sequence: ['A', 'B'], action: 'combo1' },
+            { sequence: ['B', 'B'], action: 'combo2' },
+            { sequence: ['A', 'A'], action: 'combo3' },
         ];
     }
 
@@ -121,6 +122,7 @@ export class UIScene extends Phaser.Scene {
         this.time.delayedCall(this.holdingTime, () => {
             if(this.inputHandler.buttons[key]) {
                 this.inputHandler.holding[key] = true;
+                console.log('holded',this.inputHandler.holding);
             }
         });
     }
@@ -151,8 +153,7 @@ export class UIScene extends Phaser.Scene {
     checkCombo() {
         for (let combo of this.comboList) {
             if (this.isComboMatch(combo.sequence)) {
-                console.log(`Combo detected: ${combo.action}`);
-                this.executeCombo(combo.action);
+                this.inputHandler.runCombo(combo.action);
                 this.comboSequences = [];
                 break;
             }
@@ -168,17 +169,4 @@ export class UIScene extends Phaser.Scene {
         return sequence.every((key, index) => key === recentSequence[index]);
     }
 
-    executeCombo(action) {
-        switch (action) {
-            case 'Combo1':
-                console.log('Executing Combo 1!');
-                // Implementar acción del Combo 1
-                break;
-            case 'Combo2':
-                console.log('Executing Combo 2!');
-                // Implementar acción del Combo 2
-                break;
-            // Añadir más combos según sea necesario
-        }
-    }
 }

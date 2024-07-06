@@ -309,6 +309,30 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.fightEnds = true;
         });
     }
+    
+    punch() {
+        this.blockedFight = true;
+        this.fightEnds = false;
+        this.anims.play('punch', true);
+        this.state = 'punch';
+        this.punchSound.play();
+        this.on('animationcomplete-punch', (anim, frame) => {
+            this.state = 'idle';
+            this.fightEnds = true;
+        });
+    }
+
+    punch2() {
+        this.blockedFight = true;
+        this.fightEnds = false;
+        this.anims.play('punch2', true);
+        this.state = 'punch2';
+        this.punchSound.play();
+        this.on('animationcomplete-punch2', (anim, frame) => {
+            this.state = 'idle';
+            this.fightEnds = true;
+        });
+    }
 
     shieldAttack() {
         this.setVelocityX(0);
@@ -434,7 +458,20 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
-    runCombo() {
-        this.special();
+    runCombo(name) {
+        console.log('run combo',name);
+
+        switch (name) {
+            case 'combo1':
+                this.punch2();
+                break;
+            case 'combo2':
+                this.burst();
+                break;
+            case 'combo3':
+                this.kick();
+                break;
+        
+        }
     }
 }

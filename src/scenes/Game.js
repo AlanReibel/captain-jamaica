@@ -63,20 +63,33 @@ export class Game extends Scene {
 
         }
 
-        if(this.player.state === 'jump' && this.player.body.blocked.down) {
-                this.player.land();
+        if (this.player.state === 'jump' && this.player.body.blocked.down) {
+            this.player.land();
         }
 
         if (this.inputHandler.isFightActionLeaved()) {
             this.player.blockedFight = false;
         }
-        
+
         if (this.inputHandler.isJumpLeaved()) {
             this.player.blockedJump = false;
         }
         // fighting
         if (this.inputHandler.isFightActionPressed() && !this.player.blockedFight) {
             this.handleFightActions();
+        }
+
+        // hold action
+        if (this.inputHandler.buttons['X'] && this.inputHandler.holding['X']) {
+            this.inputHandler.buttons['X'] = false;
+            this.player.shieldAttack();
+            this.player.blockedFight = true;
+        }
+
+        if (this.inputHandler.buttons['B'] && this.inputHandler.holding['B']) {
+            this.inputHandler.buttons['B'] = false;
+            this.player.special();
+            this.player.blockedFight = true;
         }
         // move if end of fight action
         if (this.player.fightEnds) {
@@ -116,14 +129,14 @@ export class Game extends Scene {
             this.player.bulletFired = false;
         }
 
-        if( this.landEnemies ) {
+        if (this.landEnemies) {
 
             this.landEnemies.children.iterate((enemy) => {
                 enemy.update();
             });
         }
 
-        if(this.flyingEnemies) {
+        if (this.flyingEnemies) {
 
             this.flyingEnemies.children.iterate((enemy) => {
                 enemy.update();
@@ -139,7 +152,7 @@ export class Game extends Scene {
             this.inputHandler.buttons['A']
         ) {
 
-            this.player.burst();
+            this.player.punch();
         }
         // pressed E key or B button
         else if (
@@ -147,7 +160,7 @@ export class Game extends Scene {
             this.inputHandler.buttons['B']
         ) {
 
-            this.player.kick();
+            // this.player.kick();
         }
         // pressed F key or Y button
         else if (
@@ -162,8 +175,12 @@ export class Game extends Scene {
             this.inputHandler.cursors.space.isDown ||
             this.inputHandler.buttons['X']
         ) {
+    
             this.player.shieldHit();
+
         }
+
+
     }
 
     hitEnemy(enemy, damage) {
@@ -214,7 +231,7 @@ export class Game extends Scene {
             'brainTank'
         ];
 
-        enemiesList.forEach( enemyName => {
+        enemiesList.forEach(enemyName => {
             Enemy.createAnimations(this, enemyName);
         });
 
@@ -222,13 +239,13 @@ export class Game extends Scene {
         enemiesPositions.objects.forEach(enemyData => {
             let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
 
-            if(enemyData.name === 'flyingRobot') {
+            if (enemyData.name === 'flyingRobot') {
                 this.flyingEnemies.add(newEnemy);
             } else {
                 this.landEnemies.add(newEnemy);
                 this.physics.add.overlap(newEnemy.bullets, this.player, this.playerFired, null, this);
             }
-            
+
         });
 
         // this.physics.add.overlap(this.player.shield, this.landEnemies, this.handleHitCollision, null, this);
@@ -242,15 +259,15 @@ export class Game extends Scene {
         this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
     }
 
-    playerFired( player, bullet) {
-        if(this.player.vulnerable && this.player.state !== 'special') {
+    playerFired(player, bullet) {
+        if (this.player.vulnerable && this.player.state !== 'special') {
             this.player.vulnerable = false;
             this.player.takeDamage(bullet.damage);
             this.healthbarUpdate();
             bullet.destroy();
         }
 
-        this.time.delayedCall( 1000, () => {
+        this.time.delayedCall(1000, () => {
             this.player.vulnerable = true;
         });
     }
@@ -259,13 +276,13 @@ export class Game extends Scene {
 
         this.hitEnemy(enemy, 20);
 
-        if(bullet.texture.key === 'bullet') {
+        if (bullet.texture.key === 'bullet') {
             bullet.destroy();
         }
 
     }
 
-    handleHitCollision( shield, enemy) {
+    handleHitCollision(shield, enemy) {
         this.hitEnemy(enemy);
     }
 
@@ -279,9 +296,9 @@ export class Game extends Scene {
         };
         console.log('collision', player.state);
         if (
-            player.state === 'punch' || 
-            player.state === 'kick' || 
-            player.state === 'specialExplosion' || 
+            player.state === 'punch' ||
+            player.state === 'kick' ||
+            player.state === 'specialExplosion' ||
             player.state === 'shield'
         ) {
             this.hitEnemy(enemy, damage[player.state]);
@@ -291,7 +308,7 @@ export class Game extends Scene {
             this.player.takeDamage(10);
             this.player.vulnerable = false;
             this.healthbarUpdate();
-            this.time.delayedCall( 800, () => {
+            this.time.delayedCall(800, () => {
                 this.player.vulnerable = true;
             });
         }
@@ -329,8 +346,8 @@ export class Game extends Scene {
         let bgWidth = this.inputHandler.width || gamewidth;
         let bgHeight = this.inputHandler.height || gameheight;
 
-        let x = gamewidth === bgWidth ? 0 : ( bgWidth - gamewidth ) / 2;
-        let y = gameheight === bgHeight ? 0 : ( bgHeight - gameheight) / 2;
+        let x = gamewidth === bgWidth ? 0 : (bgWidth - gamewidth) / 2;
+        let y = gameheight === bgHeight ? 0 : (bgHeight - gameheight) / 2;
 
         this.bg1 = this.add.tileSprite(x, y, bgWidth, bgHeight, 'bg1')
             .setScrollFactor(0)
@@ -403,7 +420,7 @@ export class Game extends Scene {
         this.greenTilesLayer
             .setDepth(0)
             .setCollisionByProperty({ collider: true });
-        this.physics.add.collider(this.player,  this.greenTilesLayer);
+        this.physics.add.collider(this.player, this.greenTilesLayer);
         // this.physics.add.collider(this.player, collisionBoxes);
     }
 
@@ -414,7 +431,7 @@ export class Game extends Scene {
         let health = this.player.health;
         let healthbarBackground = this.add.graphics();
         healthbarBackground
-            .fillStyle( 0xff0000, 1)
+            .fillStyle(0xff0000, 1)
             .fillRect(10, 10, health, 15);
         // Crear un gráfico para la barra de vida
         this.healthBar = this.add.graphics();
@@ -433,7 +450,7 @@ export class Game extends Scene {
             .fillStyle(0x00ff00, 1)
             .fillRect(10, 10, this.player.health, 15);
 
-        if(this.player.health === 0) {
+        if (this.player.health === 0) {
             this.gameOver = true;
         }
     }

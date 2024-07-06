@@ -149,4 +149,9 @@ export class InputHandler {
         });
     }
 
+    runCombo(name) {
+        this.scene.player.runCombo(name);
+
+    }
+
 }
