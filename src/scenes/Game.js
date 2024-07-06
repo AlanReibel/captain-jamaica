@@ -22,13 +22,12 @@ export class Game extends Scene {
     healthBar;
 
     create() {
-        this.addBackground();
 
         this.gameOver = false;
         this.player = new Player(this, 100, 400, 'captain-idle');
         this.inputHandler = new InputHandler(this);
 
-        // this.showGuideText();
+        this.addBackground();
 
 
         console.log('game scene', this);
@@ -43,8 +42,6 @@ export class Game extends Scene {
         this.addHealthBar();
 
         this.createEnemies();
-
-
     }
 
     update() {
@@ -326,22 +323,28 @@ export class Game extends Scene {
 
     addBackground() {
 
-        let width = this.game.config.width;
-        let health = this.game.config.health;
+        let gamewidth = this.game.config.width;
+        let gameheight = this.game.config.height;
 
-        this.bg1 = this.add.tileSprite(0, 0, width, health, 'bg1')
+        let width = this.inputHandler.width || gamewidth;
+        let height = this.inputHandler.height || gameheight;
+
+        let x = gamewidth === width ? 0 : ( width - gamewidth ) / 2;
+        let y = gameheight === height ? 0 : ( height - gameheight) / 2;
+
+        this.bg1 = this.add.tileSprite(x, y, width, height, 'bg1')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg2 = this.add.tileSprite(0, 0, width, health, 'bg2')
+        this.bg2 = this.add.tileSprite(x, y, width, height, 'bg2')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg3 = this.add.tileSprite(0, 0, width, health, 'bg3')
+        this.bg3 = this.add.tileSprite(x, y, width, height, 'bg3')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg4 = this.add.tileSprite(0, 0, width, health, 'bg4')
+        this.bg4 = this.add.tileSprite(x, y, width, height, 'bg4')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg5 = this.add.tileSprite(0, 0, width, health, 'bg5')
+        this.bg5 = this.add.tileSprite(x, y, width, height, 'bg5')
             .setScrollFactor(0)
             .setOrigin(0, 0);
     }
@@ -373,7 +376,6 @@ export class Game extends Scene {
             // .centerOn(0,this.map.heightInPixels)
             // .setSize(800, 600)
             .setFollowOffset(0, -50);
-
     }
 
     addTileMaps() {

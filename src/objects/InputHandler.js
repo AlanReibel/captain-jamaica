@@ -86,26 +86,28 @@ export class InputHandler {
     }
 
     resizeGame({ width, height }) {
+        console.log(`resize game input: ${width}x${height}`);
         const aspectRatio = 4 / 3;
         let newWidth, newHeight, scale;
-
-        // Calcular el tamaño de la vista según la relación de aspecto 4:3
+    
         if (width / height > aspectRatio) {
-            // La pantalla es más ancha que 4:3, añadir barras laterales
             newHeight = height;
             newWidth = height * aspectRatio;
         } else {
-            // La pantalla es más alta que 4:3, añadir barras superior e inferior
             newWidth = width;
             newHeight = width / aspectRatio;
         }
 
-        // Calcular el escalado y la vista de la cámara
+        this.width = newWidth;
+        this.height = newHeight;
+    
         scale = Math.min(newWidth / this.scene.game.config.width, newHeight / this.scene.game.config.height);
         this.scene.cameras.main.setZoom(scale);
         this.scene.cameras.main.setViewport((width - newWidth) / 2, (height - newHeight) / 2, newWidth, newHeight);
         this.scene.cameras.main.setBounds(0, 0, this.scene.game.config.width, this.scene.game.config.height);
+        
     }
+    
 
     setButtonState(button, isPressed) {
         this.buttons[button] = isPressed;

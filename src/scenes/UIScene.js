@@ -10,6 +10,15 @@ export class UIScene extends Phaser.Scene {
         this.width;
         this.height;
         this.isPortrait;
+
+        this.comboSequences = [];
+        this.maxComboTime = 1000; // Tiempo máximo entre presiones de botones para considerar un combo (en milisegundos)
+        this.comboTimeout = null;
+        this.buttonStates = {}; // Mapa para el estado de los botones
+        this.comboList = [
+            { sequence: ['A', 'B', 'X'], action: 'Combo1' },
+            { sequence: ['Y', 'A', 'B'], action: 'Combo2' }
+        ];
     }
 
     init(data) {
@@ -80,20 +89,14 @@ export class UIScene extends Phaser.Scene {
             { key: 'Y', x: position.x, y: position.y - (radius * 2) }
         ];
 
-        buttons.forEach(button => {
+        buttons.forEach( button => {
 
+            this.buttonStates[button.key] = false;
             const buttonCircle = this.add.circle(button.x, button.y, radius)
                 .setStrokeStyle(2, 0xff0000)
                 .setInteractive()
-                .on('pointerdown', () => {
-                    // this.buttons[button.key] = true;
-                    this.inputHandler.setButtonState(button.key, true);
-                })
-                .on('pointerup', () => {
-                    // this.buttons[button.key] = false;
-                    this.inputHandler.setButtonState(button.key, false);
-
-                });
+                .on('pointerdown', () => this.onButtonDown(button.key))
+                .on('pointerup', () => this.onButtonUp(button.key));
 
             let fontSetup = {
                 fontFamily: 'Arial Black',
@@ -112,5 +115,66 @@ export class UIScene extends Phaser.Scene {
         const isPortrait = width < height;
 
         this.scene.restart();
+    }
+
+    onButtonDown(key) {
+        this.buttonStates[key] = true;
+        this.recordKeyPress(key);
+    }
+
+    onButtonUp(key) {
+        this.buttonStates[key] = false;
+    }
+
+    recordKeyPress(key) {
+        // Limpiar el timeout del combo previo
+        if (this.comboTimeout) {
+            clearTimeout(this.comboTimeout);
+        }
+        
+        // Añadir la tecla presionada a la secuencia de teclas
+        this.comboSequences.push(key);
+
+        // Verificar si la secuencia forma un combo
+        this.checkCombo();
+
+        // Reiniciar el timeout para considerar el tiempo entre teclas para el combo
+        this.comboTimeout = setTimeout(() => {
+            this.comboSequences = [];
+        }, this.maxComboTime);
+    }
+
+    checkCombo() {
+        for (let combo of this.comboList) {
+            if (this.isComboMatch(combo.sequence)) {
+                console.log(`Combo detected: ${combo.action}`);
+                this.executeCombo(combo.action);
+                this.comboSequences = [];
+                break;
+            }
+        }
+    }
+
+    isComboMatch(sequence) {
+        if (this.comboSequences.length < sequence.length) {
+            return false;
+        }
+
+        const recentSequence = this.comboSequences.slice(-sequence.length);
+        return sequence.every((key, index) => key === recentSequence[index]);
+    }
+
+    executeCombo(action) {
+        switch (action) {
+            case 'Combo1':
+                console.log('Executing Combo 1!');
+                // Implementar acción del Combo 1
+                break;
+            case 'Combo2':
+                console.log('Executing Combo 2!');
+                // Implementar acción del Combo 2
+                break;
+            // Añadir más combos según sea necesario
+        }
     }
 }
