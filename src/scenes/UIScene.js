@@ -12,9 +12,9 @@ export class UIScene extends Phaser.Scene {
         this.isPortrait;
 
         this.comboSequences = [];
-        this.maxComboTime = 1000; // Tiempo máximo entre presiones de botones para considerar un combo (en milisegundos)
+        this.maxComboTime = 1000;
+        this.holdingTime = 1000;
         this.comboTimeout = null;
-        this.buttonStates = {}; // Mapa para el estado de los botones
         this.comboList = [
             { sequence: ['A', 'B', 'X'], action: 'Combo1' },
             { sequence: ['Y', 'A', 'B'], action: 'Combo2' }
@@ -32,7 +32,6 @@ export class UIScene extends Phaser.Scene {
         this.height = this.scale.parentSize.height;
         this.isPortrait = this.width < this.height;
 
-        console.log('parent size',this.width, this.height);
         // set UI layer size
         this.scale.setGameSize(this.width, this.height);
 
@@ -91,7 +90,6 @@ export class UIScene extends Phaser.Scene {
 
         buttons.forEach( button => {
 
-            this.buttonStates[button.key] = false;
             const buttonCircle = this.add.circle(button.x, button.y, radius)
                 .setStrokeStyle(2, 0xff0000)
                 .setInteractive()
@@ -118,12 +116,18 @@ export class UIScene extends Phaser.Scene {
     }
 
     onButtonDown(key) {
-        this.buttonStates[key] = true;
+        this.inputHandler.setButtonState(key, true);
         this.recordKeyPress(key);
+        this.time.delayedCall(this.holdingTime, () => {
+            if(this.inputHandler.buttons[key]) {
+                this.inputHandler.holding[key] = true;
+            }
+        });
     }
 
     onButtonUp(key) {
-        this.buttonStates[key] = false;
+        this.inputHandler.setButtonState(key, false);
+        this.inputHandler.holding[key] = false;
     }
 
     recordKeyPress(key) {

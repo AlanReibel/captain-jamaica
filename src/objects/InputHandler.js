@@ -15,6 +15,12 @@ export class InputHandler {
             'X': false,
             'Y': false
         };
+        this.holding = {
+            'A': false,
+            'B': false,
+            'X': false,
+            'Y': false
+        };
 
         this.isMobile = true;
         // this.isMobile = this.isMobileDevice() || this.isTouchDevice();
@@ -86,7 +92,7 @@ export class InputHandler {
     }
 
     resizeGame({ width, height }) {
-        console.log(`resize game input: ${width}x${height}`);
+
         const aspectRatio = 4 / 3;
         let newWidth, newHeight, scale;
     
@@ -108,7 +114,6 @@ export class InputHandler {
         
     }
     
-
     setButtonState(button, isPressed) {
         this.buttons[button] = isPressed;
     }
