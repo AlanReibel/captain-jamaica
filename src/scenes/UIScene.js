@@ -12,8 +12,6 @@ export class UIScene extends Phaser.Scene {
         this.isPortrait;
 
         this.comboSequences = [];
-        this.maxComboTime = 1000;
-        this.holdingTime = 1000;
         this.comboTimeout = null;
         this.comboList = [
             { sequence: ['A', 'B'], action: 'combo1' },
@@ -119,7 +117,7 @@ export class UIScene extends Phaser.Scene {
     onButtonDown(key) {
         this.inputHandler.setButtonState(key, true);
         this.recordKeyPress(key);
-        this.time.delayedCall(this.holdingTime, () => {
+        this.time.delayedCall(this.inputHandler.holdingTime, () => {
             if(this.inputHandler.buttons[key]) {
                 this.inputHandler.holding[key] = true;
                 console.log('holded',this.inputHandler.holding);
@@ -147,7 +145,7 @@ export class UIScene extends Phaser.Scene {
         // Reiniciar el timeout para considerar el tiempo entre teclas para el combo
         this.comboTimeout = setTimeout(() => {
             this.comboSequences = [];
-        }, this.maxComboTime);
+        }, this.inputHandler.maxComboTime);
     }
 
     checkCombo() {

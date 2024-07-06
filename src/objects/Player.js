@@ -459,7 +459,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     runCombo(name) {
-        console.log('run combo',name);
+        // console.log('run combo',name);
 
         switch (name) {
             case 'combo1':

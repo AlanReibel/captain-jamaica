@@ -21,6 +21,9 @@ export class InputHandler {
             'X': false,
             'Y': false
         };
+        this.holdingTime = 1000;
+        this.maxComboTime = 1000;
+
 
         this.isMobile = true;
         // this.isMobile = this.isMobileDevice() || this.isTouchDevice();
@@ -135,17 +138,30 @@ export class InputHandler {
 
     createCombos() {
 
-        let combos = {
-            'combo1': [81,81],
-            'combo2': [70,70]
-        };
-        this.scene.input.keyboard.createCombo('CC', { resetOnMatch: true });//67
-        this.scene.input.keyboard.createCombo('QQ', { resetOnMatch: true });//81
-        this.scene.input.keyboard.createCombo('FF', { resetOnMatch: true });//70
+        this.scene.input.keyboard.createCombo('QE', { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//69 = AB
+        this.scene.input.keyboard.createCombo('EE', { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//69 = BB
+        this.scene.input.keyboard.createCombo('QQ', { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//81 = AA
+        // this.scene.input.keyboard.createCombo('CC', { resetOnMatch: true });//67
+        // this.scene.input.keyboard.createCombo('FF', { resetOnMatch: true });//70
         this.scene.input.keyboard.on('keycombomatch', (event) => {
 
+            if(event.keyCodes[0] === 81 && event.keyCodes[1] === 69){
+
+                this.runCombo('combo1');
+            }
+
+            if(event.keyCodes[0] === 69 && event.keyCodes[1] === 69){
+
+                this.runCombo('combo2');
+            }
+
+            if(event.keyCodes[0] === 81 && event.keyCodes[1] === 81){
+
+                this.runCombo('combo3');
+            }
+
             console.log('Combo',event.keyCodes);
-            this.scene.player.runCombo();
+            // this.scene.player.runCombo();
         });
     }
 

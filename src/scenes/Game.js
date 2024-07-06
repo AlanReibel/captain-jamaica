@@ -79,8 +79,38 @@ export class Game extends Scene {
             this.handleFightActions();
         }
 
+        // holding keys
+        if (this.inputHandler.cursors.space.isDown) {
+            let duration = this.inputHandler.cursors.space.getDuration();
+
+            if (duration - this.inputHandler.holdingTime <= 20 && duration - this.inputHandler.holdingTime >= 0) {
+                this.inputHandler.holding['X'] = true;
+                this.inputHandler.buttons['X'] = true;
+            } else {
+                this.inputHandler.holding['X'] = false;
+                this.inputHandler.buttons['X'] = false;
+
+            }
+
+        }
+
+        if (this.inputHandler.eKey.isDown) {
+            let duration = this.inputHandler.eKey.getDuration();
+
+            if (duration - this.inputHandler.holdingTime <= 20 && duration - this.inputHandler.holdingTime >= 0) {
+                this.inputHandler.holding['B'] = true;
+                this.inputHandler.buttons['B'] = true;
+            } else {
+                this.inputHandler.holding['B'] = false;
+                this.inputHandler.buttons['B'] = false;
+
+            }
+
+        }
+
         // hold action
         if (this.inputHandler.buttons['X'] && this.inputHandler.holding['X']) {
+            this.inputHandler.holding['X'] = false;
             this.inputHandler.buttons['X'] = false;
             this.player.shieldAttack();
             this.player.blockedFight = true;
@@ -88,9 +118,11 @@ export class Game extends Scene {
 
         if (this.inputHandler.buttons['B'] && this.inputHandler.holding['B']) {
             this.inputHandler.buttons['B'] = false;
+            this.inputHandler.holding['B'] = false;
             this.player.special();
             this.player.blockedFight = true;
         }
+
         // move if end of fight action
         if (this.player.fightEnds) {
             this.handleMovement();
@@ -175,7 +207,7 @@ export class Game extends Scene {
             this.inputHandler.cursors.space.isDown ||
             this.inputHandler.buttons['X']
         ) {
-    
+
             this.player.shieldHit();
 
         }
@@ -294,7 +326,7 @@ export class Game extends Scene {
             specialExplosion: 100,
             shield: 50,
         };
-        console.log('collision', player.state);
+        // console.log('collision', player.state);
         if (
             player.state === 'punch' ||
             player.state === 'kick' ||
