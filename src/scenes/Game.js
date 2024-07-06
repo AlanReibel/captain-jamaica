@@ -39,7 +39,7 @@ export class Game extends Scene {
 
         this.addTileMaps();
         this.createCamera();
-        this.addHealthBar();
+        // this.addHealthBar();
 
         this.createEnemies();
     }
@@ -398,6 +398,8 @@ export class Game extends Scene {
         this.bg5 = this.add.tileSprite(x, y, bgWidth, bgHeight, 'bg5')
             .setScrollFactor(0)
             .setOrigin(0, 0);
+
+        this.addHealthBar( x, y);
     }
 
     moveBackground(direction) {
@@ -458,8 +460,8 @@ export class Game extends Scene {
         // this.physics.add.collider(this.player, collisionBoxes);
     }
 
-    addHealthBar() {
-        this.uiContainer = this.add.container(0, 0);
+    addHealthBar( x, y ) {
+        this.uiContainer = this.add.container(x, y);
         this.uiContainer.setScrollFactor(0);
 
         let health = this.player.health;
