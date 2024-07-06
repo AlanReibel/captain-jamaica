@@ -87,7 +87,7 @@ export class Boot extends Scene {
 
         this.load.spritesheet('whip',
             'assets/sprites/captain/whip.png',
-            { frameWidth: 96, frameHeight: 52 }
+            { frameWidth: 135, frameHeight: 64 }
         );
 
         this.load.aseprite({

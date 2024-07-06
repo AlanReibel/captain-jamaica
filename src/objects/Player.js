@@ -41,6 +41,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.play('idle', true);
         this.punchSound = this.scene.sound.add('punch');
 
+        this.originalWidth = this.width;
+        this.originalHeight = this.height;
+        this.originalX = this.x;
+        this.originalY = this.y;
+        this.setMaxVelocity(100,400);
         // this.shield.setSize(100, 100)
         // scene.physics.world.enable(this.shield);
         // this.shield.setVisible(false);
@@ -115,8 +120,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.anims.create({
             key: 'whip',
-            frames: this.scene.anims.generateFrameNumbers('whip', { start: 0, end: 27 }),
-            frameRate: 12,
+            frames: this.scene.anims.generateFrameNumbers('whip', { start: 0, end: 20 }),
+            frameRate: 15,
             repeat: 0
         });
 
@@ -157,6 +162,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     }
 
+    resetSprite() {
+        this.setVelocityX(0);
+        this.setSize( this.originalWidth, this.originalHeight);
+        this.setPosition(this.originalX, this.y);
+        this.setOffset(0,0);
+        this.setScale(0.6);
+        this.scene.cameras.main.startFollow(this, true, 1, 0.1, 0, 0)
+    }
+
     idle() {
         this.setVelocityX(0);
         if (
@@ -166,6 +180,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.state !== 'kick' &&
             this.state !== 'shield' &&
             this.state !== 'catch' &&
+            this.state !== 'whip' &&
             this.state !== 'special' &&
             this.state !== 'burst'
         ) {
@@ -177,11 +192,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     move(direction) {
         if (!this.blockedMovement) {
 
+            this.originalX = this.x;
+            this.originalY = this.y;
             this.movingDirection = direction;
             this.focusTo = direction;
             let xMovement = direction === 'left' ? -1 : 1;
             let flip = direction === 'left';
-            this.setVelocityX(this.velocity * xMovement);
+
+            console.log('state',this.state);
+            if(this.state !== 'whip') {
+                this.setVelocityX(this.velocity * xMovement);
+            }
+
             if (this.state !== 'jump') {
                 this.anims.play('run', true).setFlipX(flip);
                 this.state = 'running';
@@ -284,6 +306,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     burst() {
+        this.resetSprite();
+
         this.setVelocityX(0);
         this.blockedMovement = true;
         this.blockedFight = true;
@@ -292,6 +316,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.state = 'burst';
 
         this.on('animationcomplete-burst', (anim, frame) => {
+            this.resetSprite();
             this.state = 'idle';
             this.fightEnds = true;
             this.blockedMovement = false;
@@ -331,6 +356,35 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.on('animationcomplete-punch2', (anim, frame) => {
             this.state = 'idle';
             this.fightEnds = true;
+        });
+    }
+
+    whip() {
+        this.setVelocityX(0);
+        let compensation = this.focusTo === 'right' ? 1 : -1;
+        this.vulnerable = false;
+        this.blockedMovement = true;
+        this.state = 'whip';
+        this.blockedFight = true;
+        this.fightEnds = false;
+        this.scene.cameras.main.stopFollow();
+
+        this.setPosition(this.originalX + (22 * compensation), this.y);
+        this.setOffset(0,5)
+        this.setScale(0.58);
+        this.anims.play('whip', true);
+        this.punchSound.play();
+
+        this.scene.time.delayedCall( 740, () => {
+            this.setSize( 135, 64);
+        });
+
+        this.on('animationcomplete-whip', (anim, frame) => {
+            this.resetSprite();
+            this.state = 'idle';
+            this.fightEnds = true;
+            this.blockedMovement = false;
+            this.vulnerable = true;
         });
     }
 
@@ -407,6 +461,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         let directionX = this.focusTo === 'left' ? -1 : 1;
         let flip = this.focusTo === 'left';
         
+        this.setVelocityX(0);
         this.state = 'special';
         this.setVisible(false);
 

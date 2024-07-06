@@ -101,6 +101,8 @@ export const enemies = {
                 let direction = player.x < enemy.x ? 'left' : 'right';
                 if(difference < 10 && difference > -10) {
                     enemy.stop();
+                    enemy.attack();
+                    
                 } else {
                     enemy.move(direction);
                 }

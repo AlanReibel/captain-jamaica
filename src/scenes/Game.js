@@ -192,7 +192,7 @@ export class Game extends Scene {
             this.inputHandler.buttons['B']
         ) {
 
-            // this.player.kick();
+            this.player.whip();
         }
         // pressed F key or Y button
         else if (
@@ -323,13 +323,15 @@ export class Game extends Scene {
         let damage = {
             punch: 20,
             kick: 30,
-            specialExplosion: 100,
             shield: 50,
+            whip: 100,
+            specialExplosion: 150,
         };
         // console.log('collision', player.state);
         if (
             player.state === 'punch' ||
             player.state === 'kick' ||
+            player.state === 'whip' ||
             player.state === 'specialExplosion' ||
             player.state === 'shield'
         ) {
