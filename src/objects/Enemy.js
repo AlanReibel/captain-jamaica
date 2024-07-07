@@ -36,6 +36,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         this.bullets = this.scene.physics.add.group();
 
+        this.addSounds();
+
     }
 
     update() {
@@ -51,6 +53,9 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.state = 'attacking';
             let flip = this.focusTo === 'left';
 
+            if(!this.shot) {
+                this.punchSound.play();
+            }
             this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
 
             this.once('animationcomplete', () => {
@@ -71,7 +76,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.bullets.add(bullet);
             bullet.setVelocityX(500 * directionX);
             bullet.body.setAllowGravity(false);
-
+            this.shotSound.play();
             scene.time.delayedCall( 800, () => {
                 this.bulletFired = false;
             });
@@ -79,7 +84,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     hurt(damage) {
-        console.log('enemy hurt', damage);
+
         if (this.state !== 'hurt' && !this.invulnerable) {
             this.state = 'hurt';
             this.invulnerable = true; // Enemigo es invulnerable después de ser golpeado
@@ -136,6 +141,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.state = 'dying';
             this.anims.play(`${this.name}-Death`, true);
             this.once('animationcomplete', () => {
+                this.dieSound.play();
                 this.destroy();
                 console.log(`${this.name} death`);
             });
@@ -170,5 +176,12 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
                 repeat: animationData.repeat
             });
         }
+    }
+
+    addSounds() {
+        this.dieSound = this.scene.sound.add('die');
+        this.punchSound = this.scene.sound.add('enemyPunch');
+        this.shotSound = this.scene.sound.add('enemyShot');
+        this.shotSound.setVolume(0.6);
     }
 }

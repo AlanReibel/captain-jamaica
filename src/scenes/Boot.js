@@ -20,11 +20,18 @@ export class Boot extends Scene {
     }
 
     loadAudios() {
+        // main
         this.load.audio('bitest','assets/sounds/bitest.mp3');
+        // enemy
+        this.load.audio('die','assets/sounds/laser1.mp3');
+        this.load.audio('enemyPunch','assets/sounds/punch3.mp3');
+        this.load.audio('enemyShot','assets/sounds/laser3.mp3');
+        // captain
         this.load.audio('laser','assets/sounds/laser2.mp3');
         this.load.audio('punch','assets/sounds/punch3.mp3');
+        this.load.audio('special','assets/sounds/boomerang.mp3');
         this.load.audio('boomerang','assets/sounds/boomerang2.mp3');
-        this.load.audio('die','assets/sounds/explosion.mp3');
+        this.load.audio('explosion','assets/sounds/explosion.mp3');
 
     }
 

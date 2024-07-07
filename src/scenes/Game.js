@@ -137,6 +137,7 @@ export class Game extends Scene {
         }
         // game over
         if (this.gameOver) {
+            this.music.stop();
             this.scene.start('GameOver');
         }
 
@@ -216,10 +217,7 @@ export class Game extends Scene {
     }
 
     hitEnemy(enemy, damage) {
-        let dieSound = this.sound.add('die');
-        // dieSound.setVolume(0.4);
         enemy.hurt(damage);
-        dieSound.play();
     }
 
     handleMovement() {
@@ -365,10 +363,10 @@ export class Game extends Scene {
     }
 
     playMusic() {
-        let music = this.sound.add('bitest');
+        this.music = this.sound.add('bitest');
         // music.on('play', listener);
-        music.play();
-        music.setLoop(true);
+        this.music.play();
+        this.music.setLoop(true);
 
     }
 

@@ -39,7 +39,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         // console.log('player', this.sprite);
         this.createAnimations();
         this.anims.play('idle', true);
-        this.punchSound = this.scene.sound.add('punch');
+
+        this.addSounds();
 
         this.originalWidth = this.width;
         this.originalHeight = this.height;
@@ -50,8 +51,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         // scene.physics.world.enable(this.shield);
         // this.shield.setVisible(false);
 
-        this.laserSound = scene.sound.add('laser');
-        this.laserSound.setVolume(0.4);
+
 
         this.bullets = this.scene.physics.add.group({
             classType: Bullet,
@@ -222,9 +222,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.bullets.add(this.shield);
         let distance = 150;
         this.blockedMovement = true;
-        let boomerangSound = this.scene.sound.add('boomerang');
         this.scene.time.delayedCall(400, () => {
-            boomerangSound.play();
+            this.boomerangSound.play();
         });
         this.anims.play('throw', true);
         this.state = 'throw';
@@ -373,9 +372,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setOffset(0,5)
         this.setScale(0.58);
         this.anims.play('whip', true);
-        this.punchSound.play();
+        
+        
+        this.scene.time.delayedCall( 600, () => {
+            this.specialSound.play();
+        });
 
         this.scene.time.delayedCall( 740, () => {
+            this.punchSound.play();
             this.setSize( 135, 64);
         });
 
@@ -461,6 +465,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         let directionX = this.focusTo === 'left' ? -1 : 1;
         let flip = this.focusTo === 'left';
         
+        this.specialSound.play();
         this.setVelocityX(0);
         this.state = 'special';
         this.setVisible(false);
@@ -490,6 +495,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.time.delayedCall( 2300, () => {
             this.state = 'specialExplosion';
+            this.explosionSound.play();
             this.body.setSize(128,64);
             this.scene.cameras.main.shake(100,0.05);
         });
@@ -529,5 +535,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 break;
         
         }
+    }
+
+    addSounds() {
+        this.punchSound = this.scene.sound.add('punch');
+        this.laserSound = this.scene.sound.add('laser');
+        this.specialSound = this.scene.sound.add('special');
+        this.explosionSound = this.scene.sound.add('explosion');
+        this.boomerangSound = this.scene.sound.add('boomerang');
+        this.laserSound.setVolume(0.4);
+
+
     }
 }

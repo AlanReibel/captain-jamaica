@@ -157,6 +157,7 @@ export const enemies = {
             Hurt: { frameWidth: 38, frameHeight: 40, frames: 2, frameRate: 12, repeat: 0 },
             Walk: { frameWidth: 38, frameHeight: 40, frames: 6, frameRate: 12, repeat: -1 },
         },
+        shot: true,
         fly: false,
         speed: 50,
         health: 100,
@@ -205,6 +206,7 @@ export const enemies = {
             Hurt: { frameWidth: 30, frameHeight: 34, frames: 2, frameRate: 12, repeat: 0 },
             Walk: { frameWidth: 30, frameHeight: 34, frames: 4, frameRate: 12, repeat: -1 },
         },
+        shot: true,
         fly: false,
         speed: 30,
         health: 150,
@@ -232,7 +234,7 @@ export const enemies = {
                 } else {
                     enemy.stop();
                     enemy.attack();
-                    enemy.fire(scene)
+                    enemy.fire(scene);
                 }
 
             } 
