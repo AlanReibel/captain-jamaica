@@ -116,12 +116,12 @@ export class Game extends Scene {
             this.player.blockedFight = true;
         }
 
-        if (this.inputHandler.buttons['B'] && this.inputHandler.holding['B']) {
-            this.inputHandler.buttons['B'] = false;
-            this.inputHandler.holding['B'] = false;
-            this.player.special();
-            this.player.blockedFight = true;
-        }
+        // if (this.inputHandler.buttons['B'] && this.inputHandler.holding['B']) {
+        //     this.inputHandler.buttons['B'] = false;
+        //     this.inputHandler.holding['B'] = false;
+        //     this.player.special();
+        //     this.player.blockedFight = true;
+        // }
 
         // move if end of fight action
         if (this.player.fightEnds) {
@@ -199,7 +199,7 @@ export class Game extends Scene {
             this.inputHandler.fKey.isDown ||
             this.inputHandler.buttons['Y']
         ) {
-            this.player.shieldAttack();
+            this.player.special();
 
         }
         // pressed space key or X button

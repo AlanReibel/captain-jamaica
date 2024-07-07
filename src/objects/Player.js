@@ -452,7 +452,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     special() {
-        
+        this.scene.cameras.main.stopFollow();
         this.vulnerable = false;
         let originalX = this.x;
         let originalY = this.y;
@@ -491,11 +491,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.time.delayedCall( 2300, () => {
             this.state = 'specialExplosion';
             this.body.setSize(128,64);
+            this.scene.cameras.main.shake(100,0.05);
         });
 
         this.scene.time.delayedCall( 2555.55, () => {
             special.destroy();
-            this.setPosition(originalX + 50 * directionX, originalY);
+            this.setPosition(originalX + 50 * directionX, originalY + 10);
             this.body.setSize(width,height);
             this.setVisible(true);
             this.state = 'idle';
