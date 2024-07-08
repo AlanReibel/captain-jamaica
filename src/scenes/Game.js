@@ -45,12 +45,13 @@ export class Game extends Scene {
     }
 
     update() {
-        // reset fight
-        if (this.player.body.velocity.x == 0 && this.player.body.blocked.down) {
-            this.player.movingDirection = 'none';
-        }
+        // console.log('state',this.player.state);
+        // console.log('movingDirection',this.player.movingDirection);
 
-        if (this.player.state === 'jump' && this.player.body.velocity.y >= 0) {
+        // reset fight
+
+
+        if (this.player.body.velocity.y >= 0) {
 
             this.player.movingDirection = 'down';
 
@@ -63,8 +64,12 @@ export class Game extends Scene {
 
         }
 
-        if (this.player.state === 'jump' && this.player.body.blocked.down) {
+        if ((this.player.movingDirection === 'down') && this.player.body.blocked.down) {
             this.player.land();
+        }
+        
+        if (this.player.body.velocity.x == 0 && this.player.body.blocked.down && this.player.state !== 'landing') {
+            this.player.movingDirection = 'none';
         }
 
         if (this.inputHandler.isFightActionLeaved()) {

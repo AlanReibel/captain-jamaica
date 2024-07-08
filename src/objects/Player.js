@@ -4,6 +4,7 @@ import { Bullet } from '../objects/Bullet.js';
 export class Player extends Phaser.Physics.Arcade.Sprite {
 
     state = 'idle';
+    isJumping = false;
     blockedJump = false;
     velocity = 100;
 
@@ -182,6 +183,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.state !== 'catch' &&
             this.state !== 'whip' &&
             this.state !== 'special' &&
+            this.state !== 'landing' &&
             this.state !== 'burst'
         ) {
             this.anims.play('idle', true);
@@ -199,12 +201,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             let xMovement = direction === 'left' ? -1 : 1;
             let flip = direction === 'left';
 
-            console.log('state',this.state);
-            if(this.state !== 'whip') {
-                this.setVelocityX(this.velocity * xMovement);
-            }
+            this.setVelocityX(this.velocity * xMovement);
 
-            if (this.state !== 'jump') {
+            if (
+                this.state !== 'jump' && 
+                this.state !== 'runningJump' &&
+                this.state !== 'landing'
+            ) {
                 this.anims.play('run', true).setFlipX(flip);
                 this.state = 'running';
             }
@@ -425,18 +428,23 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     handleJump() {
-        this.blockedJump = true;
-        this.movingDirection = 'up';
-        this.setVelocityY(-400);
-        this.body.setGravityY(400);
-        this.anims.play('jump');
-
-        if (this.state === 'running') {
-            this.state = 'runningJump';
-        } else {
-            this.state = 'jump';
+        if(!this.blockedJump) {
+            this.isJumping = true;
+            this.blockedJump = true;
+            this.movingDirection = 'up';
+            this.setVelocityY(-400);
+            this.body.setGravityY(400);
+            this.anims.play('jump');
+    
+            if (this.state === 'running') {
+                this.state = 'runningJump';
+            } else {
+                this.state = 'jump';
+            }
+    
             this.on('animationcomplete-jump', (anim, frame) => {
                 this.anims.play('idle');
+                this.state = 'idle';
             });
         }
 
@@ -512,11 +520,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     land() {
+        this.isJumping = false;
+        // this.blockedMovement = true;
+        // this.setVelocityX(0);
+        console.log('landing');
         this.anims.play('land', true);
+        this.state = 'landing';
         this.on('animationcomplete-land', (anim, frame) => {
             this.state = 'idle';
-            this.idle();
+            // this.idle();
             this.movingDirection = this.focusTo;
+            this.blockedMovement = false;
         });
     }
 
