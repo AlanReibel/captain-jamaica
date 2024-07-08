@@ -161,14 +161,18 @@ export class Game extends Scene {
         if (this.landEnemies) {
 
             this.landEnemies.children.iterate((enemy) => {
-                enemy.update();
+                if (this.isEnemyInCameraView(enemy, this.cameras.main.worldView)) {
+                    enemy.update();
+                }
             });
         }
 
         if (this.flyingEnemies) {
 
             this.flyingEnemies.children.iterate((enemy) => {
-                enemy.update();
+                if (this.isEnemyInCameraView(enemy, this.cameras.main.worldView)) {
+                    enemy.update();
+                }
             });
         }
 
@@ -285,6 +289,15 @@ export class Game extends Scene {
         this.physics.add.collider(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
         this.physics.add.collider(this.player.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
+    }
+
+    isEnemyInCameraView(enemy, visibleArea) {
+        return (
+            enemy.x + enemy.width > visibleArea.x && // Verifica el lado izquierdo
+            enemy.x < visibleArea.x + visibleArea.width && // Verifica el lado derecho
+            enemy.y + enemy.height > visibleArea.y && // Verifica la parte superior
+            enemy.y < visibleArea.y + visibleArea.height // Verifica la parte inferior
+        );
     }
 
     destroyBullet( bullet, map) {
