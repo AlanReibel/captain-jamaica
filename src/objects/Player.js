@@ -36,22 +36,19 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this
-            .setDepth(1)
+            .setDepth(2)
             .setBounce(0.2)
             .setCollideWorldBounds(true)
             .setScale(0.6)
             .setSize(this.originalWidth, this.originalHeight)
             .setOffset(24,0)
-        // console.log('player', this.sprite);
+            .setMaxVelocity(100,400);
+            
         this.createAnimations();
-        this.anims.play('idle', true);
-
         this.addSounds();
 
-        this.setMaxVelocity(100,400);
-        // this.shield.setSize(100, 100)
-        // scene.physics.world.enable(this.shield);
-        // this.shield.setVisible(false);
+        this.anims.play('idle', true);
+
 
         this.originalX = this.x;
         this.originalY = this.y;

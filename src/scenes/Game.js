@@ -454,27 +454,16 @@ export class Game extends Scene {
     addTileMaps() {
         this.map = this.make.tilemap({ key: 'tilemapJson' });
 
-        const tiles = this.map.addTilesetImage('Tileset', 'tilemapImage');
-        this.groundLayer = this.map.createLayer('ground', tiles);
-
         const greenTiles = this.map.addTilesetImage('greenTiles2', 'tilemapImage2');
         this.greenTilesLayer = this.map.createLayer('greenPlatforms', greenTiles);
 
-        // const collisionLayer = this.greenTilesLayer.setCollisionFromCollisionGroup();
-        // this-this.greenTilesLayer.setCollisionByExclusion([-1]);
-        // this.matter.world.convertTilemapLayer(this.greenTilesLayer);
-        // this.greenTilesLayer.renderDebug(this.add.graphics());
-
-        const objectTiles = this.map.addTilesetImage('objects', 'objectsTilemap');
-        const treesLayer = this.map.createLayer('trees', objectTiles);
-
-
-        // this.greenTilesLayer.setCollisionByProperty({ collider: true });
-        this.groundLayer.setCollisionByProperty({ collider: true });
-        this.physics.add.collider(this.player, this.groundLayer);
-
+        const objectTiles = this.map.addTilesetImage('newObjectSet', 'objectsTilemap');
+        const backObjectLayer = this.map.createLayer('background', objectTiles);
+        const frontObjectLayer = this.map.createLayer('foreground', objectTiles);
+        backObjectLayer.setDepth(0);
+        frontObjectLayer.setDepth(3);
         this.greenTilesLayer
-            .setDepth(0)
+            .setDepth(1)
             .setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player, this.greenTilesLayer);
         // this.physics.add.collider(this.player, collisionBoxes);
