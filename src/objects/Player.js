@@ -25,6 +25,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     fightEnds = true;
     blockedFight = false;
 
+    originalWidth = 26;
+    originalHeight = 58;
+
     constructor(scene, x, y, texture) {
 
         super(scene, x, y, texture);
@@ -36,22 +39,22 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             .setDepth(1)
             .setBounce(0.2)
             .setCollideWorldBounds(true)
-            .setScale(0.6);
+            .setScale(0.6)
+            .setSize(this.originalWidth, this.originalHeight)
+            .setOffset(24,0)
         // console.log('player', this.sprite);
         this.createAnimations();
         this.anims.play('idle', true);
 
         this.addSounds();
 
-        this.originalWidth = this.width;
-        this.originalHeight = this.height;
-        this.originalX = this.x;
-        this.originalY = this.y;
         this.setMaxVelocity(100,400);
         // this.shield.setSize(100, 100)
         // scene.physics.world.enable(this.shield);
         // this.shield.setVisible(false);
 
+        this.originalX = this.x;
+        this.originalY = this.y;
 
 
         this.bullets = this.scene.physics.add.group({
@@ -164,10 +167,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     resetSprite() {
+        let offsetX = this.focusTo === 'right' ? 24 : 15; 
+
         this.setVelocityX(0);
         this.setSize( this.originalWidth, this.originalHeight);
         this.setPosition(this.originalX, this.y);
-        this.setOffset(0,0);
+        this.setOffset(offsetX,0);
         this.setScale(0.6);
         this.scene.cameras.main.startFollow(this, true, 1, 0.1, 0, 0)
     }
@@ -201,9 +206,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.focusTo = direction;
             let xMovement = direction === 'left' ? -1 : 1;
             let flip = direction === 'left';
+            let offsetX = this.focusTo === 'right' ? 24 : 15; 
 
             this.setVelocityX(this.velocity * xMovement);
-
+            this.setOffset(offsetX,0);
+            
             if (
                 this.state !== 'jump' && 
                 this.state !== 'runningJump' &&
@@ -216,6 +223,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     takeDamage(amount) {
+        this.startBlink(3);
         this.health -= amount;
     }
 
@@ -327,73 +335,88 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     kick() {
-        this.blockedFight = true;
-        this.fightEnds = false;
-        this.anims.play('kick', true);
-        this.state = 'kick';
-        this.punchSound.play();
-        this.on('animationcomplete-kick', (anim, frame) => {
-            this.state = 'idle';
-            this.fightEnds = true;
-        });
+        if(this.state !== 'whip') {
+
+            this.blockedFight = true;
+            this.fightEnds = false;
+            this.anims.play('kick', true);
+            this.state = 'kick';
+            this.punchSound.play();
+            this.on('animationcomplete-kick', (anim, frame) => {
+                this.state = 'idle';
+                this.fightEnds = true;
+            });
+        }
     }
     
     punch() {
-        this.blockedFight = true;
-        this.fightEnds = false;
-        this.anims.play('punch', true);
-        this.state = 'punch';
-        this.punchSound.play();
-        this.on('animationcomplete-punch', (anim, frame) => {
-            this.state = 'idle';
-            this.fightEnds = true;
-        });
+        if(this.state !== 'whip') {
+            this.resetSprite();
+            this.blockedFight = true;
+            this.fightEnds = false;
+            this.anims.play('punch');
+            this.state = 'punch';
+            this.punchSound.play();
+            this.on('animationcomplete-punch', (anim, frame) => {
+                this.state = 'idle';
+                this.fightEnds = true;
+            });
+        }
     }
 
     punch2() {
-        this.blockedFight = true;
-        this.fightEnds = false;
-        this.anims.play('punch2', true);
-        this.state = 'punch2';
-        this.punchSound.play();
-        this.on('animationcomplete-punch2', (anim, frame) => {
-            this.state = 'idle';
-            this.fightEnds = true;
-        });
+        if(this.state !== 'whip') {
+
+            this.resetSprite();
+            this.blockedFight = true;
+            this.fightEnds = false;
+            this.anims.play('punch2', true);
+            this.state = 'punch2';
+            this.punchSound.play();
+            this.on('animationcomplete-punch2', (anim, frame) => {
+                this.state = 'idle';
+                this.fightEnds = true;
+            });
+        }
     }
 
     whip() {
-        this.setVelocityX(0);
-        let compensation = this.focusTo === 'right' ? 1 : -1;
-        this.vulnerable = false;
-        this.blockedMovement = true;
-        this.state = 'whip';
-        this.blockedFight = true;
-        this.fightEnds = false;
-        this.scene.cameras.main.stopFollow();
-
-        this.setPosition(this.originalX + (22 * compensation), this.y);
-        this.setOffset(0,5)
-        this.setScale(0.58);
-        this.anims.play('whip', true);
+        if(!this.isJumping) {
+            let compensation = this.focusTo === 'right' ? 1 : -1;
         
-        
-        this.scene.time.delayedCall( 600, () => {
-            this.specialSound.play();
-        });
-
-        this.scene.time.delayedCall( 740, () => {
-            this.punchSound.play();
-            this.setSize( 135, 64);
-        });
-
-        this.on('animationcomplete-whip', (anim, frame) => {
-            this.resetSprite();
-            this.state = 'idle';
-            this.fightEnds = true;
-            this.blockedMovement = false;
-            this.vulnerable = true;
-        });
+            this.blockedFight = true;
+            this.fightEnds = false;
+            this.vulnerable = false;
+            this.blockedMovement = true;
+            this.state = 'whip';
+            this.blockedFight = true;
+    
+            this.scene.cameras.main.stopFollow();
+            
+            this.setVelocityX(0);
+            this.setPosition(this.originalX + (22 * compensation), this.y);
+            this.setOffset(0,5)
+            this.setScale(0.58);
+            this.anims.play('whip', true);
+            
+            
+            this.scene.time.delayedCall( 600, () => {
+                this.specialSound.play();
+            });
+    
+            this.scene.time.delayedCall( 740, () => {
+                this.punchSound.play();
+                this.setSize( 135, 64);
+            });
+    
+            this.on('animationcomplete-whip', (anim, frame) => {
+                this.resetSprite();
+                this.state = 'idle';
+                this.fightEnds = true;
+                this.blockedMovement = false;
+                this.vulnerable = true;
+            });
+        }
     }
 
     shieldAttack() {
@@ -451,7 +474,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     jumpKick() {
-        console.log('jumpKick', this.anims);
         this.fightEnds = false;
         this.blockedFight = true;
         this.anims.play('jumpKick', true);
@@ -463,59 +485,63 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     special() {
-        this.scene.cameras.main.stopFollow();
-        this.vulnerable = false;
-        let originalX = this.x;
-        let originalY = this.y;
-        let width = this.width;
-        let height = this.height;
-        let directionX = this.focusTo === 'left' ? -1 : 1;
-        let flip = this.focusTo === 'left';
-        
-        this.specialSound.play();
-        this.setVelocityX(0);
-        this.state = 'special';
-        this.setVisible(false);
+        if(!this.isJumping) {
 
-        let special = this.scene.physics.add.sprite(originalX + 3, (originalY - height / 2) + 3, 'special');
-        special.setFlipX(flip);
-        special.anims.play('special', true);
-        this.scene.tweens.add({
-            targets: special,
-            x: originalX + 50 * directionX,
-            y: originalY - 80,
-            duration: 2055.55,
-            ease: 'Power1',
-            onComplete: () => {
-                this.scene.tweens.add({
-                    targets: special,
-                    x: originalX + 50 * directionX,
-                    y: originalY - 27,
-                    duration: 200,
-                    ease: 'Power1',
-                });
-            }
-        });
-
-        special.body.setAllowGravity(false);
-        special.setScale(0.95);
-
-        this.scene.time.delayedCall( 2300, () => {
-            this.state = 'specialExplosion';
-            this.explosionSound.play();
-            this.body.setSize(128,64);
-            this.scene.cameras.main.shake(100,0.05);
-        });
-
-        this.scene.time.delayedCall( 2555.55, () => {
-            this.resetSprite();
-            special.destroy();
-            this.setPosition(originalX + 50 * directionX, originalY + 10);
-            this.body.setSize(width,height);
-            this.setVisible(true);
-            this.state = 'idle';
-            this.vulnerable = true;
-        });
+            this.scene.cameras.main.stopFollow();
+            this.vulnerable = false;
+            let originalX = this.x;
+            let originalY = this.y;
+            let width = this.width;
+            let height = this.height;
+            let directionX = this.focusTo === 'left' ? -1 : 1;
+            let flip = this.focusTo === 'left';
+            
+            this.specialSound.play();
+            this.setVelocityX(0);
+            this.state = 'special';
+            this.setVisible(false);
+    
+            let special = this.scene.physics.add.sprite(originalX + 3, (originalY - height / 2) + 3, 'special');
+            special.setFlipX(flip);
+            special.anims.play('special', true);
+            this.scene.tweens.add({
+                targets: special,
+                x: originalX + 50 * directionX,
+                y: originalY - 80,
+                duration: 2055.55,
+                ease: 'Power1',
+                onComplete: () => {
+                    this.scene.tweens.add({
+                        targets: special,
+                        x: originalX + 50 * directionX,
+                        y: originalY - 27,
+                        duration: 200,
+                        ease: 'Power1',
+                    });
+                }
+            });
+    
+            special.body.setAllowGravity(false);
+            special.setScale(0.95);
+    
+            this.scene.time.delayedCall( 2300, () => {
+                this.state = 'specialExplosion';
+                this.explosionSound.play();
+                this.body.setSize(128,64);
+                this.scene.cameras.main.shake(100,0.05);
+            });
+    
+            this.scene.time.delayedCall( 2555.55, () => {
+                this.resetSprite();
+                special.destroy();
+                this.setPosition(originalX + 50 * directionX, originalY + 10);
+                this.originalX = this.x;
+                this.originalY = this.y;
+                this.setVisible(true);
+                this.state = 'idle';
+                this.vulnerable = true;
+            });
+        }
 
     }
 
@@ -556,5 +582,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.laserSound.setVolume(0.4);
 
 
+    }
+
+    startBlink(repeatCount) {
+        // Crear un tween para parpadear
+         // Asegurarse de que el sprite vuelva a ser completamente visible
+        this.scene.tweens.add({
+            targets: this,
+            alpha: 0.3,
+            ease: 'Linear',
+            duration: 200, // Duración de cada parpadeo (mitad para desvanecer y mitad para reaparecer)
+            yoyo: true, // Hacer el parpadeo (yoyo vuelve a la opacidad original)
+            repeat: repeatCount - 1, // Repetir varias veces el parpadeo
+            onComplete: () => {
+                this.setAlpha(1);
+            }
+        });
     }
 }

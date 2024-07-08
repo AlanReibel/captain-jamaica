@@ -12,6 +12,7 @@ export class Boot extends Scene {
         this.loadImages();
         this.loadSpriteSheets();
         this.loadTileMaps();
+        this.loadFXSprites();
 
     }
 
@@ -107,9 +108,13 @@ export class Boot extends Scene {
     enemiesSprites() {
 
         Enemy.loadResources(this);
-        // this.load.once('complete', () => {
-        //     Enemy.createAnimations(this);
-        // });
-        // this.load.start(); // Empieza la carga de recursos
+
+    }
+
+    loadFXSprites() {
+        this.load.spritesheet('explosion1',
+            'assets/sprites/fx/explosion1.png',
+            { frameWidth: 25, frameHeight: 24 }
+        );
     }
 }

@@ -28,20 +28,13 @@ export class Game extends Scene {
         this.inputHandler = new InputHandler(this);
 
         this.addBackground();
-
+        this.playMusic();
+        this.addTileMaps();
+        this.createCamera();
+        this.createEnemies();
 
         console.log('game scene', this);
 
-
-
-        this.playMusic();
-
-
-        this.addTileMaps();
-        this.createCamera();
-        // this.addHealthBar();
-
-        this.createEnemies();
     }
 
     update() {
@@ -62,14 +55,14 @@ export class Game extends Scene {
             this.player.movingDirection = 'none';
         }
 
-        if (this.player.movingDirection === 'down' && this.player.body.blocked.down) {
+        if (this.player.movingDirection === 'down' && this.player.body.blocked.down && this.player.fightEnds) {
             this.player.land();
             this.player.movingDirection = 'none';
         }
 
         
 
-        if (this.inputHandler.isFightActionLeaved()) {
+        if (this.inputHandler.isFightActionLeaved() && this.fightEnds) {
             this.player.blockedFight = false;
         }
 
@@ -277,6 +270,7 @@ export class Game extends Scene {
             } else {
                 this.landEnemies.add(newEnemy);
                 this.physics.add.overlap(newEnemy.bullets, this.player, this.playerFired, null, this);
+                this.physics.add.collider(newEnemy.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
             }
 
         });
@@ -290,6 +284,18 @@ export class Game extends Scene {
         this.physics.add.overlap(this.player, this.flyingEnemies, this.handleBodyCollision, null, this);
         this.physics.add.collider(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
+        this.physics.add.collider(this.player.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
+    }
+
+    destroyBullet( bullet, map) {
+        bullet.destroy();
+        let bulletExplosion = this.physics.add.sprite(bullet.x, bullet.y, 'explosion1');
+        bulletExplosion.body.setAllowGravity(false);
+        bulletExplosion.anims.play('explosion1', true);
+
+        bulletExplosion.on('animationcomplete-explosion1', (anim, frame) => {
+            bulletExplosion.destroy();
+        });
     }
 
     playerFired(player, bullet) {
@@ -297,7 +303,7 @@ export class Game extends Scene {
             this.player.vulnerable = false;
             this.player.takeDamage(bullet.damage);
             this.healthbarUpdate();
-            bullet.destroy();
+            this.destroyBullet(bullet);
         }
 
         this.time.delayedCall(1000, () => {
@@ -459,6 +465,8 @@ export class Game extends Scene {
             .setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player, this.greenTilesLayer);
         // this.physics.add.collider(this.player, collisionBoxes);
+
+        this.defineFXAnimations();
     }
 
     addHealthBar( x, y ) {
@@ -492,5 +500,13 @@ export class Game extends Scene {
         }
     }
 
+    defineFXAnimations() {
+        this.anims.create({
+            key: 'explosion1',
+            frames: this.anims.generateFrameNumbers('explosion1', { start: 0, end: 11 }),
+            frameRate: 24,
+            repeat: 0
+        });
+    }
 
 }

@@ -292,6 +292,18 @@
                  "width":0,
                  "x":2668,
                  "y":112
+                }, 
+                {
+                 "height":0,
+                 "id":20,
+                 "name":"brainTank",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":418,
+                 "y":311
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -376,7 +388,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":20,
+ "nextobjectid":21,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
