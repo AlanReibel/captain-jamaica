@@ -58,7 +58,12 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             }
             this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
 
-            this.once('animationcomplete', () => {
+            // this.once('animationcomplete', () => {
+            //     this.attackDone = true;
+            //     this.state = 'idle';
+            // });
+
+            this.scene.time.delayedCall(800, () => {
                 this.attackDone = true;
                 this.state = 'idle';
             });

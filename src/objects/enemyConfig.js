@@ -194,7 +194,9 @@ export const enemies = {
                     enemy.fire(scene)
                 }
 
-            } 
+            } else {
+                enemy.stop();
+            }
 
         }
     },
@@ -237,7 +239,9 @@ export const enemies = {
                     enemy.fire(scene);
                 }
 
-            } 
+            } else {
+                enemy.stop();
+            }
 
         }
     },
