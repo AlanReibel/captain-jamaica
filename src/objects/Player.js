@@ -184,6 +184,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.state !== 'whip' &&
             this.state !== 'special' &&
             this.state !== 'landing' &&
+            this.state !== 'punch' &&
             this.state !== 'burst'
         ) {
             this.anims.play('idle', true);
@@ -419,10 +420,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.punchSound.play();
             });
             this.on('animationcomplete-shield', (anim, frame) => {
-                this.scene.time.delayedCall( 200, () => {
-                    this.state = 'idle';
-                    this.fightEnds = true;
-                });
+                this.state = 'idle';
+                this.fightEnds = true;
             });
         }
     }
@@ -521,14 +520,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     land() {
         this.isJumping = false;
-        // this.blockedMovement = true;
-        // this.setVelocityX(0);
-        console.log('landing');
         this.anims.play('land', true);
         this.state = 'landing';
         this.on('animationcomplete-land', (anim, frame) => {
             this.state = 'idle';
-            // this.idle();
             this.movingDirection = this.focusTo;
             this.blockedMovement = false;
         });
