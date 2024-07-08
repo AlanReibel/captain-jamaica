@@ -508,6 +508,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         });
 
         this.scene.time.delayedCall( 2555.55, () => {
+            this.resetSprite();
             special.destroy();
             this.setPosition(originalX + 50 * directionX, originalY + 10);
             this.body.setSize(width,height);
