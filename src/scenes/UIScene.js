@@ -14,9 +14,9 @@ export class UIScene extends Phaser.Scene {
         this.comboSequences = [];
         this.comboTimeout = null;
         this.comboList = [
-            { sequence: ['A', 'B'], action: 'combo1' },
-            { sequence: ['B', 'B'], action: 'combo2' },
-            { sequence: ['A', 'A'], action: 'combo3' },
+            // { sequence: ['A', 'B'], action: 'combo1' },
+            { sequence: ['B', 'Y'], action: 'combo2' },
+            { sequence: ['B', 'B'], action: 'combo3' },
         ];
     }
 
@@ -91,9 +91,10 @@ export class UIScene extends Phaser.Scene {
 
             const buttonCircle = this.add.circle(button.x, button.y, radius)
                 .setStrokeStyle(2, 0xff0000)
+                .setFillStyle(0x000000)
                 .setInteractive()
-                .on('pointerdown', () => this.onButtonDown(button.key))
-                .on('pointerup', () => this.onButtonUp(button.key));
+                .on('pointerdown', () => this.onButtonDown(button.key, buttonCircle))
+                .on('pointerup', () => this.onButtonUp(button.key, buttonCircle));
 
             let fontSetup = {
                 fontFamily: 'Arial Black',
@@ -114,7 +115,8 @@ export class UIScene extends Phaser.Scene {
         this.scene.restart();
     }
 
-    onButtonDown(key) {
+    onButtonDown( key, buttonCircle ) {
+        buttonCircle.setFillStyle(0xff0000);
         this.inputHandler.setButtonState(key, true);
         this.recordKeyPress(key);
         this.time.delayedCall(this.inputHandler.holdingTime, () => {
@@ -125,7 +127,8 @@ export class UIScene extends Phaser.Scene {
         });
     }
 
-    onButtonUp(key) {
+    onButtonUp( key, buttonCircle ) {
+        buttonCircle.setFillStyle(0x000000);
         this.inputHandler.setButtonState(key, false);
         this.inputHandler.holding[key] = false;
     }

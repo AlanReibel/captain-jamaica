@@ -430,7 +430,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     shieldHit() {
         if (
             this.movingDirection !== 'up' &&
-            this.movingDirection !== 'down'
+            this.movingDirection !== 'down' &&
+            this.state !== 'throw'
         ) {
             this.blockedFight = true;
             this.fightEnds = false;

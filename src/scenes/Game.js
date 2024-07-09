@@ -76,8 +76,9 @@ export class Game extends Scene {
         }
 
         // holding keys
-        if (this.inputHandler.cursors.space.isDown) {
-            let duration = this.inputHandler.cursors.space.getDuration();
+        // space holding
+        if (this.inputHandler.qKey.isDown) {
+            let duration = this.inputHandler.qKey.getDuration();
 
             if (duration - this.inputHandler.holdingTime <= 20 && duration - this.inputHandler.holdingTime >= 0) {
                 this.inputHandler.holding['X'] = true;
@@ -90,15 +91,16 @@ export class Game extends Scene {
 
         }
 
+        // E key holding
         if (this.inputHandler.eKey.isDown) {
             let duration = this.inputHandler.eKey.getDuration();
 
             if (duration - this.inputHandler.holdingTime <= 20 && duration - this.inputHandler.holdingTime >= 0) {
-                this.inputHandler.holding['B'] = true;
-                this.inputHandler.buttons['B'] = true;
+                this.inputHandler.holding['Y'] = true;
+                this.inputHandler.buttons['Y'] = true;
             } else {
-                this.inputHandler.holding['B'] = false;
-                this.inputHandler.buttons['B'] = false;
+                this.inputHandler.holding['Y'] = false;
+                this.inputHandler.buttons['Y'] = false;
 
             }
 
@@ -112,12 +114,12 @@ export class Game extends Scene {
             this.player.blockedFight = true;
         }
 
-        // if (this.inputHandler.buttons['B'] && this.inputHandler.holding['B']) {
-        //     this.inputHandler.buttons['B'] = false;
-        //     this.inputHandler.holding['B'] = false;
-        //     this.player.special();
-        //     this.player.blockedFight = true;
-        // }
+        if (this.inputHandler.buttons['Y'] && this.inputHandler.holding['Y']) {
+            this.inputHandler.buttons['Y'] = false;
+            this.inputHandler.holding['Y'] = false;
+            this.player.special();
+            this.player.blockedFight = true;
+        }
 
         // move if end of fight action
         if (this.player.fightEnds) {
@@ -179,39 +181,40 @@ export class Game extends Scene {
     }
 
     handleFightActions() {
-        // pressed Q key or A button
+        // pressed Q key or X button
         if (
             this.inputHandler.qKey.isDown ||
-            this.inputHandler.buttons['A']
-        ) {
-
-            this.player.punch();
-        }
-        // pressed E key or B button
-        else if (
-            this.inputHandler.eKey.isDown ||
-            this.inputHandler.buttons['B']
-        ) {
-
-            this.player.whip();
-        }
-        // pressed F key or Y button
-        else if (
-            this.inputHandler.fKey.isDown ||
-            this.inputHandler.buttons['Y']
-        ) {
-            this.player.special();
-
-        }
-        // pressed space key or X button
-        else if (
-            this.inputHandler.cursors.space.isDown ||
             this.inputHandler.buttons['X']
         ) {
-
             this.player.shieldHit();
 
         }
+        // pressed space key or B button
+        else if (
+            this.inputHandler.cursors.space.isDown ||
+            this.inputHandler.buttons['B']
+        ) {
+            this.player.punch();
+
+        }
+        // pressed E key or Y button
+        else if (
+            this.inputHandler.eKey.isDown ||
+            this.inputHandler.buttons['Y']
+        ) {
+            // this.player.special();
+            this.player.whip();
+
+
+        }
+        // pressed space key or X button
+        // else if (
+        //     this.inputHandler.cursors.space.isDown ||
+        //     this.inputHandler.buttons['X']
+        // ) {
+
+
+        // }
 
 
     }

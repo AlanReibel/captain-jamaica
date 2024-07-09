@@ -26,7 +26,7 @@ export class InputHandler {
 
 
         this.isMobile = true;
-        this.isMobile = this.isMobileDevice() || this.isTouchDevice();
+        // this.isMobile = this.isMobileDevice() || this.isTouchDevice();
 
         this.createCombos();
         if(this.isMobile) {
@@ -46,7 +46,7 @@ export class InputHandler {
             this.eKey.isDown ||
             this.fKey.isDown ||
             this.cursors.space.isDown ||
-            this.buttons['A'] ||
+            // this.buttons['A'] ||
             this.buttons['B'] ||
             this.buttons['X'] ||
             this.buttons['Y'];
@@ -57,7 +57,7 @@ export class InputHandler {
             this.qKey.isUp &&
             this.fKey.isUp &&
             this.eKey.isUp &&
-            !this.buttons['A'] &&
+            // !this.buttons['A'] &&
             !this.buttons['B'] &&
             !this.buttons['X'] &&
             !this.buttons['Y'];
@@ -65,10 +65,9 @@ export class InputHandler {
 
     isJumpLeaved() {
         
-        let joystickExist = this.joystickKeys ? this.joystickKeys.up.isUp : true;
         return this.wKey.isUp &&
             this.cursors.up.isUp &&
-            joystickExist;
+            !this.buttons['A'];
     }
 
 //     isMovementKeyPressed() {
@@ -82,7 +81,7 @@ export class InputHandler {
     isJumpKeyPressed() {
         return this.cursors.up.isDown ||
             this.wKey.isDown ||
-            this.joystickKeys?.up.isDown;
+            this.buttons['A'];
     }
 
     isMobileDevice() {
@@ -138,24 +137,37 @@ export class InputHandler {
 
     createCombos() {
 
-        this.scene.input.keyboard.createCombo('QE', { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//69 = AB
-        this.scene.input.keyboard.createCombo('EE', { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//69 = BB
-        this.scene.input.keyboard.createCombo('QQ', { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//81 = AA
+        let combo2 = [
+            Phaser.Input.Keyboard.KeyCodes.SPACE,
+            Phaser.Input.Keyboard.KeyCodes.E
+        ];
+        
+        let combo3 = [
+            Phaser.Input.Keyboard.KeyCodes.SPACE,
+            Phaser.Input.Keyboard.KeyCodes.SPACE
+        ];
+
+        // this.scene.input.keyboard.createCombo('QE', { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//69 = XY
+        // this.scene.input.keyboard.createCombo('EE', { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//69 = YY
+        this.scene.input.keyboard.createCombo(combo2, { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//32 = XX
+        this.scene.input.keyboard.createCombo(combo3, { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//81 = XX
         // this.scene.input.keyboard.createCombo('CC', { resetOnMatch: true });//67
         // this.scene.input.keyboard.createCombo('FF', { resetOnMatch: true });//70
         this.scene.input.keyboard.on('keycombomatch', (event) => {
 
-            if(event.keyCodes[0] === 81 && event.keyCodes[1] === 69){
+            console.log('key codes',event.keyCodes);
 
-                this.runCombo('combo1');
-            }
+            // if(event.keyCodes[0] === 81 && event.keyCodes[1] === 69){
 
-            if(event.keyCodes[0] === 69 && event.keyCodes[1] === 69){
+            //     this.runCombo('combo1');
+            // }
+
+            if(event.keyCodes[0] === 32 && event.keyCodes[1] === 69){
 
                 this.runCombo('combo2');
             }
 
-            if(event.keyCodes[0] === 81 && event.keyCodes[1] === 81){
+            if(event.keyCodes[0] === 32 && event.keyCodes[1] === 32){
 
                 this.runCombo('combo3');
             }
