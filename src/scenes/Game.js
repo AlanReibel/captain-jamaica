@@ -406,19 +406,22 @@ export class Game extends Scene {
         let x = gamewidth === bgWidth ? 0 : (bgWidth - gamewidth) / 2;
         let y = gameheight === bgHeight ? 0 : (bgHeight - gameheight) / 2;
 
-        this.bg1 = this.add.tileSprite(x, y, bgWidth, bgHeight, 'bg1')
+        console.log('with',this.inputHandler.width );
+        console.log('gamewidth',gamewidth);
+        console.log('bgWidth',bgWidth);
+        this.bg1 = this.add.tileSprite(x, y, gamewidth, gameheight, 'bg1')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg2 = this.add.tileSprite(x, y, bgWidth, bgHeight, 'bg2')
+        this.bg2 = this.add.tileSprite(x, y, gamewidth, gameheight, 'bg2')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg3 = this.add.tileSprite(x, y, bgWidth, bgHeight, 'bg3')
+        this.bg3 = this.add.tileSprite(x, y, gamewidth, gameheight, 'bg3')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg4 = this.add.tileSprite(x, y, bgWidth, bgHeight, 'bg4')
+        this.bg4 = this.add.tileSprite(x, y, gamewidth, gameheight, 'bg4')
             .setScrollFactor(0)
             .setOrigin(0, 0);
-        this.bg5 = this.add.tileSprite(x, y, bgWidth, bgHeight, 'bg5')
+        this.bg5 = this.add.tileSprite(x, y, gamewidth, gameheight, 'bg5')
             .setScrollFactor(0)
             .setOrigin(0, 0);
 
