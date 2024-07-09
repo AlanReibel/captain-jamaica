@@ -148,7 +148,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.once('animationcomplete', () => {
                 this.dieSound.play();
                 this.destroy();
-                console.log(`${this.name} death`);
             });
         }
     }

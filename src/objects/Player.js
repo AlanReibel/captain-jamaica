@@ -26,7 +26,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     blockedFight = false;
 
     originalWidth = 26;
-    originalHeight = 58;
+    originalHeight = 52;
 
     constructor(scene, x, y, texture) {
 
@@ -41,7 +41,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             .setCollideWorldBounds(true)
             .setScale(0.6)
             .setSize(this.originalWidth, this.originalHeight)
-            .setOffset(24,0)
+            .setOffset(24,6)
             .setMaxVelocity(100,400);
             
         this.createAnimations();
@@ -121,7 +121,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.anims.create({
             key: 'whip',
-            frames: this.scene.anims.generateFrameNumbers('whip', { start: 0, end: 20 }),
+            frames: this.scene.anims.generateFrameNumbers('whip', { start: 0, end: 19 }),
             frameRate: 15,
             repeat: 0
         });
@@ -169,7 +169,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setVelocityX(0);
         this.setSize( this.originalWidth, this.originalHeight);
         this.setPosition(this.originalX, this.y);
-        this.setOffset(offsetX,0);
+        this.setOffset(offsetX,6);
         this.setScale(0.6);
         this.scene.cameras.main.startFollow(this, true, 1, 0.1, 0, 0)
     }
@@ -206,7 +206,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             let offsetX = this.focusTo === 'right' ? 24 : 15; 
 
             this.setVelocityX(this.velocity * xMovement);
-            this.setOffset(offsetX,0);
+            this.setOffset(offsetX,6);
             
             if (
                 this.state !== 'jump' && 
