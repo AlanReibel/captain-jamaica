@@ -155,7 +155,7 @@ export class InputHandler {
         // this.scene.input.keyboard.createCombo('FF', { resetOnMatch: true });//70
         this.scene.input.keyboard.on('keycombomatch', (event) => {
 
-            console.log('key codes',event.keyCodes);
+            // console.log('key codes',event.keyCodes);
 
             // if(event.keyCodes[0] === 81 && event.keyCodes[1] === 69){
 
@@ -172,7 +172,7 @@ export class InputHandler {
                 this.runCombo('combo3');
             }
 
-            console.log('Combo',event.keyCodes);
+            // console.log('Combo',event.keyCodes);
             // this.scene.player.runCombo();
         });
     }

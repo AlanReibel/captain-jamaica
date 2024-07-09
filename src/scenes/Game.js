@@ -315,6 +315,7 @@ export class Game extends Scene {
     }
 
     playerFired(player, bullet) {
+
         if (this.player.vulnerable && this.player.state !== 'special') {
             this.player.vulnerable = false;
             this.player.takeDamage(bullet.damage);

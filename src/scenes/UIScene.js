@@ -122,7 +122,7 @@ export class UIScene extends Phaser.Scene {
         this.time.delayedCall(this.inputHandler.holdingTime, () => {
             if(this.inputHandler.buttons[key]) {
                 this.inputHandler.holding[key] = true;
-                console.log('holded',this.inputHandler.holding);
+                // console.log('holded',this.inputHandler.holding);
             }
         });
     }
