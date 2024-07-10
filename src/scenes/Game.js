@@ -60,7 +60,6 @@ export class Game extends Scene {
             this.player.movingDirection = 'none';
         }
 
-        console.log('blocked fight',this.player.blockedFight);
         if (this.inputHandler.isFightActionLeaved() && this.fightEnds) {
             this.player.blockedFight = false;
         }
