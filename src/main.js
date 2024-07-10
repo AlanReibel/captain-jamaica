@@ -43,6 +43,9 @@ const config = {
         },
         // ...
         ]
+    },
+    input: {
+        activePointers: 3 // Permitir hasta 3 punteros activos
     }
 };
 

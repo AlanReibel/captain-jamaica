@@ -60,8 +60,7 @@ export class Game extends Scene {
             this.player.movingDirection = 'none';
         }
 
-        
-
+        console.log('blocked fight',this.player.blockedFight);
         if (this.inputHandler.isFightActionLeaved() && this.fightEnds) {
             this.player.blockedFight = false;
         }
@@ -407,9 +406,6 @@ export class Game extends Scene {
         let x = gamewidth === bgWidth ? 0 : (bgWidth - gamewidth) / 2;
         let y = gameheight === bgHeight ? 0 : (bgHeight - gameheight) / 2;
 
-        console.log('with',this.inputHandler.width );
-        console.log('gamewidth',gamewidth);
-        console.log('bgWidth',bgWidth);
         this.bg1 = this.add.tileSprite(x, y, gamewidth, gameheight, 'bg1')
             .setScrollFactor(0)
             .setOrigin(0, 0);
@@ -504,7 +500,7 @@ export class Game extends Scene {
             .fillStyle(0x00ff00, 1)
             .fillRect(10, 10, this.player.health, 15);
 
-        if (this.player.health === 0) {
+        if (this.player.health <= 0) {
             this.gameOver = true;
         }
     }
