@@ -169,7 +169,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setVelocityX(0);
         this.setSize( this.originalWidth, this.originalHeight);
         this.setPosition(this.originalX, this.y);
-        this.setOffset(offsetX,6);
+        this.setOffset(offsetX,7);
         this.setScale(0.6);
         this.scene.cameras.main.startFollow(this, true, 1, 0.1, 0, 0)
     }
@@ -379,6 +379,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     whip() {
         if(!this.isJumping) {
+            let offsetX = this.focusTo === 'right' ? 24 : 90; 
             let compensation = this.focusTo === 'right' ? 1 : -1;
         
             this.blockedFight = true;
@@ -392,7 +393,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             
             this.setVelocityX(0);
             this.setPosition(this.originalX + (22 * compensation), this.y);
-            this.setOffset(0,5)
+            this.setOffset( offsetX,7);
             this.setScale(0.58);
             this.anims.play('whip', true);
             
@@ -428,6 +429,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     shieldHit() {
+        this.resetSprite();
         if (
             this.movingDirection !== 'up' &&
             this.movingDirection !== 'down' &&
