@@ -1,4 +1,25 @@
 export class InputHandler {
+
+    buttons = {
+        'A': false,
+        'B': false,
+        'X': false,
+        'Y': false
+    };
+    holding = {
+        'A': false,
+        'B': false,
+        'X': false,
+        'Y': false
+    };
+    holdingTime = 1000;
+    maxComboTime = 1000;
+
+
+    isMobile = true;
+    orientation;
+    screeSize;
+
     constructor(scene) {
         this.scene = scene;
         this.cursors = scene.input.keyboard.createCursorKeys();
@@ -9,24 +30,8 @@ export class InputHandler {
         this.qKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
         this.eKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         this.fKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-        this.buttons = {
-            'A': false,
-            'B': false,
-            'X': false,
-            'Y': false
-        };
-        this.holding = {
-            'A': false,
-            'B': false,
-            'X': false,
-            'Y': false
-        };
-        this.holdingTime = 1000;
-        this.maxComboTime = 1000;
 
-
-        this.isMobile = true;
-        this.isMobile = this.isMobileDevice() || this.isTouchDevice();
+        // this.isMobile = this.isMobileDevice() || this.isTouchDevice();
 
         this.createCombos();
         if(this.isMobile) {
@@ -95,16 +100,22 @@ export class InputHandler {
 
     resizeGame({ width, height }) {
 
+        this.screenSize = { width: width, height: height };
         const aspectRatio = 4 / 3;
         let newWidth, newHeight, scale;
     
         if (width / height > aspectRatio) {
             newHeight = height;
             newWidth = height * aspectRatio;
+            this.orientation = 'landscape';
         } else {
             newWidth = width;
             newHeight = width / aspectRatio;
+            this.orientation = 'portrait';
         }
+
+        // console.log('old size', {width, height});
+        // console.log('new size', {newWidth, newHeight});
 
         this.width = newWidth;
         this.height = newHeight;

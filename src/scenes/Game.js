@@ -135,7 +135,7 @@ export class Game extends Scene {
         // game over
         if (this.gameOver) {
             this.music.stop();
-            this.scene.start('GameOver');
+            this.scene.start('GameOver', { inputHandler: this.inputHandler});
         }
 
         if (this.player.anims.currentAnim.key === 'burst') {
