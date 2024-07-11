@@ -7,17 +7,24 @@ export class GameOver extends Scene
         super('GameOver');
     }
 
+    preload() {
+        this.load.image('flag', 'assets/jamaica-flag.png');
+    }
     create ()
     {
-        this.cameras.main.setBackgroundColor(0xff0000);
-
-        this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'background').setAlpha(0.5);
-
-        this.add.text(this.game.config.width / 2, this.game.config.height / 2, 'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
+        let fontConfig = {
+            fontFamily: 'Courier', 
+            fontSize: 100, 
+            color: '#f6e800',
+            stroke: '#000000', 
+            strokeThickness: 8,
             align: 'center'
-        }).setOrigin(0.5);
+        };
+
+        this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'flag').setAlpha(0.8);
+
+        this.add.text(this.game.config.width / 2, (this.game.config.height / 2) - 50, 'Game', fontConfig).setOrigin(0.5);
+        this.add.text(this.game.config.width / 2, (this.game.config.height / 2) + 50, 'Over', fontConfig).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
 
