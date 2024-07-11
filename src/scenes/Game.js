@@ -363,7 +363,7 @@ export class Game extends Scene {
 
         if (enemy.state === 'attacking' && this.player.vulnerable) {
             let damage = enemy.damage || 0;
-            console.log('enemy', enemy.damage);
+            // console.log('enemy', enemy.damage);
             this.player.takeDamage(damage);
             this.player.vulnerable = false;
             this.healthbarUpdate();

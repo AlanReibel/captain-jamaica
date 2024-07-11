@@ -35,6 +35,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.bulletImage = enemies[name].bulletImage;
         this.bulletDamage = enemies[name].bulletDamage;
         this.damage = enemies[name].damage;
+        this.shot = enemies[name].shot;
         this.setCollideWorldBounds(true);
 
         this.bullets = this.scene.physics.add.group();
@@ -56,13 +57,24 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
                 this.attackDone = false;
                 this.state = 'attacking';
                 let flip = this.focusTo === 'left';
-    
-                if(!this.shot) {
-                    this.punchSound.play();
-                }
                 this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
     
-                this.once('animationcomplete', () => {
+                if(this.shot) {
+                    this.scene.time.delayedCall(200, () => {
+                        this.fire(this.scene);
+                        if(this.name == 'mutantDog') {
+                            this.scene.time.delayedCall(100, () => {
+                                this.fire(this.scene);
+                            });
+                        }
+                    });
+
+                } else {
+                    
+                    this.punchSound.play();
+                }
+
+                this.on(`animationcomplete-${this.name}-Attack`, () => {
                     this.state = 'idle';
                     this.scene.time.delayedCall(500, () => {
                         this.attackDone = true;
@@ -73,11 +85,13 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             }
 
         } else {
+
             this.attackDone = true;
             this.scene.time.delayedCall( this.nextAttackWait, () => {
                 this.attackCounter = 0;
                 this.attackDone = false;
             });
+
         }
     }
 
@@ -93,9 +107,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             bullet.setVelocityX(500 * directionX);
             bullet.body.setAllowGravity(false);
             this.shotSound.play();
-            scene.time.delayedCall( 800, () => {
-                this.bulletFired = false;
-            });
+            this.bulletFired = false;
         }
     }
 
