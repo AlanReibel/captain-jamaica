@@ -24,6 +24,11 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
+        this.addSounds();
+        this.setDepth(2);
+        this.setCollideWorldBounds(true);
+
+
         this.startPosition = {x: this.x, y: this.y}
         this.anims.play(`${name}-Idle`);
 
@@ -36,11 +41,11 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.bulletDamage = enemies[name].bulletDamage;
         this.damage = enemies[name].damage;
         this.shot = enemies[name].shot;
-        this.setCollideWorldBounds(true);
 
         this.bullets = this.scene.physics.add.group();
 
-        this.addSounds();
+
+
 
     }
 

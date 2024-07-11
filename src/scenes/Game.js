@@ -251,11 +251,13 @@ export class Game extends Scene {
 
     createEnemies() {
         this.landEnemies = this.physics.add.group();
+        
         this.flyingEnemies = this.physics.add.group({
             allowGravity: false,
         });
 
         let enemiesPositions = this.map.getObjectLayer('enemies');
+
         enemiesPositions.objects.forEach(enemyData => {
             let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
 
@@ -465,7 +467,9 @@ export class Game extends Scene {
 
     addHealthBar( x, y ) {
         this.uiContainer = this.add.container(x, y);
-        this.uiContainer.setScrollFactor(0);
+        this.uiContainer.setScrollFactor(0)
+            .setDepth(3);
+
 
         let health = this.player.health;
         let healthbarBackground = this.add.graphics();
