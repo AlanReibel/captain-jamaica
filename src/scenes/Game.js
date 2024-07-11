@@ -255,18 +255,6 @@ export class Game extends Scene {
             allowGravity: false,
         });
 
-        const enemiesList = [
-            'flyingRobot',
-            'weelRobot',
-            'basebolHitter',
-            'mutantDog',
-            'brainTank'
-        ];
-
-        enemiesList.forEach(enemyName => {
-            Enemy.createAnimations(this, enemyName);
-        });
-
         let enemiesPositions = this.map.getObjectLayer('enemies');
         enemiesPositions.objects.forEach(enemyData => {
             let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
@@ -473,7 +461,6 @@ export class Game extends Scene {
         this.physics.add.collider(this.player, this.greenTilesLayer);
         // this.physics.add.collider(this.player, collisionBoxes);
 
-        this.defineFXAnimations();
     }
 
     addHealthBar( x, y ) {
@@ -505,15 +492,6 @@ export class Game extends Scene {
         if (this.player.health <= 0) {
             this.gameOver = true;
         }
-    }
-
-    defineFXAnimations() {
-        this.anims.create({
-            key: 'explosion1',
-            frames: this.anims.generateFrameNumbers('explosion1', { start: 0, end: 11 }),
-            frameRate: 24,
-            repeat: 0
-        });
     }
 
 }

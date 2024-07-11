@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { Enemy } from '../objects/Enemy';
+import { Player } from '../objects/Player';
 
 export class Preloader extends Scene {
     constructor() {
@@ -31,9 +32,22 @@ export class Preloader extends Scene {
         //  For example, you can define global animations here, so we can use them in other scenes.
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
+        Player.createAnimations(this);
+        Enemy.createAnimations(this);
+        this.defineFXAnimations();
+
         this.scene.start('MainMenu');
         // this.scene.start('GameOver');
 
+    }
+
+    defineFXAnimations() {
+        this.anims.create({
+            key: 'explosion1',
+            frames: this.anims.generateFrameNumbers('explosion1', { start: 0, end: 11 }),
+            frameRate: 24,
+            repeat: 0
+        });
     }
 
     addProgressBar() {

@@ -191,18 +191,23 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     }
 
-    static createAnimations(scene, enemyName) {
-        for (const [animationName, animationData] of Object.entries(enemies[enemyName].animations)) {
-            scene.anims.create({
-                key: `${enemyName}-${animationName}`,
-                frames: scene.anims.generateFrameNumbers(`${enemyName}-${animationName}`, {
-                    start: 0,
-                    end: animationData.frames - 1
-                }),
-                frameRate: animationData.frameRate,
-                repeat: animationData.repeat
-            });
+    static createAnimations(scene) {
+
+        for (const [enemyName, enemyData] of Object.entries(enemies)) {
+            
+            for (const [animationName, animationData] of Object.entries(enemyData.animations)) {
+                scene.anims.create({
+                    key: `${enemyName}-${animationName}`,
+                    frames: scene.anims.generateFrameNumbers(`${enemyName}-${animationName}`, {
+                        start: 0,
+                        end: animationData.frames - 1
+                    }),
+                    frameRate: animationData.frameRate,
+                    repeat: animationData.repeat
+                });
+            }
         }
+
     }
 
     addSounds() {

@@ -44,9 +44,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             .setOffset(24,6)
             .setMaxVelocity(100,400);
             
-        this.createAnimations();
         this.addSounds();
-
+        this.setFightAnimationState();
         this.anims.play('idle', true);
 
 
@@ -62,86 +61,90 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     }
 
-    createAnimations() {
-        this.scene.anims.create({
+    static createAnimations(scene) {
+        scene.anims.create({
             key: 'idle',
-            frames: this.scene.anims.generateFrameNumbers('captain-idle', { start: 0, end: 6 }),
+            frames: scene.anims.generateFrameNumbers('captain-idle', { start: 0, end: 6 }),
             frameRate: 12,
             repeat: -1
         });
 
-        this.scene.anims.create({
+        scene.anims.create({
             key: 'run',
-            frames: this.scene.anims.generateFrameNumbers('captain-run', { start: 0, end: 9 }),
+            frames: scene.anims.generateFrameNumbers('captain-run', { start: 0, end: 9 }),
             frameRate: 12,
             repeat: -1
         });
 
-        this.scene.anims.create({
+        scene.anims.create({
             key: 'punch',
-            frames: this.scene.anims.generateFrameNumbers('captain-fight', { start: 1, end: 3 }),
+            frames: scene.anims.generateFrameNumbers('captain-fight', { start: 1, end: 3 }),
             frameRate: 12,
             repeat: 0
         });
 
-        this.scene.anims.create({
+        scene.anims.create({
             key: 'kick',
-            frames: this.scene.anims.generateFrameNumbers('captain-fight', { start: 4, end: 7 }),
+            frames: scene.anims.generateFrameNumbers('captain-fight', { start: 4, end: 7 }),
             frameRate: 12,
             repeat: 0
         });
 
-        this.scene.anims.create({
+        scene.anims.create({
             key: 'shield',
-            frames: this.scene.anims.generateFrameNumbers('captain-fight', { start: 8, end: 11 }),
+            frames: scene.anims.generateFrameNumbers('captain-fight', { start: 8, end: 11 }),
             frameRate: 12,
             repeat: 0
         });
 
-        this.scene.anims.create({
+        scene.anims.create({
             key: 'throw',
-            frames: this.scene.anims.generateFrameNumbers('shield-throw', { start: 0, end: 5 }),
+            frames: scene.anims.generateFrameNumbers('shield-throw', { start: 0, end: 5 }),
             frameRate: 12,
             repeat: 0
         });
 
-        this.scene.anims.create({
+        scene.anims.create({
             key: 'catch',
-            frames: this.scene.anims.generateFrameNumbers('shield-throw', { start: 12, end: 15 }),
+            frames: scene.anims.generateFrameNumbers('shield-throw', { start: 12, end: 15 }),
             frameRate: 12,
             repeat: 0
         });
 
-        this.scene.anims.create({
+        scene.anims.create({
             key: 'fly',
-            frames: this.scene.anims.generateFrameNumbers('shield-fly', { start: 0, end: 7 }),
+            frames: scene.anims.generateFrameNumbers('shield-fly', { start: 0, end: 7 }),
             frameRate: 12,
             repeat: 0
         });
 
-        this.scene.anims.create({
+        scene.anims.create({
             key: 'whip',
-            frames: this.scene.anims.generateFrameNumbers('whip', { start: 0, end: 19 }),
+            frames: scene.anims.generateFrameNumbers('whip', { start: 0, end: 19 }),
             frameRate: 15,
             repeat: 0
         });
 
-        this.scene.anims.create({
+        scene.anims.create({
             key: 'special',
-            frames: this.scene.anims.generateFrameNumbers('special', { start: 11, end: 56 }),
+            frames: scene.anims.generateFrameNumbers('special', { start: 11, end: 56 }),
             frameRate: 18,
             repeat: 0
         });
 
-        this.scene.anims.create({
+        scene.anims.create({
             key: 'block',
-            frames: this.scene.anims.generateFrameNumbers('special', { start: 0, end: 10 }),
+            frames: scene.anims.generateFrameNumbers('special', { start: 0, end: 10 }),
             frameRate: 12,
             repeat: 0
         });
 
-        this.scene.anims.createFromAseprite('shot');
+        scene.anims.createFromAseprite('shot');
 
+
+    }
+
+    setFightAnimationState() {
         let fightAnimations = [
             'punch',
             'punch2',
@@ -159,8 +162,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.scene.fightEnds = true;
             }
         });
-
-
     }
 
     resetSprite() {
