@@ -22,6 +22,7 @@ export class Game extends Scene {
     healthBar;
 
     create() {
+        this.cameras.main.fadeIn( 200, 0, 0, 0 );
 
         this.gameOver = false;
         this.player = new Player(this, 100, 400, 'captain-idle');

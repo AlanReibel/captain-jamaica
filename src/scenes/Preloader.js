@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { Enemy } from '../objects/Enemy';
 
 export class Preloader extends Scene {
     constructor() {
@@ -7,27 +8,20 @@ export class Preloader extends Scene {
 
     init() {
         //  We loaded this image in our Boot Scene, so we can display it here
-        this.add.image(512, 384, 'background');
+        this.add.image(0, 0, 'splash').setOrigin(0);
 
-        //  A simple progress bar. This is the outline of the bar.
-        this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
-
-        //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
-
-        //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
-        this.load.on('progress', (progress) => {
-
-            //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
-            bar.width = 4 + (460 * progress);
-
-        });
+        this.addProgressBar();
     }
 
     preload() {
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
 
+        this.loadAudios();
+        this.loadImages();
+        this.loadSpriteSheets();
+        this.loadTileMaps();
+        this.loadFXSprites();
 
 
     }
@@ -40,5 +34,119 @@ export class Preloader extends Scene {
         this.scene.start('MainMenu');
         // this.scene.start('Game');
 
+    }
+
+    addProgressBar() {
+        //  A simple progress bar. This is the outline of the bar.
+        let barBorder = this.add.rectangle(200, 150, 300, 31);
+        barBorder.setStrokeStyle(1, 0x000000);
+
+        //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
+        const bar = this.add.rectangle(200, 150, 298, 30, 0xf6e800);
+
+        //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
+        this.load.on('progress', (progress) => {
+
+            //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
+            bar.width = 4 + (300 * progress);
+
+        });
+    }
+
+    loadAudios() {
+        // main
+        this.load.audio('bitest','sounds/bitest.mp3');
+        // enemy
+        this.load.audio('die','sounds/laser1.mp3');
+        this.load.audio('enemyPunch','sounds/punch3.mp3');
+        this.load.audio('enemyShot','sounds/laser3.mp3');
+        // captain
+        this.load.audio('laser','sounds/laser2.mp3');
+        this.load.audio('punch','sounds/punch3.mp3');
+        this.load.audio('special','sounds/boomerang.mp3');
+        this.load.audio('boomerang','sounds/boomerang2.mp3');
+        this.load.audio('explosion','sounds/explosion.mp3');
+
+    }
+
+    loadSpriteSheets() {
+
+        this.captainSprites();
+        this.enemiesSprites();
+
+    }
+
+    loadImages() {
+        this.load.image('bullet', 'sprites/captain/bullet.png');
+
+
+        this.load.image('bg1', 'background/1.png');
+        this.load.image('bg2', 'background/2.png');
+        this.load.image('bg3', 'background/3.png');
+        this.load.image('bg4', 'background/4.png');
+        this.load.image('bg5', 'background/5.png');
+    }
+    
+    loadTileMaps() {
+        // this.load.image('tilemapImage', 'tiles/Tileset.png');
+        this.load.image('tilemapImage2', 'tiles/greenTiles2.png');
+        this.load.image('objectsTilemap', 'tiles/newObjectSet.png');
+        this.load.tilemapTiledJSON('tilemapJson', 'tiles/world.json');
+    }
+
+    captainSprites() {
+        this.load.spritesheet('captain-idle',
+            'sprites/captain/idle.png',
+            { frameWidth: 64, frameHeight: 58 }
+        );
+
+        this.load.spritesheet('captain-run',
+            'sprites/captain/run.png',
+            { frameWidth: 64, frameHeight: 58 }
+        );
+
+        this.load.spritesheet('captain-fight',
+            'sprites/captain/fight.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
+
+        this.load.spritesheet('shield-throw',
+            'sprites/captain/shield-throw.png',
+            { frameWidth: 75, frameHeight: 64 }
+        );
+
+        this.load.spritesheet('shield-fly',
+            'sprites/captain/shield-fly.png',
+            { frameWidth: 64, frameHeight: 40 }
+        );
+
+        this.load.spritesheet('special',
+            'sprites/captain/special.png',
+            { frameWidth: 128, frameHeight: 92 }
+        );
+
+        this.load.spritesheet('whip',
+            'sprites/captain/whip.png',
+            { frameWidth: 135, frameHeight: 64 }
+        );
+
+        this.load.aseprite({
+            key: 'shot',
+            textureURL: 'sprites/captain/shot.png',
+            atlasURL: 'sprites/captain/shot.json'
+        });
+    }
+
+    enemiesSprites() {
+
+        Enemy.loadResources(this);
+
+    }
+
+    loadFXSprites() {
+        this.load.spritesheet('explosion1',
+            'sprites/fx/explosion1.png',
+            { frameWidth: 25, frameHeight: 24 }
+        );
     }
 }

@@ -168,14 +168,14 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             for (const [animationName, animationData] of Object.entries(enemyData.animations)) {
                 scene.load.spritesheet(
                     `${enemyName}-${animationName}`,
-                    `assets/sprites/enemies/${enemyName}/${animationName}.png`,
+                    `sprites/enemies/${enemyName}/${animationName}.png`,
                     { frameWidth: animationData.frameWidth, frameHeight: animationData.frameHeight }
                 );
             }
         }
 
-        scene.load.image('ball1', 'assets/sprites/enemies/bullets/Ball1.png');
-        scene.load.image('ball2', 'assets/sprites/enemies/bullets/Ball2.png');
+        scene.load.image('ball1', 'sprites/enemies/bullets/Ball1.png');
+        scene.load.image('ball2', 'sprites/enemies/bullets/Ball2.png');
 
     }
 
