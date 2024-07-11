@@ -180,18 +180,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":6,
-                 "name":"brainTank",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1109.0303030303,
-                 "y":437.818181818182
-                }, 
-                {
-                 "height":0,
                  "id":8,
                  "name":"flyingRobot",
                  "point":true,
@@ -333,6 +321,30 @@
                  "width":0,
                  "x":2668,
                  "y":112
+                }, 
+                {
+                 "height":0,
+                 "id":21,
+                 "name":"basebolHitter",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1198,
+                 "y":434
+                }, 
+                {
+                 "height":0,
+                 "id":22,
+                 "name":"flyingRobot",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1084,
+                 "y":298
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -363,7 +375,7 @@
          "y":0
         }],
  "nextlayerid":13,
- "nextobjectid":21,
+ "nextobjectid":23,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
