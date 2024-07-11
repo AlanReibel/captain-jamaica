@@ -13,6 +13,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     attackDone = false;
     movingDirectionX;
     movingDirectionY;
+    attackCounter = 0;
+    nextAttackWait = 2000;
 
     constructor(scene, x, y, name) {
 
@@ -32,6 +34,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.behavior = enemies[name].behavior;
         this.bulletImage = enemies[name].bulletImage;
         this.bulletDamage = enemies[name].bulletDamage;
+        this.damage = enemies[name].damage;
         this.setCollideWorldBounds(true);
 
         this.bullets = this.scene.physics.add.group();
@@ -47,25 +50,33 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     attack() {
+        if(this.attackCounter < 2) {
 
-        if (this.state !== 'attacking') {
-            this.attackDone = false;
-            this.state = 'attacking';
-            let flip = this.focusTo === 'left';
-
-            if(!this.shot) {
-                this.punchSound.play();
+            if (this.state !== 'attacking' && !this.attackDone) {
+                this.attackDone = false;
+                this.state = 'attacking';
+                let flip = this.focusTo === 'left';
+    
+                if(!this.shot) {
+                    this.punchSound.play();
+                }
+                this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
+    
+                this.once('animationcomplete', () => {
+                    this.state = 'idle';
+                    this.scene.time.delayedCall(500, () => {
+                        this.attackDone = true;
+                        this.attackCounter++;
+                    });
+                });
+    
             }
-            this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
 
-            // this.once('animationcomplete', () => {
-            //     this.attackDone = true;
-            //     this.state = 'idle';
-            // });
-
-            this.scene.time.delayedCall(800, () => {
-                this.attackDone = true;
-                this.state = 'idle';
+        } else {
+            this.attackDone = true;
+            this.scene.time.delayedCall( this.nextAttackWait, () => {
+                this.attackCounter = 0;
+                this.attackDone = false;
             });
         }
     }

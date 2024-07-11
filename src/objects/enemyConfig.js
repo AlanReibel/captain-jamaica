@@ -7,6 +7,7 @@ export const enemies = {
             Hurt: { frameWidth: 32, frameHeight: 32, frames: 2, frameRate: 12, repeat: 0 },
             Walk: { frameWidth: 32, frameHeight: 32, frames: 4, frameRate: 12, repeat: -1 },
         },
+        damage: 5,
         fly: true,
         speed: 50,
         health: 100,
@@ -89,6 +90,7 @@ export const enemies = {
             Hurt: { frameWidth: 32, frameHeight: 24, frames: 2, frameRate: 12, repeat: 0 },
             Walk: { frameWidth: 32, frameHeight: 24, frames: 4, frameRate: 12, repeat: -1 },
         },
+        damage: 5,
         speed: 50,
         health: 100,
         behavior: (scene, enemy) => {
@@ -119,6 +121,7 @@ export const enemies = {
             Hurt: { frameWidth: 38, frameHeight: 34, frames: 2, frameRate: 12, repeat: 0 },
             Walk: { frameWidth: 38, frameHeight: 34, frames: 6, frameRate: 12, repeat: -1 },
         },
+        damage: 10,
         fly: false,
         speed: 50,
         health: 100,
@@ -162,7 +165,7 @@ export const enemies = {
         speed: 50,
         health: 100,
         bulletImage: 'ball2',
-        bulletDamage: 10,
+        bulletDamage: 15,
         behavior: (scene, enemy) => {
 
             let player = scene.player;
@@ -213,7 +216,7 @@ export const enemies = {
         speed: 30,
         health: 150,
         bulletImage: 'ball1',
-        bulletDamage: 20,
+        bulletDamage: 25,
         behavior: (scene, enemy) => {
 
             let player = scene.player;
