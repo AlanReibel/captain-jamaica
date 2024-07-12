@@ -6,12 +6,11 @@ export class Intro extends Scene {
         this.lines = [];
         this.maxLines = 15;
         this.fullText = {
-            'es': `
-En un mundo devastado por interminables batallas, 
+            'es': `En un mundo devastado por interminables batallas, 
 donde la mitad de la población ha desaparecido sin 
 dejar rastro, el caos se ha apoderado de Jamaica. 
 Las bandas de capos opresores han tomado el control, 
-sumiendo a la isla en un estado de anarquía.
+sumiendo la isla en un estado de anarquía.
 
 Nuestro protagonista, un individuo resistente y 
 determinado, se encontró en medio de este tumulto. 
@@ -21,8 +20,8 @@ y el miedo se apoderaron de él mientras yacía en
 el suelo, rodeado por el caos del momento.
 
 Pero la esperanza no estaba completamente perdida. 
-En la misma ciudad, una anciana conocida por sus 
-conocimientos en hierbas místicas decidió intervenir. 
+En la misma ciudad, una anciana famosa por su 
+conocimiento sobre hierbas místicas decidió intervenir. 
 Con sus habilidades, creó un elixir único, una poción 
 que combinaba plantas raras y mágicas. 
 
@@ -37,8 +36,7 @@ para restaurar el orden en Jamaica y liberar a su gente
 del yugo de los capos opresores...
 
 o se perderá en la sed de venganza y poder?`,
-'en': `
-In a world devastated by endless battles, where half 
+'en': `In a world devastated by endless battles, where half 
 of the population has vanished without a trace, chaos 
 has taken over Jamaica. Oppressive gangs have seized 
 control, plunging the island into a state of anarchy.
@@ -69,8 +67,17 @@ The battle for justice has only just begun.`
         };
         this.currentLineIndex = 0;
         this.typing = false; // Indica si está en proceso de escritura
-        this.speed = 30;
+        this.speed = 50;
 
+    }
+
+    preload() {
+        // Cargar los archivos de sonido
+        this.load.audio('keySound1', 'assets/sounds/typewrite/key1.mp3');
+        this.load.audio('keySound2', 'assets/sounds/typewrite/key2.mp3');
+        this.load.audio('keySound3', 'assets/sounds/typewrite/key3.mp3');
+        this.load.audio('spaceSound', 'assets/sounds/typewrite/spaceBar.mp3');
+        this.load.audio('enterSound', 'assets/sounds/typewrite/newLine.mp3');
     }
 
     create() {
@@ -108,11 +115,16 @@ The battle for justice has only just begun.`
             loop: true
         });
 
+        this.keySounds = [
+            this.sound.add('keySound1'),
+            this.sound.add('keySound2'),
+            this.sound.add('keySound3')
+        ];
+        this.spaceSound = this.sound.add('spaceSound');
+        this.enterSound = this.sound.add('enterSound');
+
         this.addSkipButton();
 
-        this.input.once('pointerdown', () => {
-            this.scene.start('Preloader');
-        })
     }
 
     addSkipButton() {
@@ -175,22 +187,36 @@ The battle for justice has only just begun.`
                 if (i < lineLength) {
                     line += newLine[i];
                     this.text.setText(this.lines.join('') + line);
+                    this.playTypingSound(newLine[i]);
                     i++;
                 } else {
                     this.typing = false;
-                    this.lines.push(`${line} \n`); // Agregar la línea completada al arreglo
+                    this.lines.push(`${line} \n`); 
                     this.text.setText(this.lines.join(''));
-                    event.remove(); // Remover el evento al completar la línea
+                    this.enterSound.play();
+                    event.remove(); 
                 }
             },
-            delay: this.speed, // Velocidad del efecto de máquina de escribir
+            delay: this.speed, 
             callbackScope: this,
             loop: true
         });
     }
 
     scrollText() {
-        this.lines.shift();  // Eliminar la línea más antigua
+        this.lines.shift();  
         this.text.setText(this.lines.join(''));
+    }
+
+    playTypingSound(char) {
+        if (char === ' ') {
+            this.spaceSound.play();
+        } else {
+            const randomKeySound = this.keySounds[Math.floor(Math.random() * this.keySounds.length)];
+            randomKeySound.play({ 
+                volume: 0.4, 
+                // rate: 1 + Math.random() * 0.2 - 0.1 
+            }); 
+        }
     }
 }

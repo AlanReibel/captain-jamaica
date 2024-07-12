@@ -137,7 +137,16 @@ export class GameOver extends Scene
             align: 'center'
         };
 
-        let creditText = 'Credits \n Programing:\n Alan Reibel \n \n Graphics \n Main Character: \n Oral Ferguson \n \n Others: \n craftpix.net';
+        let creditText = `Credits 
+Programing & Sound:
+Alan Reibel 
+
+Graphics 
+Main Character: 
+Oral Ferguson 
+
+Others: 
+craftpix.net`;
         let gameText = this.add.text(
             screenSize.width / 2, 
             (screenSize.height / 2) - 30, 
