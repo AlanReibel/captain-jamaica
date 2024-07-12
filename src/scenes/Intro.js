@@ -74,6 +74,11 @@ o se perderá en la sed de venganza y poder?
             },
             loop: true
         });
+
+
+        this.input.once('pointerdown', () => {
+            this.scene.start('Preloader');
+        })
     }
 
     addInitialLines() {
