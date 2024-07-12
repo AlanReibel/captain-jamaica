@@ -5,12 +5,13 @@ export class Intro extends Scene {
         super('Intro');
         this.lines = [];
         this.maxLines = 15;
-        this.fullText = `
+        this.fullText = {
+            'es': `
 En un mundo devastado por interminables batallas, 
 donde la mitad de la población ha desaparecido sin 
 dejar rastro, el caos se ha apoderado de Jamaica. 
 Las bandas de capos opresores han tomado el control, 
-sumiendo a la isla en un estado de anarquía y terror.
+sumiendo a la isla en un estado de anarquía.
 
 Nuestro protagonista, un individuo resistente y 
 determinado, se encontró en medio de este tumulto. 
@@ -35,9 +36,37 @@ se enfrenta ahora a un dilema. ¿Utilizará sus habilidades
 para restaurar el orden en Jamaica y liberar a su gente 
 del yugo de los capos opresores...
 
-o se perderá en la sed de venganza y poder?
-`;
-        this.textArray = this.fullText.split('\n');
+o se perderá en la sed de venganza y poder?`,
+'en': `
+In a world devastated by endless battles, where half 
+of the population has vanished without a trace, chaos 
+has taken over Jamaica. Oppressive gangs have seized 
+control, plunging the island into a state of anarchy.
+
+Our protagonist, a resilient and determined individual, 
+found himself in the midst of this turmoil. 
+Amidst the looting, an armed man shot him, leaving him 
+on the brink of death. Desperation and fear consumed 
+him as he lay on the ground, surrounded by the chaos 
+unfolding around him.
+
+But hope was not entirely lost. In the same city, an elderly
+woman known for her knowledge of mystical herbs 
+decided to intervene. With her skills, she created a unique 
+elixir, a potion that combined rare and magical plants. 
+Upon administering it, his wounds began to heal rapidly. 
+However, the elixir had unexpected side effects: 
+it granted him superhuman strength, speed, and durability 
+beyond imagination.
+
+Reborn with these new powers, the protagonist now 
+faces a dilemma. Will he use his abilities to restore order
+in Jamaica and free his people from the oppressive ...
+or will he be consumed by the thirst for revenge and power?
+
+The fate of Jamaica lies in his hands. 
+The battle for justice has only just begun.`
+        };
         this.currentLineIndex = 0;
         this.typing = false; // Indica si está en proceso de escritura
         this.speed = 30;
@@ -45,8 +74,14 @@ o se perderá en la sed de venganza y poder?
     }
 
     create() {
+
+        const userLang = navigator.language || navigator.userLanguage;
+        const userLanguage = userLang.substring(0,2);
+        this.textArray = this.fullText[userLanguage].split('\n');
+
+
         const maxWidth = this.game.config.width - 40;
-        console.log('Intro',this);
+        // console.log('Intro',this);
         const style = { 
             fontSize: '14px', // Tamaño de fuente en píxeles
             fontFamily: 'Arial', // Familia de fuente
@@ -65,8 +100,6 @@ o se perderá en la sed de venganza y poder?
             callback: () => {
                 if (!this.typing) { // Solo añadir línea si no está escribiendo
                     this.addNextLine();
-                    console.log('lines', this.lines)
-                    console.log('lines.length', this.lines.length)
                     if (this.lines.length > this.maxLines) {
                         this.scrollText();
                     }
@@ -75,10 +108,47 @@ o se perderá en la sed de venganza y poder?
             loop: true
         });
 
+        this.addSkipButton();
 
         this.input.once('pointerdown', () => {
             this.scene.start('Preloader');
         })
+    }
+
+    addSkipButton() {
+        console.log('added skip');
+        let gamewidth = this.game.config.width;
+        let gameheight = this.game.config.height;
+
+        let skip = this.add.text(
+            gamewidth - 30, 
+            gameheight - 10, 
+            'SKIP', 
+            {
+                fontFamily: 'Courier', 
+                fontSize: 15, 
+                color: '#ffffff',
+                // stroke: '#ffffff', 
+                // strokeThickness: 2,
+                align: 'center'
+            }
+        )
+        .setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+            this.scene.start('Preloader');
+
+        })
+
+        this.tweens.add({
+            targets: skip,
+            duration: 300,
+            y: gameheight - 15,
+            // scale: 0.9,
+            yoyo: true,
+            repeat: -1,
+        });
+
     }
 
     addInitialLines() {
