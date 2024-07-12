@@ -146,7 +146,11 @@ Main Character:
 Oral Ferguson 
 
 Others: 
-craftpix.net`;
+craftpix.net
+
+writing sounds:
+pixabay.com
+`;
         let gameText = this.add.text(
             screenSize.width / 2, 
             (screenSize.height / 2) - 30, 
