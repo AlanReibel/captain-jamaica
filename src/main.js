@@ -4,6 +4,7 @@ import { MainMenu } from './scenes/MainMenu.js';
 import { Game } from './scenes/Game.js';
 import { UIScene } from './scenes/UIScene.js';
 import { GameOver } from './scenes/GameOver.js';
+import { Intro } from './scenes/Intro.js';
 import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -33,7 +34,8 @@ const config = {
         MainMenu,
         Game,
         UIScene,
-        GameOver
+        GameOver,
+        Intro
     ],
     plugins: {
         global: [{

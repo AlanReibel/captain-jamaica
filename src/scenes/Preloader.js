@@ -36,8 +36,8 @@ export class Preloader extends Scene {
         Enemy.createAnimations(this);
         this.defineFXAnimations();
 
-        this.scene.start('MainMenu');
-        // this.scene.start('GameOver');
+        // this.scene.start('MainMenu');
+        this.scene.start('Intro');
 
     }
 
