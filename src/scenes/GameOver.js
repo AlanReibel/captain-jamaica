@@ -30,10 +30,10 @@ export class GameOver extends Scene
         let gamewidth = this.game.config.width;
         let gameheight = this.game.config.height;
 
-        let bgWidth = this.inputHandler.width || gamewidth;
-        let bgHeight = this.inputHandler.height || gameheight;
+        let bgWidth = this.inputHandler?.width || gamewidth;
+        let bgHeight = this.inputHandler?.height || gameheight;
 
-        let screenSize = this.inputHandler.screenSize || { width: gamewidth, height: gameheight};
+        let screenSize = this.inputHandler?.screenSize || { width: gamewidth, height: gameheight};
 
         let x = gamewidth === bgWidth ? 0 : (bgWidth - gamewidth) / 2;
         let y = gameheight === bgHeight ? 0 : (bgHeight - gameheight) / 2;
@@ -41,7 +41,7 @@ export class GameOver extends Scene
         let scale = bgWidth / gamewidth;
 
         
-        if(this.inputHandler.isMobile) {
+        if(this.inputHandler?.isMobile) {
             
             switch (this.inputHandler.orientation) {
                 case 'portrait':
@@ -88,6 +88,9 @@ export class GameOver extends Scene
 
                 over.setFontSize(20 + v * 64);
             }, onComplete: () => {
+                game.destroy();
+                over.destroy();
+                this.addCredits(screenSize);
                 this.addRestartButton(screenSize);
             }
         });
@@ -124,6 +127,24 @@ export class GameOver extends Scene
 
     }
 
+    addCredits(screenSize) {
+        let fontConfig = {
+            fontFamily: 'Courier', 
+            fontSize: 15, 
+            color: '#f6e800',
+            stroke: '#000000', 
+            strokeThickness: 5,
+            align: 'center'
+        };
 
+        let creditText = 'Credits \n Programing:\n Alan Reibel \n \n Graphics \n Main Character: \n Oral Ferguson \n \n Others: \n craftpix.net';
+        let gameText = this.add.text(
+            screenSize.width / 2, 
+            (screenSize.height / 2) - 30, 
+            creditText, fontConfig
+        ).setOrigin(0.5);
+        gameText.setWordWrapWidth(300);
+
+    }
 
 }
