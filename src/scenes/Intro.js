@@ -103,7 +103,7 @@ The battle for justice has only just begun.`
 
         // Ejemplo de cómo podrías llamar a estas funciones para añadir y desplazar el texto
         this.time.addEvent({
-            delay: 2000, // Cada 2 segundos
+            delay: 1600, // Cada 2 segundos
             callback: () => {
                 if (!this.typing) { // Solo añadir línea si no está escribiendo
                     this.addNextLine();
