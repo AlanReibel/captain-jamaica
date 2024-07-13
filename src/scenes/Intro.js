@@ -129,7 +129,7 @@ The battle for justice has only just begun.`
         this.spaceSound = this.sound.add('spaceSound');
         this.enterSound = this.sound.add('enterSound');
         this.introMusic = this.sound.add('introMusic');
-        this.introMusic.play({volume: 0.5, loop: true});
+        this.introMusic.play({volume: 0.9});
 
         this.addSkipButton();
 
@@ -156,6 +156,7 @@ The battle for justice has only just begun.`
         .setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
+            this.introMusic.stop();
             this.scene.start('Preloader');
 
         })
@@ -222,7 +223,7 @@ The battle for justice has only just begun.`
         } else {
             const randomKeySound = this.keySounds[Math.floor(Math.random() * this.keySounds.length)];
             randomKeySound.play({ 
-                volume: 0.3, 
+                volume: 0.2, 
                 // rate: 1 + Math.random() * 0.2 - 0.1 
             }); 
         }
