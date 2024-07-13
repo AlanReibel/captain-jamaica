@@ -63,7 +63,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
                 this.state = 'attacking';
                 let flip = this.focusTo === 'left';
                 this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
-                console.log('attack animation');
                 
                 if(this.shot) {
                     this.scene.time.delayedCall(200, () => {
@@ -76,7 +75,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
                     });
 
                 } else {
-                    console.log('attack sound');
                     this.punchSound.play();
                 }
 

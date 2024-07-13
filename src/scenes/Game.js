@@ -419,7 +419,7 @@ export class Game extends Scene {
             .setOrigin(0, 0);
 
         this.addHealthBar( x, y);
-        this.addSpecialUI(bgWidth);
+        this.addSpecialUI(gamewidth);
     }
 
     moveBackground(direction) {
