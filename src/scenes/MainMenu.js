@@ -71,8 +71,8 @@ export class MainMenu extends Scene
         let textX = this.inputHandler.isMobile ? x + (bgWidth / 2) : x + (gamewidth / 2);
         let textY = this.inputHandler.isMobile ? y + (bgHeight / 2) : y + (gameheight / 2);
 
-        console.log('text pos', { textX, textY});
-        console.log('original pos', { x, y});
+        // console.log('text pos', { textX, textY});
+        // console.log('original pos', { x, y});
 
         this.add.text(textX, textY, 'Click / Touch to Start', {
             fontFamily: 'Courier', 

@@ -130,7 +130,7 @@ export class GameOver extends Scene
     addCredits(screenSize) {
         let fontConfig = {
             fontFamily: 'Courier', 
-            fontSize: 15, 
+            fontSize: screenSize.height / 25, 
             color: '#f6e800',
             stroke: '#000000', 
             strokeThickness: 5,
