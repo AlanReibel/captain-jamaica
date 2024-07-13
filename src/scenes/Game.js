@@ -420,6 +420,7 @@ export class Game extends Scene {
 
         this.addHealthBar( x, y);
         this.addSpecialUI(gamewidth);
+        this.addButtonsGuide( x, y, gamewidth, gameheight);
     }
 
     moveBackground(direction) {
@@ -479,12 +480,12 @@ export class Game extends Scene {
         let health = this.player.health;
         let healthbarBackground = this.add.graphics();
         healthbarBackground
-            .fillStyle(0xff0000, 1)
+            .fillStyle(0xbb2300, 1)
             .fillRect(10, 10, health, 15);
         // Crear un gráfico para la barra de vida
         this.healthBar = this.add.graphics();
         this.healthBar
-            .fillStyle(0x00ff00, 1)
+            .fillStyle(0x00c749, 1)
             .fillRect(10, 10, health, 15);
 
         this.uiContainer.add(healthbarBackground);
@@ -495,7 +496,7 @@ export class Game extends Scene {
     healthbarUpdate() {
         this.healthBar.clear();
         this.healthBar
-            .fillStyle(0x00ff00, 1)
+            .fillStyle(0x00c749, 1)
             .fillRect(10, 10, this.player.health, 15);
 
         if (this.player.health <= 0) {
@@ -515,4 +516,115 @@ export class Game extends Scene {
         this.specialMarkerFX.blackWhite();
     }
 
+    addButtonsGuide( x, y, width, height) {
+        let text = {
+            'es': 'GUÍA',
+            'en': 'GUIDE',
+        };
+        const userLang = navigator.language || navigator.userLanguage;
+        const userLanguage = userLang.substring(0,2);
+
+        this.guideButton = this.add.text(
+            x + (width / 2), 
+            y + 15, 
+            text[userLanguage], 
+            { 
+                fontSize: '20px', 
+                fill: '#fff' 
+            }
+        ).setOrigin(0.5);
+
+        // this.guideButton.setInteractive( new Phaser.Geom.Rectangle(x + (width/2), y+ 15, this.guideButton.width, this.guideButton.height), Phaser.Geom.Rectangle.Contains);
+        this.uiContainer.setInteractive( new Phaser.Geom.Rectangle((x + (width/2)) - (this.guideButton.width / 2), y + 15, this.guideButton.width, this.guideButton.height), Phaser.Geom.Rectangle.Contains);
+        // console.log("Botón de guía hecho interactivo:", this.guideButton.input);
+        // this.guideButton.on('pointerdown', () => {
+        //     console.log("Evento 'pointerdown' en guía activado");
+        //     this.showGuide()
+        // });
+        this.uiContainer.on('pointerdown', () => {
+            this.showGuide()
+        });
+        // console.log("Evento 'pointerdown' registrado en botón de guía");
+        this.uiContainer.add(this.guideButton);
+
+        let buttonsList = {
+            'es': `
+(A) Saltar 
+(B) Puñetazo 
+(B+B) Patada
+(X) Golpe escudo
+(Hold X) Escudo boomerang
+(Y) Látigo
+(Hold Y) Ataque Especial 
+(B+Y) Disparo rafaga
+            `,
+            'en': `
+(A) Jump 
+(B) punch 
+(B+B) Kick
+(X) Shield hit 
+(Hold X) Shield throw 
+(Y) Whip 
+(Hold Y) Special 
+(B+Y) Burst fire
+`
+        };
+
+        let keyssList = {
+            'es': `
+(Flechas/WSAD) mover
+(w/ flecha arriba) Saltar 
+(Barra espacio) Puñetazo 
+(Espacio + Espacio) Patada
+(Q) Golpe escudo
+(Manten Q) Escudo boomerang
+(E) Látigo
+(Manten E) Ataque Especial 
+(Espacio + E) Disparo rafaga
+            `,
+            'en': `
+(Flechas/WSAD) Move
+(w/ flecha arriba) Jump 
+(Barra espacio) Pounch 
+(Espacio + Espacio) Kick
+(Q) Shield hit
+(Manten Q) Shield throw
+(E) Whip
+(Manten E) Special Attack 
+(Espacio + E) Burst fire
+`
+        };
+        let dinamicText = this.inputHandler.isMobile ? buttonsList[userLanguage] : keyssList[userLanguage];
+        this.guidePanel = this.add.container(x, y).setVisible(false).setScrollFactor(0).setDepth(4);
+        let bg = this.add.rectangle(x, y, width, height, 0x000000, 0.8).setOrigin(0);
+        let guideText = this.add.text(
+            x + 20, 
+            y + 20, 
+            dinamicText, { 
+            fontSize: height / 20, 
+            fill: '#fff',
+            align: 'left', 
+            wordWrap: { width: width - 40, useAdvancedWrap: true }});
+        let closeButton = this.add.text(x + width - 60, y + 20, '[X]', { fontSize: '32px', fill: '#fff' }).setOrigin(0)
+            .setInteractive()
+            .on('pointerdown', () => this.hideGuide());
+
+        this.guidePanel.add([bg, guideText, closeButton]);
+    }
+
+    showGuide() {
+        console.log('guide shown');
+        this.guidePanel.setVisible(true);
+        this.scene.pause();
+    }
+
+    hideGuide() {
+        console.log('guide hided');
+        this.guidePanel.setVisible(false);
+        this.scene.resume();
+    }
+
+    update(time, delta) {
+        // Actualización del juego
+    }
 }
