@@ -7,6 +7,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     isJumping = false;
     blockedJump = false;
     velocity = 100;
+    specialEnabled = true;
 
     shield;
     shieldThrown = false;
@@ -486,8 +487,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     special() {
-        if(!this.isJumping) {
+        if(!this.isJumping && this.specialEnabled) {
 
+            this.specialEnabled = false;
             this.scene.cameras.main.stopFollow();
             this.vulnerable = false;
             let originalX = this.x;

@@ -141,14 +141,13 @@ export class GameOver extends Scene
 Programing & Sound:
 Alan Reibel 
 
-Graphics 
-Main Character: 
+Main Character Graphics: 
 Oral Ferguson 
 
-Others: 
+Other Graphics: 
 craftpix.net
 
-writing sounds:
+Typewriter Sounds:
 pixabay.com
 `;
         let gameText = this.add.text(

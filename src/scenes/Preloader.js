@@ -98,6 +98,7 @@ export class Preloader extends Scene {
         this.load.image('bg3', 'background/3.png');
         this.load.image('bg4', 'background/4.png');
         this.load.image('bg5', 'background/5.png');
+        this.load.image('specialMarker', 'ui/special.png');
     }
     
     loadTileMaps() {

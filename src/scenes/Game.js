@@ -177,6 +177,10 @@ export class Game extends Scene {
             });
         }
 
+        if(!this.player.specialEnabled) {
+            this.disableSpecialMarker();
+        }
+
     }
 
     handleFightActions() {
@@ -415,6 +419,7 @@ export class Game extends Scene {
             .setOrigin(0, 0);
 
         this.addHealthBar( x, y);
+        this.addSpecialUI(bgWidth);
     }
 
     moveBackground(direction) {
@@ -496,6 +501,18 @@ export class Game extends Scene {
         if (this.player.health <= 0) {
             this.gameOver = true;
         }
+    }
+
+    addSpecialUI( width ) {
+        let x = width - 25;
+        let specialMarker = this.add.image(x, 20, 'specialMarker');
+        specialMarker.setScale(0.4);
+        this.specialMarkerFX = specialMarker.postFX.addColorMatrix();
+        this.uiContainer.add(specialMarker);
+    }
+
+    disableSpecialMarker() {
+        this.specialMarkerFX.blackWhite();
     }
 
 }
