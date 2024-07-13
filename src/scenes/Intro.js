@@ -136,11 +136,10 @@ The battle for justice has only just begun.`
     }
 
     addSkipButton() {
-        console.log('added skip');
         let gamewidth = this.game.config.width;
         let gameheight = this.game.config.height;
 
-        let skip = this.add.text(
+        this.skip = this.add.text(
             gamewidth - 30, 
             gameheight - 10, 
             'SKIP', 
@@ -156,13 +155,12 @@ The battle for justice has only just begun.`
         .setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
-            this.introMusic.stop();
-            this.scene.start('Preloader');
+            this.endIntro();
 
         })
 
         this.tweens.add({
-            targets: skip,
+            targets: this.skip,
             duration: 300,
             y: gameheight - 15,
             // scale: 0.9,
@@ -172,17 +170,28 @@ The battle for justice has only just begun.`
 
     }
 
+    endIntro() {
+        this.cameras.main.fadeOut(250, 0, 0, 0);
+        this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+            this.introMusic.stop();
+            this.scene.start('Preloader');
+        }, this);
+    }
+
     addInitialLines() {
+        
         if (this.currentLineIndex < this.textArray.length) {
             this.addLineWithTypewriterEffect(this.textArray[this.currentLineIndex]);
             this.currentLineIndex++;
-        }
+        } 
     }
 
     addNextLine() {
         if (this.currentLineIndex < this.textArray.length) {
             this.addLineWithTypewriterEffect(this.textArray[this.currentLineIndex]);
             this.currentLineIndex++;
+        } else {
+            this.endIntro();
         }
     }
 
