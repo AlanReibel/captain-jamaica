@@ -70,21 +70,6 @@ The battle for justice has only just begun.`
         this.speed = 50;
 
     }
-// drama 0,38
-// esperanza 38,54
-// recuperacion: 54,109
-// fuerza: 109,124
-// tension: 124,130
-
-    preload() {
-        // Cargar los archivos de sonido
-        this.load.audio('keySound1', 'assets/sounds/typewrite/key1.mp3');
-        this.load.audio('keySound2', 'assets/sounds/typewrite/key2.mp3');
-        this.load.audio('keySound3', 'assets/sounds/typewrite/key3.mp3');
-        this.load.audio('spaceSound', 'assets/sounds/typewrite/spaceBar.mp3');
-        this.load.audio('enterSound', 'assets/sounds/typewrite/newLine.mp3');
-        this.load.audio('introMusic', 'assets/sounds/intro.mp3');
-    }
 
     create() {
 

@@ -7,6 +7,13 @@ export class Boot extends Scene {
 
     preload() {
         this.load.image('splash', 'assets/captain-splash.png');
+        
+        this.load.audio('keySound1', 'assets/sounds/typewrite/key1.mp3');
+        this.load.audio('keySound2', 'assets/sounds/typewrite/key2.mp3');
+        this.load.audio('keySound3', 'assets/sounds/typewrite/key3.mp3');
+        this.load.audio('spaceSound', 'assets/sounds/typewrite/spaceBar.mp3');
+        this.load.audio('enterSound', 'assets/sounds/typewrite/newLine.mp3');
+        this.load.audio('introMusic', 'assets/sounds/intro.mp3');
     }
 
     create() {
