@@ -19,7 +19,7 @@
         height: 100dvh;
     }
     #guideBox {
-        display: none;
+        display: flex;
         background-color: #ffffffd4;
         position: absolute;
         top: 50%;
@@ -33,12 +33,15 @@
         justify-content: center;
         padding: 1rem 3rem;
         border-radius: .5rem;
+
+        transition: all ease .3s;
+        margin-top: -300%;
     }
     #guideBox p {
         margin: 0;
     }
     #guideBox.enabled {
-        display: flex;
+        margin-top: 0;
 
     }
     #guideButton {
