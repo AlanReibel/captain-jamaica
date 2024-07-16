@@ -130,7 +130,9 @@ export class GameOver extends Scene
     addCredits(screenSize) {
         let fontConfig = {
             fontFamily: 'Courier', 
-            fontSize: screenSize.height / 25, 
+            fontSize: this.inputHandler?.isMobile && this.inputHandler.orientation === 'portrait' 
+                ? screenSize.width / 40 
+                :screenSize.height / 25, 
             color: '#f6e800',
             stroke: '#000000', 
             strokeThickness: 5,
@@ -138,15 +140,13 @@ export class GameOver extends Scene
         };
 
         let creditText = `Credits 
-Original History &
-Main Char Design & Animations: 
+Original History & Main Char Design & Animations: 
 Oral Ferguson 
 
 Programing, Music & Sound:
 Alan Reibel
 
-Other Graphics 
-(Backgrounds, Tiles & Enemies): 
+Other Graphics (Backgrounds, Tiles & Enemies): 
 craftpix.net
 
 Typewriter Sounds:
@@ -155,9 +155,10 @@ pixabay.com
         let gameText = this.add.text(
             screenSize.width / 2, 
             (screenSize.height / 2) - 30, 
-            creditText, fontConfig
+            creditText, 
+            fontConfig
         ).setOrigin(0.5);
-        gameText.setWordWrapWidth(300);
+        gameText.setWordWrapWidth(screenSize.width / 2);
 
     }
 
