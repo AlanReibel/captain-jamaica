@@ -64,7 +64,7 @@ export class Finish extends Scene
             .setScale(scale);
 
         let congrats = this.add.text(screenSize.width / 2, (screenSize.height / 2) - 30, 'Congrats!', { ...fontConfig,fontSize: 40}).setOrigin(0.5);
-        let success = this.add.text(screenSize.width / 2, (screenSize.height / 2) + 30, 'You finished success!', fontConfig).setOrigin(0.5);
+        let success = this.add.text(screenSize.width / 2, (screenSize.height / 2) + 30, 'You have successfully finished!', fontConfig).setOrigin(0.5);
 
         this.tweens.addCounter({
             from: 0,
@@ -88,7 +88,7 @@ export class Finish extends Scene
 
                 const v = tween.getValue();
 
-                success.setFontSize(15 + v * 10);
+                success.setFontSize(10 + v * 10);
             }, 
             onComplete: () => {
                 this.addRestartButton(screenSize);

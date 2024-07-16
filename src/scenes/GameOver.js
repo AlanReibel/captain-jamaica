@@ -104,7 +104,7 @@ export class GameOver extends Scene
             'RESTART', 
             {
                 fontFamily: 'Courier', 
-                fontSize: 25, 
+                fontSize: 20, 
                 color: '#000',
                 stroke: '#000000', 
                 strokeThickness: 2,
@@ -158,7 +158,7 @@ pixabay.com
             creditText, 
             fontConfig
         ).setOrigin(0.5);
-        gameText.setWordWrapWidth(screenSize.width / 2);
+        gameText.setWordWrapWidth(screenSize.width - 40);
 
     }
 

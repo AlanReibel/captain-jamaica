@@ -74,7 +74,7 @@ export class Game extends Scene {
             this.player.movingDirection = 'none';
         }
 
-        if (this.inputHandler.isFightActionLeaved() && this.fightEnds) {
+        if (this.inputHandler.isFightActionLeaved() && this.player.fightEnds) {
             this.player.blockedFight = false;
         }
 
@@ -198,6 +198,7 @@ export class Game extends Scene {
             this.finishGame()
         }
 
+
     }
 
     handleFightActions() {
@@ -224,7 +225,6 @@ export class Game extends Scene {
         ) {
             // this.player.special();
             this.player.whip();
-
 
         }
         // pressed space key or X button
@@ -361,15 +361,25 @@ export class Game extends Scene {
             whip: 100,
             specialExplosion: 150,
         };
-        // console.log('collision', player.state);
-        if (
-            player.state === 'punch' ||
-            player.state === 'kick' ||
-            player.state === 'whip' ||
-            player.state === 'specialExplosion' ||
-            player.state === 'shield'
+
+        let currentState = this.player.state;
+        let damageStates = [
+            'punch',
+            'kick',
+            'whip',
+            'specialExplosion',
+            'shield',
+        ];
+        let enemyOnFront = player.focusTo === 'right' 
+            ? player.x <= enemy.x
+            : player.x >= enemy.y;
+
+ 
+        if ( damageStates.includes(currentState) 
+            && enemyOnFront
         ) {
-            this.hitEnemy(enemy, damage[player.state]);
+
+            this.hitEnemy(enemy, damage[currentState]);
         }
 
         if (enemy.state === 'attacking' && this.player.vulnerable) {
@@ -460,6 +470,7 @@ export class Game extends Scene {
         const objectTiles = this.map.addTilesetImage('newObjectSet', 'objectsTilemap');
         const backObjectLayer = this.map.createLayer('background', objectTiles);
         const frontObjectLayer = this.map.createLayer('foreground', objectTiles);
+
         backObjectLayer.setDepth(0);
         frontObjectLayer.setDepth(3);
         this.greenTilesLayer
@@ -517,9 +528,7 @@ export class Game extends Scene {
 
     finishGame () {
         this.cameras.main.fadeOut(250, 0, 0, 0);
-        this.time.delayedCall(300, () => {
-            this.scene.start('Finish', { inputHandler: this.inputHandler});
-        })
+        this.scene.start('Finish', { inputHandler: this.inputHandler});
     }
 
 }

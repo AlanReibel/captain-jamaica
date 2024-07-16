@@ -12,8 +12,8 @@ export class InputHandler {
         'X': false,
         'Y': false
     };
-    holdingTime = 1000;
-    maxComboTime = 1000;
+    holdingTime = 500;
+    maxComboTime = 500;
 
 
     isMobile = true;

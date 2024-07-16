@@ -6,7 +6,8 @@ export class Intro extends Scene {
         this.lines = [];
         this.maxLines = 15;
         this.fullText = {
-            'es': `En un mundo devastado por interminables batallas, 
+            'es': `
+En un mundo devastado por interminables batallas, 
 donde la mitad de la población ha desaparecido sin 
 dejar rastro, el caos se ha apoderado de Jamaica. 
 Las bandas de capos opresores han tomado el control, 
@@ -36,7 +37,8 @@ para restaurar el orden en Jamaica y liberar a su gente
 del yugo de los capos opresores...
 
 o se perderá en la sed de venganza y poder?`,
-'en': `In a world devastated by endless battles, where half 
+'en': `
+In a world devastated by endless battles, where half 
 of the population has vanished without a trace, chaos 
 has taken over Jamaica. Oppressive gangs have seized 
 control, plunging the island into a state of anarchy.

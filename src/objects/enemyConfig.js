@@ -134,15 +134,11 @@ export const enemies = {
             let difference = Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x);
             if( isNear ) {
                 let direction = player.x < enemy.x ? 'left' : 'right';
-                if(difference < 10 && difference > -10) {
+                if(distance <= 20) {
                     enemy.stop();
+                    enemy.attack();
                 } else {
-                    if(distance <= 40) {
-                        enemy.stop();
-                        enemy.attack();
-                    } else {
-                        enemy.move(direction);
-                    }
+                    enemy.move(direction);
                 }
             } else {
                 enemy.stop();
