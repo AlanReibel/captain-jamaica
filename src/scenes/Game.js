@@ -384,25 +384,8 @@ export class Game extends Scene {
         }
     }
 
-    showGuideText() {
-        let fontSetup = {
-            fontFamily: 'Arial Black',
-            fontSize: 15,
-            color: '#000000',
-            // stroke: '#000000', 
-            // strokeThickness: 2,
-            align: 'center'
-        };
-        this.add.text(20, 20, 'WSAD or arrow keys to move', fontSetup);
-        this.add.text(20, 40, 'Q key for punch', fontSetup);
-        this.add.text(20, 60, 'E key for kick', fontSetup);
-        this.add.text(20, 80, 'SPACE key for shield attack', fontSetup);
-        this.add.text(20, 100, 'F key for shield throw', fontSetup);
-    }
-
     playMusic() {
         this.music = this.sound.add('bitest');
-        // music.on('play', listener);
         this.music.play();
         this.music.setLoop(true);
 
