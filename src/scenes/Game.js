@@ -48,6 +48,7 @@ export class Game extends Scene {
                 this.guideIsOpen = true;
             }
         });
+
     }
 
     update() {
@@ -191,6 +192,10 @@ export class Game extends Scene {
 
         if(!this.player.specialEnabled) {
             this.disableSpecialMarker();
+        }
+
+        if(this.player.x > 3150 && this.player.y < 70) {
+            this.finishGame()
         }
 
     }
@@ -525,6 +530,13 @@ export class Game extends Scene {
 
     disableSpecialMarker() {
         this.specialMarkerFX.blackWhite();
+    }
+
+    finishGame () {
+        this.cameras.main.fadeOut(250, 0, 0, 0);
+        this.time.delayedCall(300, () => {
+            this.scene.start('Finish', { inputHandler: this.inputHandler});
+        })
     }
 
 }

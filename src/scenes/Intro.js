@@ -114,7 +114,7 @@ The battle for justice has only just begun.`
         this.spaceSound = this.sound.add('spaceSound');
         this.enterSound = this.sound.add('enterSound');
         this.introMusic = this.sound.add('introMusic');
-        this.introMusic.play({volume: 0.9});
+        this.introMusic.play({volume: 0.9, loop: false});
 
         this.addSkipButton();
 
@@ -157,8 +157,8 @@ The battle for justice has only just begun.`
 
     endIntro() {
         this.cameras.main.fadeOut(250, 0, 0, 0);
+        this.game.sound.stopAll();
         this.cameras.main.once('camerafadeoutcomplete', function (camera) {
-            this.introMusic.stop();
             this.scene.start('Preloader');
         }, this);
     }
