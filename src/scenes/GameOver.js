@@ -138,13 +138,15 @@ export class GameOver extends Scene
         };
 
         let creditText = `Credits 
-Programing & Sound:
-Alan Reibel 
-
-Main Character Graphics: 
+Original History &
+Main Char Design & Animations: 
 Oral Ferguson 
 
-Other Graphics: 
+Programing, Music & Sound:
+Alan Reibel
+
+Other Graphics 
+(Backgrounds, Tiles & Enemies): 
 craftpix.net
 
 Typewriter Sounds:
