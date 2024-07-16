@@ -168,24 +168,20 @@ export const enemies = {
             let treshhold = 150;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;
-            let difference = Phaser.Math.CeilTo(player.x) - Phaser.Math.CeilTo(enemy.x);
+            let playerAtLeftSide = Phaser.Math.CeilTo(player.x) < Phaser.Math.CeilTo(enemy.x);
 
-            if(difference < 0) {
+            if(playerAtLeftSide) {
                 enemy.focusTo = 'left';
             } else {
                 enemy.focusTo = 'right';
             }
+
             // console.log('difference',difference);
             if( isNear) {
                 
-                if(distance >= 150) {
-                    
-                    let direction = player.x < enemy.x ? 'left' : 'right';
-                    if(difference <= 40 || difference >= -40) {
-                        enemy.stop();
-                    } else {
-                        enemy.move(direction);
-                    }
+                if(distance <= 30) {
+                    let direction = playerAtLeftSide ? 'right' : 'left';
+                    enemy.move(direction);
 
                 } else {
                     enemy.stop();
