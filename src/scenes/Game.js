@@ -296,6 +296,7 @@ export class Game extends Scene {
         this.physics.add.overlap(this.player, this.landEnemies, this.handleBodyCollision, null, this);
         this.physics.add.collider(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
+        this.physics.add.collider(this.landEnemies, this.landEnemies, null, null, this);
 
         // this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.flyingEnemies, this.handleBodyCollision, null, this);
@@ -477,7 +478,6 @@ export class Game extends Scene {
             .setDepth(1)
             .setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player, this.greenTilesLayer);
-        // this.physics.add.collider(this.player, collisionBoxes);
 
     }
 
