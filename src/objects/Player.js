@@ -191,7 +191,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setPosition(this.originalX, this.y);
         this.setOffset(offsetX, 7);
         this.setScale(0.6);
+
         this.scene.cameras.main.startFollow(this, true, 1, 0.1, 0, 0)
+
     }
 
     idle() {
@@ -256,7 +258,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.time.delayedCall(400, () => {
             // if (this.state === 'throw') {
-                this.boomerangSound.play();
+            this.boomerangSound.play();
             // }
         });
 
@@ -264,31 +266,31 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
             // if (this.state === 'throw') {
 
-                let shieldPosition = {
-                    x: this.focusTo == 'right'
-                        ? this.x + (this.width / 2)
-                        : this.x - (this.width / 2),
-                    y: this.y
-                };
-                this.shield.setPosition(shieldPosition.x, shieldPosition.y);
+            let shieldPosition = {
+                x: this.focusTo == 'right'
+                    ? this.x + (this.width / 2)
+                    : this.x - (this.width / 2),
+                y: this.y
+            };
+            this.shield.setPosition(shieldPosition.x, shieldPosition.y);
 
-                // this.shield.setVisible(true);
-                this.shield.anims.play('fly', true);
+            // this.shield.setVisible(true);
+            this.shield.anims.play('fly', true);
 
-                let shieldTarget = this.focusTo == 'right'
-                    ? shieldPosition.x + distance
-                    : shieldPosition.x - distance;
+            let shieldTarget = this.focusTo == 'right'
+                ? shieldPosition.x + distance
+                : shieldPosition.x - distance;
 
-                this.scene.tweens.add({
-                    targets: this.shield,
-                    x: shieldTarget,
-                    y: shieldPosition.y,
-                    duration: 333,
-                    ease: 'Power1',
-                    onComplete: () => {
-                        this.flyBackTween();
-                    }
-                });
+            this.scene.tweens.add({
+                targets: this.shield,
+                x: shieldTarget,
+                y: shieldPosition.y,
+                duration: 333,
+                ease: 'Power1',
+                onComplete: () => {
+                    this.flyBackTween();
+                }
+            });
             // }
 
         });
@@ -517,8 +519,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     special() {
         if (!this.isJumping
-             && this.specialEnabled
-            ) {
+            //  && this.specialEnabled
+        ) {
+
+            this.fightEnds = false;
             this.anims.stop();
             this.state = 'special';
             this.specialEnabled = false;
@@ -536,6 +540,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.setVisible(false);
 
             let special = this.scene.physics.add.sprite(originalX + 3, (originalY - height / 2) + 3, 'special');
+            // special.setOffset(special.width - this.originalWidth, special.height - this.originalHeight);
+
+            // console.log('special', special.width , special.height);
+            special.setSize(this.originalWidth, this.originalHeight);
+
             special.setFlipX(flip);
             special.anims.play('special', true);
             this.scene.tweens.add({
@@ -561,6 +570,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.scene.time.delayedCall(2300, () => {
 
                 if (this.state === 'special') {
+                    console.log('this', this);
+                    special.setSize(special.width, special.height);
                     this.state = 'specialExplosion';
                     this.explosionSound.play();
                     this.body.setSize(128, 64);
@@ -570,13 +581,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             });
 
             special.on('animationcomplete-special', () => {
+                this.resetSprite();
                 this.setVisible(true);
                 this.state = 'idle';
                 this.vulnerable = true;
                 this.fightEnds = true;
                 this.blockedMovement = false;
                 special.destroy();
-                this.resetSprite();
                 this.setPosition(originalX + 50 * directionX, originalY + 10);
                 this.originalX = this.x;
                 this.originalY = this.y;
