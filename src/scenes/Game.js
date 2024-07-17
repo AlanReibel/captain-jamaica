@@ -372,7 +372,7 @@ export class Game extends Scene {
         ];
         let enemyOnFront = player.focusTo === 'right' 
             ? player.x <= enemy.x
-            : player.x >= enemy.y;
+            : player.x >= enemy.x;
 
  
         if ( damageStates.includes(currentState) 
