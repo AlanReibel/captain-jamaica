@@ -255,14 +255,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.state = 'throw';
 
         this.scene.time.delayedCall(400, () => {
-            if (this.state === 'throw') {
+            // if (this.state === 'throw') {
                 this.boomerangSound.play();
-            }
+            // }
         });
 
         this.scene.time.delayedCall(375, () => {
 
-            if (this.state === 'throw') {
+            // if (this.state === 'throw') {
 
                 let shieldPosition = {
                     x: this.focusTo == 'right'
@@ -289,7 +289,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                         this.flyBackTween();
                     }
                 });
-            }
+            // }
 
         });
 
@@ -306,12 +306,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.shield.setVisible(false);
                 this.shieldThrown = false;
                 this.shieldCached = true;
+                this.shield.destroy();
                 this.anims.play('catch', true);
             }
         });
 
         this.on('animationcomplete-catch', (anim, frame) => {
-            this.shield.destroy();
             this.state = 'idle';
             this.fightEnds = true;
             this.blockedMovement = false;
@@ -477,7 +477,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     handleJump() {
         // console.log('before jump state', this);
         if (!this.blockedJump) {
-            this.anims.pause();
+            // this.anims.pause();
             this.resetSprite();
             this.isJumping = true;
             this.blockedJump = true;
@@ -495,7 +495,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             }
 
             this.on('animationcomplete-jump', (anim, frame) => {
-                this.anims.play('idle');
+                // this.anims.play('idle');
                 this.state = 'idle';
                 this.isJumping = false;
             });
@@ -517,7 +517,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     special() {
         if (!this.isJumping
-            //  && this.specialEnabled
+             && this.specialEnabled
             ) {
             this.anims.stop();
             this.state = 'special';
