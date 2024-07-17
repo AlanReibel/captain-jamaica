@@ -544,7 +544,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
             // console.log('special', special.width , special.height);
             special.setSize(this.originalWidth, this.originalHeight);
-
             special.setFlipX(flip);
             special.anims.play('special', true);
             this.scene.tweens.add({

@@ -16,23 +16,25 @@ export const enemies = {
             let worldView = scene.cameras.main.worldView;
             let bounds = {
                 left: worldView.x + 30,
-                right: worldView.x + worldView.width - 30
+                right: worldView.x + worldView.width - 30,
+                top: worldView.y + 30,
+                bottom: worldView.y + worldView.health - 30
             };
             let distance = 50;
             let isNear = Phaser.Math.Distance.BetweenPoints(player, enemy) <= distance;
             let limitHeight = player.y - (player.height / 2);
             enemy.move(enemy.focusTo);
             
-            if (enemy.x < bounds.left) {
+            if (enemy.x < bounds.left || enemy.body.blocked.left) {
                 // enemy.setVelocityX(enemy.body.velocity.x * -1);
                 enemy.focusTo = 'right';
             }
-            if (enemy.x > bounds.right) {
+            if (enemy.x > bounds.right || enemy.body.blocked.right) {
                 // enemy.setVelocityX(enemy.body.velocity.x * -1);
                 enemy.focusTo = 'left';
             }
             // Verificar los límites verticales
-            if (enemy.y < worldView.y + 30 || enemy.y > worldView.y + worldView.height - 30) {
+            if (enemy.y < bounds.top || enemy.y > bounds.bottom) {
                 enemy.setVelocityY(0);
                 enemy.movingDirectionY = 'none';
             }
@@ -44,6 +46,7 @@ export const enemies = {
                 !enemy.attackDone && // pending attack
                 enemy.y < limitHeight && // is higher than player
                 enemy.movingDirectionY !== 'up'
+                || enemy.body.blocked.up
             ) {
                 enemy.movingDirectionY = 'down';
                 enemy.setVelocityY(120);
@@ -61,7 +64,8 @@ export const enemies = {
                 //attack is done
                 if(
                     enemy.y - enemy.startPosition.y > 10 &&
-                    enemy.y - enemy.startPosition.y < -10 
+                    enemy.y - enemy.startPosition.y < -10 ||
+                    enemy.body.blocked.down
                 ) {
                     enemy.movingDirectionY = 'up';
                     enemy.setVelocityY(-80);
@@ -70,9 +74,8 @@ export const enemies = {
                 }
             } else {
                 //attack is pending
-                if(enemy.y >= limitHeight && enemy.y > enemy.startPosition.y) {
+                if(enemy.y >= limitHeight || enemy.body.blocked.down) {
                     enemy.movingDirectionY = 'up';
-
                     enemy.setVelocityY(-80);
 
                 }
