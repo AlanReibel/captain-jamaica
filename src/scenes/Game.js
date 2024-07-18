@@ -465,13 +465,15 @@ export class Game extends Scene {
         
         this.greenTilesLayer = this.map.createLayer('greenPlatforms', greenTiles);
         const backObjectLayer = this.map.createLayer('background', decoTiles);
+        const farBackObjectLayer = this.map.createLayer('farBackground', decoTiles);
         const frontObjectLayer = this.map.createLayer('foreground', decoTiles);
 
-        backObjectLayer.setDepth(0);
+        farBackObjectLayer.setDepth(0);
+        backObjectLayer.setDepth(1);
         frontObjectLayer.setDepth(3);
 
         this.greenTilesLayer
-            .setDepth(1)
+            .setDepth(2)
             .setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player, this.greenTilesLayer);
 
