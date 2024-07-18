@@ -1,8 +1,10 @@
 export class Box extends Phaser.Physics.Arcade.Sprite {
 
-    constructor(scene, x, y, name, potionName) {
+    constructor(scene, x, y, name, potionName, flip) {
         super(scene, x, y, name);
         this.scene = scene;
+
+        this.setFlipX(flip);
         this.scene.physics.world.enable(this);
         this.scene.add.existing(this);
         this.setCollideWorldBounds(true);
@@ -10,7 +12,6 @@ export class Box extends Phaser.Physics.Arcade.Sprite {
         this.potions = this.scene.physics.add.group();
 
         this.PotionName = potionName;
-
         this.potionAmounts = {
             health: 25,
             power: 50,

@@ -479,8 +479,22 @@ export class Game extends Scene {
         let boxesPosition = this.map.getObjectLayer('boxes');
 
         boxesPosition.objects.forEach(boxData => {
-            let potionName = boxData.properties ? boxData.properties[0].value : null; 
-            let box = new Box(this, boxData.x, boxData.y, 'chest', potionName);
+
+            let potionName, flip;
+            boxData.properties.forEach( property => {
+                switch (property.name) {
+                    case 'potion':
+                        potionName = property.value;
+                        break;
+                    case 'flip':
+                        flip = property.value;
+                        break;
+                
+                }
+            });
+            // console.log('potionName', potionName);
+            console.log('flip', flip);
+            let box = new Box(this, boxData.x, boxData.y, 'chest', potionName, flip);
             
             boxesGroup.add(box);
             this.physics.add.overlap( this.player, box.potions, this.collectPotion, null, this);
