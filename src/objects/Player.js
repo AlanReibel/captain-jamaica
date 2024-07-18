@@ -1,4 +1,3 @@
-import { Scene } from 'phaser';
 import { Bullet } from '../objects/Bullet.js';
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
@@ -8,6 +7,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     blockedJump = false;
     velocity = 100;
     specialEnabled = true;
+    ammoEnabled = true;
 
     shield;
     shieldThrown = false;
@@ -340,21 +340,27 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     burst() {
-        this.resetSprite();
 
-        this.setVelocityX(0);
-        this.blockedMovement = true;
-        this.blockedFight = true;
-        this.fightEnds = false;
-        this.anims.play('burst', true);
-        this.state = 'burst';
+        if(this.ammoEnabled) {
 
-        this.on('animationcomplete-burst', (anim, frame) => {
             this.resetSprite();
-            this.state = 'idle';
-            this.fightEnds = true;
-            this.blockedMovement = false;
-        });
+    
+            this.setVelocityX(0);
+            this.blockedMovement = true;
+            this.blockedFight = true;
+            this.fightEnds = false;
+            this.anims.play('burst', true);
+            this.state = 'burst';
+    
+            this.on('animationcomplete-burst', (anim, frame) => {
+                this.resetSprite();
+                this.state = 'idle';
+                this.fightEnds = true;
+                this.blockedMovement = false;
+                this.ammoEnabled = false;
+                this.scene.disableAmmoMarker();
+            });
+        }
     }
 
     kick() {
@@ -437,7 +443,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 if (this.state === 'whip') {
                     this.punchSound.play();
                     this.setSize(135, 64);
-                    this.power -= 50;
+                    this.power -= 25;
                     this.scene.powerbarUpdate();
                 }
             });
@@ -530,6 +536,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.anims.stop();
             this.state = 'special';
             this.specialEnabled = false;
+            this.scene.disableSpecialMarker();
             this.scene.cameras.main.stopFollow();
             this.vulnerable = false;
             let originalX = this.x;

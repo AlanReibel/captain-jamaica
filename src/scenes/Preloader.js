@@ -171,6 +171,7 @@ export class Preloader extends Scene {
         );
         this.load.image('power', 'sprites/boxes/power.png');
         this.load.image('health', 'sprites/boxes/health.png');
+        this.load.image('ammo', 'sprites/boxes/ammo.png');
 
     }
 }

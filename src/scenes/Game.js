@@ -191,10 +191,6 @@ export class Game extends Scene {
             });
         }
 
-        if(!this.player.specialEnabled) {
-            this.disableSpecialMarker();
-        }
-
         if(this.player.x > 3150 && this.player.y < 70) {
             this.finishGame()
         }
@@ -435,7 +431,8 @@ export class Game extends Scene {
 
         this.addHealthBar( x, y);
         this.addPowerBar( gamewidth);
-        this.addSpecialUI(gamewidth);
+        this.addSpecialUI(gamewidth / 2);
+        this.addAmmoUI(gamewidth / 2);
     }
 
     moveBackground(direction) {
@@ -485,7 +482,6 @@ export class Game extends Scene {
             let potionName = boxData.properties ? boxData.properties[0].value : null; 
             let box = new Box(this, boxData.x, boxData.y, 'chest', potionName);
             
-            console.log('box added',potionName);
             boxesGroup.add(box);
             this.physics.add.overlap( this.player, box.potions, this.collectPotion, null, this);
         });
@@ -529,7 +525,8 @@ export class Game extends Scene {
                 }
                 break;
             case 'ammo':
-                
+                this.player.ammoEnabled = true;
+                this.enableAmmoMarker();
                 break;
 
         }
@@ -622,8 +619,8 @@ export class Game extends Scene {
         }
     }
 
-    addSpecialUI( width ) {
-        let x = width / 2;
+    addSpecialUI( midle ) {
+        let x = midle - 20;
         let specialMarker = this.add.image(x, 20, 'specialMarker');
         specialMarker.setScale(0.4);
         specialMarker.setOrigin(0.5);
@@ -631,8 +628,25 @@ export class Game extends Scene {
         this.uiContainer.add(specialMarker);
     }
 
+    addAmmoUI( midle ) {
+        let x = midle + 20;
+        let ammoMarker = this.add.image(x, 20, 'ammo');
+        // ammoMarker.setScale(0.4);
+        ammoMarker.setOrigin(0.5);
+        this.ammoMarkerFX = ammoMarker.postFX.addColorMatrix();
+        this.uiContainer.add(ammoMarker);
+    }
+
     disableSpecialMarker() {
         this.specialMarkerFX.blackWhite();
+    }
+
+    enableAmmoMarker() {
+        this.ammoMarkerFX.reset();
+    }
+
+    disableAmmoMarker() {
+        this.ammoMarkerFX.blackWhite();
     }
 
     finishGame () {
