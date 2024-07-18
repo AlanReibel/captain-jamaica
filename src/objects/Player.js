@@ -519,7 +519,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     special() {
         if (!this.isJumping
-            //  && this.specialEnabled
+             && this.specialEnabled
         ) {
 
             this.fightEnds = false;
