@@ -495,7 +495,6 @@ export class Game extends Scene {
                 }
             });
             // console.log('potionName', potionName);
-            console.log('flip', flip);
             let box = new Box(this, boxData.x, boxData.y, 'chest', potionName, flip);
             
             boxesGroup.add(box);

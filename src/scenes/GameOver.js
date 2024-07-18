@@ -80,7 +80,7 @@ export class GameOver extends Scene
         this.tweens.addCounter({
             from: 0,
             to: 1,
-            duration: 1000,
+            duration: 3000,
             yoyo: false,
             onUpdate: (tween) => {
 
