@@ -224,7 +224,11 @@ export class Game extends Scene {
             this.inputHandler.buttons['Y']
         ) {
             // this.player.special();
-            this.player.whip();
+            if( this.player.power >= 50) {
+                this.player.whip();
+            } else {
+                this.powerBarBlick();
+            }
 
         }
         // pressed space key or X button
@@ -430,6 +434,7 @@ export class Game extends Scene {
             .setOrigin(0, 0);
 
         this.addHealthBar( x, y);
+        this.addPowerBar( gamewidth);
         this.addSpecialUI(gamewidth);
     }
 
@@ -503,6 +508,52 @@ export class Game extends Scene {
 
     }
 
+    addPowerBar( width ) {
+
+        let power = this.player.power;
+        this.powerbarBackground = this.add.graphics();
+        let x = width - 10 - power;
+        this.powerbarBackground
+            .fillStyle(0xbb2300, 1)
+            .fillRect(x, 10, power, 15);
+        // Crear un gráfico para la barra de vida
+        this.powerBar = this.add.graphics();
+        this.powerBar
+            .fillStyle(0xfbe900, 1)
+            .fillRect(x, 10, power, 15);
+
+        this.powerBar.position = x;
+        this.uiContainer.add(this.powerbarBackground);
+        this.uiContainer.add(this.powerBar);
+
+    }
+
+    powerbarUpdate() {
+
+        this.powerBar.clear();
+        if(this.player.power > 0) {
+            this.powerBar
+                .fillStyle(0xfbe900, 1)
+                .fillRect(this.powerBar.position, 10, this.player.power, 15);
+        }
+
+    }
+
+    powerBarBlick(repeatCount = 3) {
+        console.log('powerBarBlick');
+        this.tweens.add({
+            targets: this.powerbarBackground,
+            alpha: 0,
+            ease: 'Linear',
+            duration: 200, 
+            yoyo: true, 
+            repeat: repeatCount - 1, 
+            onComplete: () => {
+                this.powerbarBackground.setAlpha(1);
+            }
+        });
+    }
+
     healthbarUpdate() {
         this.healthBar.clear();
         this.healthBar
@@ -515,9 +566,10 @@ export class Game extends Scene {
     }
 
     addSpecialUI( width ) {
-        let x = width - 25;
+        let x = width / 2;
         let specialMarker = this.add.image(x, 20, 'specialMarker');
         specialMarker.setScale(0.4);
+        specialMarker.setOrigin(0.5);
         this.specialMarkerFX = specialMarker.postFX.addColorMatrix();
         this.uiContainer.add(specialMarker);
     }

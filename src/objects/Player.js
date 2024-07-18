@@ -14,6 +14,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     shieldCached = true;
 
     health = 100;
+    power = 100;
     vulnerable = true;
 
     movingDirection = 'right';
@@ -436,10 +437,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 if (this.state === 'whip') {
                     this.punchSound.play();
                     this.setSize(135, 64);
+                    this.power -= 50;
+                    this.scene.powerbarUpdate();
                 }
             });
 
             this.on('animationcomplete-whip', (anim, frame) => {
+                
                 this.resetSprite();
                 this.blockedMovement = false;
             });
@@ -636,15 +640,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     startBlink(repeatCount) {
-        // Crear un tween para parpadear
-        // Asegurarse de que el sprite vuelva a ser completamente visible
+        
         this.scene.tweens.add({
             targets: this,
             alpha: 0.3,
             ease: 'Linear',
-            duration: 200, // Duración de cada parpadeo (mitad para desvanecer y mitad para reaparecer)
-            yoyo: true, // Hacer el parpadeo (yoyo vuelve a la opacidad original)
-            repeat: repeatCount - 1, // Repetir varias veces el parpadeo
+            duration: 200, 
+            yoyo: true, 
+            repeat: repeatCount - 1, 
             onComplete: () => {
                 this.setAlpha(1);
             }
