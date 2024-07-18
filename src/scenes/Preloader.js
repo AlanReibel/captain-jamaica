@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { Enemy } from '../objects/Enemy';
+import { Box } from '../objects/Box';
 import { Player } from '../objects/Player';
 
 export class Preloader extends Scene {
@@ -31,6 +32,7 @@ export class Preloader extends Scene {
 
         Player.createAnimations(this);
         Enemy.createAnimations(this);
+        Box.createAnimations(this);
         this.defineFXAnimations();
 
         this.scene.start('MainMenu');
@@ -83,6 +85,7 @@ export class Preloader extends Scene {
 
         this.captainSprites();
         this.enemiesSprites();
+        this.boxSprites();
 
     }
 
@@ -159,5 +162,15 @@ export class Preloader extends Scene {
             'sprites/fx/explosion1.png',
             { frameWidth: 25, frameHeight: 24 }
         );
+    }
+
+    boxSprites() {
+        this.load.spritesheet('chest',
+            'sprites/boxes/chest.png',
+            { frameWidth: 32, frameHeight: 32 }
+        );
+        this.load.image('power', 'sprites/boxes/power.png');
+        this.load.image('health', 'sprites/boxes/health.png');
+
     }
 }

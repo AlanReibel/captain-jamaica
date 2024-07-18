@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { Player } from '../objects/Player.js';
 import { InputHandler } from '../objects/InputHandler.js';
 import { Enemy } from '../objects/Enemy.js';
+import { Box } from '../objects/Box.js';
 
 export class Game extends Scene {
     constructor() {
@@ -197,7 +198,6 @@ export class Game extends Scene {
         if(this.player.x > 3150 && this.player.y < 70) {
             this.finishGame()
         }
-
 
     }
 
@@ -439,7 +439,6 @@ export class Game extends Scene {
     }
 
     moveBackground(direction) {
-        // Actualiza la posición del tileSprite en función de la posición de la cámara
 
         let scroll = this.cameras.main.scrollX / 20;
 
@@ -456,14 +455,8 @@ export class Game extends Scene {
             .setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         this.cameras.main
-            // .setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
             .setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
-            // .startFollow(this.player, true, 0.5, 0, 200, 0)
             .startFollow(this.player, true, 1, 0.1, 0, 0)
-            // .setZoom(1.5)
-            // .zoomTo(this.player, 1000)
-            // .centerOn(0,this.map.heightInPixels)
-            // .setSize(800, 600)
             .setFollowOffset(0, -50);
     }
 
@@ -471,19 +464,83 @@ export class Game extends Scene {
         this.map = this.make.tilemap({ key: 'tilemapJson' });
 
         const greenTiles = this.map.addTilesetImage('greenTiles2', 'tilemapImage2');
+        const decoTiles = this.map.addTilesetImage('newObjectSet', 'objectsTilemap');
+        
         this.greenTilesLayer = this.map.createLayer('greenPlatforms', greenTiles);
-
-        const objectTiles = this.map.addTilesetImage('newObjectSet', 'objectsTilemap');
-        const backObjectLayer = this.map.createLayer('background', objectTiles);
-        const frontObjectLayer = this.map.createLayer('foreground', objectTiles);
+        const backObjectLayer = this.map.createLayer('background', decoTiles);
+        const frontObjectLayer = this.map.createLayer('foreground', decoTiles);
 
         backObjectLayer.setDepth(0);
         frontObjectLayer.setDepth(3);
+
         this.greenTilesLayer
             .setDepth(1)
             .setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player, this.greenTilesLayer);
 
+        let boxesGroup = this.physics.add.group();
+        let boxesPosition = this.map.getObjectLayer('boxes');
+
+        boxesPosition.objects.forEach(boxData => {
+            let potionName = boxData.properties ? boxData.properties[0].value : null; 
+            let box = new Box(this, boxData.x, boxData.y, 'chest', potionName);
+            
+            console.log('box added',potionName);
+            boxesGroup.add(box);
+            this.physics.add.overlap( this.player, box.potions, this.collectPotion, null, this);
+        });
+
+        boxesGroup.setDepth(3);
+        this.physics.add.collider(this.greenTilesLayer, boxesGroup);
+        this.physics.add.overlap(this.player, boxesGroup, this.boxInteraction, null, this);
+
+
+    }
+
+    boxInteraction(player, box) {
+        if(this.inputHandler.isFightActionPressed()){
+
+            box.openBox();
+        }
+    }
+
+    collectPotion(player, potion) {
+        switch (potion.name) {
+            case 'health':
+                if(this.player.health < 100){
+                    let newHealth = this.player.health + potion.amount <= 100 
+                        ? this.player.health + potion.amount
+                        : 100;
+
+                        this.player.health = newHealth;
+                        this.healthbarUpdate();
+                    
+                }
+                break;
+            case 'power':
+                if(this.player.power < 100){
+                    let newPower = this.player.power + potion.amount <= 100 
+                        ? this.player.power + potion.amount
+                        : 100;
+
+                        this.player.power = newPower;
+                        this.powerbarUpdate();
+                    
+                }
+                break;
+            case 'ammo':
+                
+                break;
+
+        }
+        this.time.delayedCall( 200, () => {
+            potion.setVelocityY(-200);
+            
+        });        
+        this.time.delayedCall( 500, () => {
+            
+            potion.destroy();
+        });        
     }
 
     addHealthBar( x, y ) {
