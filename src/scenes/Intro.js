@@ -73,18 +73,20 @@ The battle for justice has only just begun.`
         this.speed = 50;
         this.images = {
             es: {
-                1: 'devasted-city',
+                // 1: 'devasted-city',
                 7: 'shoting',
                 10: 'lying',
                 17: 'elixir',
-                20: 'effects'
+                20: 'effects',
+                25: 'reborn'
             },
             en: {
-                1: 'devasted-city',
+                // 1: 'devasted-city',
                 6: 'shoting',
                 9: 'lying',
-                16: 'elixir',
-                18: 'effects'
+                15: 'elixir',
+                18: 'effects',
+                23: 'reborn'
             }
         };
 
@@ -100,24 +102,22 @@ The battle for justice has only just begun.`
 
         const maxWidth = this.game.config.width - 40;
         const height = this.game.config.height / 2;
-        // console.log('Intro',this);
+
         const style = { 
-            fontSize: '14px', // Tamaño de fuente en píxeles
-            fontFamily: 'Arial', // Familia de fuente
-            fill: '#ffffff', // Color de texto blanco
-            wordWrap: { width: maxWidth, useAdvancedWrap: true } // Ajuste de línea
+            fontSize: '14px',
+            fontFamily: 'Arial',
+            fill: '#ffffff',
+            wordWrap: { width: maxWidth, useAdvancedWrap: true }
         };
     
         this.text = this.add.text(20, height + 30, '', style);
         
-        // Añadir las primeras líneas de texto con efecto de máquina de escribir
         this.addInitialLines();
 // 
-        // Ejemplo de cómo podrías llamar a estas funciones para añadir y desplazar el texto
         this.time.addEvent({
-            delay: 1600, // Cada 2 segundos
+            delay: 1600, 
             callback: () => {
-                if (!this.typing) { // Solo añadir línea si no está escribiendo
+                if (!this.typing) { 
                     this.addNextLine();
                     if (this.lines.length > this.maxLines) {
                         this.scrollText();
@@ -248,7 +248,6 @@ The battle for justice has only just begun.`
             const randomKeySound = this.keySounds[Math.floor(Math.random() * this.keySounds.length)];
             randomKeySound.play({ 
                 volume: 0.2, 
-                // rate: 1 + Math.random() * 0.2 - 0.1 
             }); 
         }
     }

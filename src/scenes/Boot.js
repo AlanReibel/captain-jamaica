@@ -36,6 +36,7 @@ export class Boot extends Scene {
         this.load.image('lying', 'assets/intro/lying.png');
         this.load.image('elixir', 'assets/intro/elixir.png');
         this.load.image('effects', 'assets/intro/effects.png');
+        this.load.image('reborn', 'assets/intro/reborn.png');
 
     }
 
