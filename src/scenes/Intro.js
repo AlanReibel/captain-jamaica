@@ -4,7 +4,7 @@ export class Intro extends Scene {
     constructor() {
         super('Intro');
         this.lines = [];
-        this.maxLines = 15;
+        this.maxLines = 5;
         this.fullText = {
             'es': `
 En un mundo devastado por interminables batallas, 
@@ -54,6 +54,7 @@ But hope was not entirely lost. In the same city, an elderly
 woman known for her knowledge of mystical herbs 
 decided to intervene. With her skills, she created a unique 
 elixir, a potion that combined rare and magical plants. 
+
 Upon administering it, his wounds began to heal rapidly. 
 However, the elixir had unexpected side effects: 
 it granted him superhuman strength, speed, and durability 
@@ -70,6 +71,22 @@ The battle for justice has only just begun.`
         this.currentLineIndex = 0;
         this.typing = false; // Indica si está en proceso de escritura
         this.speed = 50;
+        this.images = {
+            es: {
+                1: 'devasted-city',
+                7: 'shoting',
+                10: 'lying',
+                17: 'elixir',
+                20: 'effects'
+            },
+            en: {
+                1: 'devasted-city',
+                6: 'shoting',
+                9: 'lying',
+                16: 'elixir',
+                18: 'effects'
+            }
+        };
 
     }
 
@@ -78,9 +95,11 @@ The battle for justice has only just begun.`
         const userLang = navigator.language || navigator.userLanguage;
         const userLanguage = userLang.substring(0,2);
         this.textArray = this.fullText[userLanguage].split('\n');
+        this.userLanguage = userLanguage;
 
 
         const maxWidth = this.game.config.width - 40;
+        const height = this.game.config.height / 2;
         // console.log('Intro',this);
         const style = { 
             fontSize: '14px', // Tamaño de fuente en píxeles
@@ -89,11 +108,11 @@ The battle for justice has only just begun.`
             wordWrap: { width: maxWidth, useAdvancedWrap: true } // Ajuste de línea
         };
     
-        this.text = this.add.text(20, 20, '', style);
+        this.text = this.add.text(20, height + 30, '', style);
         
         // Añadir las primeras líneas de texto con efecto de máquina de escribir
         this.addInitialLines();
-
+// 
         // Ejemplo de cómo podrías llamar a estas funciones para añadir y desplazar el texto
         this.time.addEvent({
             delay: 1600, // Cada 2 segundos
@@ -119,6 +138,7 @@ The battle for justice has only just begun.`
         this.introMusic.play({volume: 0.9, loop: false});
 
         this.addSkipButton();
+
 
     }
 
@@ -170,11 +190,19 @@ The battle for justice has only just begun.`
         if (this.currentLineIndex < this.textArray.length) {
             this.addLineWithTypewriterEffect(this.textArray[this.currentLineIndex]);
             this.currentLineIndex++;
+            this.addImage('devasted-city');
         } 
     }
 
     addNextLine() {
         if (this.currentLineIndex < this.textArray.length) {
+            let imageOnLine = Object.keys(this.images[this.userLanguage]);
+
+
+            if(imageOnLine.includes(`${this.currentLineIndex}`)) {
+                let imageName = this.images[this.userLanguage][this.currentLineIndex];
+                this.addImage(imageName);
+            }
             this.addLineWithTypewriterEffect(this.textArray[this.currentLineIndex]);
             this.currentLineIndex++;
         } else {
@@ -223,5 +251,26 @@ The battle for justice has only just begun.`
                 // rate: 1 + Math.random() * 0.2 - 0.1 
             }); 
         }
+    }
+
+    addImage(name) {
+        this.tweens.add({
+            targets: this.introImage,
+            alpha: 0,
+            ease: 'Linear',
+            duration: 1000, 
+            onComplete: () => {
+                this.introImage = this.add.image( 0, 0, name)
+                    .setOrigin(0)
+                    .setAlpha(0)
+                this.tweens.add({
+                    targets: this.introImage,
+                    alpha: 1,
+                    ease: 'Linear',
+                    duration: 1000, 
+                });
+            }
+        });
+
     }
 }

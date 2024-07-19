@@ -8,12 +8,8 @@ export class Boot extends Scene {
     preload() {
         this.load.image('splash', 'assets/captain-splash.png');
         
-        this.load.audio('keySound1', 'assets/sounds/typewrite/key1.mp3');
-        this.load.audio('keySound2', 'assets/sounds/typewrite/key2.mp3');
-        this.load.audio('keySound3', 'assets/sounds/typewrite/key3.mp3');
-        this.load.audio('spaceSound', 'assets/sounds/typewrite/spaceBar.mp3');
-        this.load.audio('enterSound', 'assets/sounds/typewrite/newLine.mp3');
-        this.load.audio('introMusic', 'assets/sounds/intro.mp3');
+        this.loadIntroAudios();
+        this.loadIntroImages();
     }
 
     create() {
@@ -22,6 +18,24 @@ export class Boot extends Scene {
         })
 
         this.addSkipButton();
+
+    }
+
+    loadIntroAudios() {
+        this.load.audio('keySound1', 'assets/sounds/typewrite/key1.mp3');
+        this.load.audio('keySound2', 'assets/sounds/typewrite/key2.mp3');
+        this.load.audio('keySound3', 'assets/sounds/typewrite/key3.mp3');
+        this.load.audio('spaceSound', 'assets/sounds/typewrite/spaceBar.mp3');
+        this.load.audio('enterSound', 'assets/sounds/typewrite/newLine.mp3');
+        this.load.audio('introMusic', 'assets/sounds/intro.mp3');
+    }
+
+    loadIntroImages() {
+        this.load.image('devasted-city', 'assets/intro/devasted-city.png');
+        this.load.image('shoting', 'assets/intro/shoting.png');
+        this.load.image('lying', 'assets/intro/lying.png');
+        this.load.image('elixir', 'assets/intro/elixir.png');
+        this.load.image('effects', 'assets/intro/effects.png');
 
     }
 
