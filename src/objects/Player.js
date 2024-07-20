@@ -30,6 +30,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     originalWidth = 26;
     originalHeight = 52;
 
+    sounds = [];
+
     constructor(scene, x, y, texture) {
 
         super(scene, x, y, texture);
@@ -129,7 +131,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         scene.anims.create({
             key: 'special',
-            frames: scene.anims.generateFrameNumbers('special', { start: 11, end: 56 }),
+            frames: scene.anims.generateFrameNumbers('special', { start: 0, end: 45 }),
             frameRate: 18,
             repeat: 0
         });
@@ -244,6 +246,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     takeDamage(amount) {
         this.startBlink(3);
+        this.sounds['hurt'].setVolume(0.5).play();
         this.health -= amount;
     }
 
@@ -259,7 +262,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.time.delayedCall(400, () => {
             // if (this.state === 'throw') {
-            this.boomerangSound.play();
+            this.sounds['boomerang'].play();
             // }
         });
 
@@ -332,7 +335,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         let bullet = this.bullets.get(bulletOrigin, scene.player.y);
         if (bullet) {
             bullet.fire(bulletOrigin, scene.player.y, this.focusTo);
-            this.laserSound.play();
+            this.sounds['player-fire'].play();
 
         } else {
             console.log('No hay balas disponibles');
@@ -360,6 +363,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.ammoEnabled = false;
                 this.scene.disableAmmoMarker();
             });
+        } else {
+            this.sounds['error'].play();
         }
     }
 
@@ -370,7 +375,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.fightEnds = false;
             this.anims.play('kick', true);
             this.state = 'kick';
-            this.punchSound.play();
+            this.sounds['pre-punch'].play();
             this.on('animationcomplete-kick', (anim, frame) => {
                 this.state = 'idle';
                 this.fightEnds = true;
@@ -385,7 +390,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.fightEnds = false;
             this.anims.play('punch');
             this.state = 'punch';
-            this.punchSound.play();
+            this.sounds['pre-punch'].play();
             this.on('animationcomplete-punch', (anim, frame) => {
                 this.state = 'idle';
                 this.fightEnds = true;
@@ -401,7 +406,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.fightEnds = false;
             this.anims.play('punch2', true);
             this.state = 'punch2';
-            this.punchSound.play();
+            this.sounds['pre-punch'].play();
             this.on('animationcomplete-punch2', (anim, frame) => {
                 this.state = 'idle';
                 this.fightEnds = true;
@@ -424,6 +429,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
             this.setVelocityX(0);
             this.anims.play('whip', true);
+
             this.setPosition(this.originalX + (22 * compensation), this.y - 1);
             this.setOffset(offsetX, 10);
             this.setScale(0.58);
@@ -432,16 +438,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.scene.time.delayedCall(600, () => {
 
                 if (this.anims.currentAnim.key === 'whip' && this.anims.isPlaying) {
+                    this.sounds['whip'].play();
 
-                    this.specialSound.play();
                     this.state = 'whip';
-                }
+                } 
 
             });
 
             this.scene.time.delayedCall(740, () => {
                 if (this.state === 'whip') {
-                    this.punchSound.play();
+                    // this.sounds['whip'].play();
                     this.setSize(135, 64);
                     this.power -= 25;
                     this.scene.powerbarUpdate();
@@ -480,7 +486,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.state = 'shield';
             this.scene.time.delayedCall(100, () => {
                 if (this.state === 'shield') {
-                    this.punchSound.play();
+                    this.sounds['pre-punch'].play();
                 }
             });
         }
@@ -499,6 +505,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.setVelocityY(-400);
             this.setGravityY(400);
             this.anims.play('jump');
+            this.sounds['jump'].play();
 
             if (this.state === 'running') {
                 this.state = 'runningJump';
@@ -520,6 +527,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.fightEnds = false;
         this.blockedFight = true;
         this.anims.play('jumpKick', true);
+        this.sounds['pre-punch'].play();
         this.state = 'jumpKick';
         this.on('animationcomplete-jumpKick', (anim, frame) => {
             this.state = 'idle';
@@ -546,7 +554,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             let directionX = this.focusTo === 'left' ? -1 : 1;
             let flip = this.focusTo === 'left';
 
-            this.specialSound.play();
+            this.sounds['special'].play();
             this.setVelocityX(0);
             this.setVisible(false);
 
@@ -568,7 +576,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                         targets: special,
                         x: originalX + 50 * directionX,
                         y: originalY - 27,
-                        duration: 200,
+                        duration: 55.55,
                         ease: 'Power1',
                     });
                 }
@@ -577,13 +585,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             special.body.setAllowGravity(false);
             special.setScale(0.95);
 
-            this.scene.time.delayedCall(2300, () => {
+            this.scene.time.delayedCall(2110, () => {
 
                 if (this.state === 'special') {
                     console.log('this', this);
                     special.setSize(special.width, special.height);
                     this.state = 'specialExplosion';
-                    this.explosionSound.play();
+                    this.sounds['explosion'].play();
                     this.body.setSize(128, 64);
                     this.scene.cameras.main.shake(100, 0.05);
                 }
@@ -610,6 +618,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     land() {
         this.isJumping = false;
         this.anims.play('land', true);
+        this.sounds['land'].play();
         this.state = 'landing';
         this.on('animationcomplete-land', (anim, frame) => {
             this.state = 'idle';
@@ -636,12 +645,34 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     addSounds() {
-        this.punchSound = this.scene.sound.add('punch');
-        this.laserSound = this.scene.sound.add('laser');
-        this.specialSound = this.scene.sound.add('special');
-        this.explosionSound = this.scene.sound.add('explosion');
-        this.boomerangSound = this.scene.sound.add('boomerang');
-        this.laserSound.setVolume(0.4);
+        let playerSounds = [
+            'pre-punch',//x
+            'player-punch',
+            'player-fire',//x
+            'jump',//x
+            'land',//x
+            'hurt',//x
+            'shield',
+            'boomerang',//x
+            'whip',//x
+            'hit',
+            'special',//x
+            'explosion',//x
+            'chest',//x
+            'item',//x
+            'increase',//x
+            'error',//x
+        ];
+
+        playerSounds.forEach( sound => {
+            this.sounds[sound] = this.scene.sound.add(sound);
+        });
+        // this.sounds['pre-punch] = this.scene.sound.add('punch');
+        // this.laserSound = this.scene.sound.add('laser');
+        // this.specialSound = this.scene.sound.add('special');
+        // this.explosionSound = this.scene.sound.add('explosion');
+        // this.boomerangSound = this.scene.sound.add('boomerang');
+        // this.laserSound.setVolume(0.4);
 
 
     }

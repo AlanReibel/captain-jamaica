@@ -23,6 +23,8 @@ export class Game extends Scene {
     healthBar;
     guideIsOpen = false;
 
+    boxesEnabled = {};
+
     create() {
         this.cameras.main.fadeIn( 200, 0, 0, 0 );
 
@@ -240,6 +242,7 @@ export class Game extends Scene {
     }
 
     hitEnemy(enemy, damage) {
+        
         enemy.hurt(damage);
     }
 
@@ -332,6 +335,7 @@ export class Game extends Scene {
             this.player.takeDamage(bullet.damage);
             this.healthbarUpdate();
             this.destroyBullet(bullet);
+            this.player.sounds['hit'].play();
         }
 
         this.time.delayedCall(1000, () => {
@@ -342,7 +346,7 @@ export class Game extends Scene {
     handleBulletCollision(bullet, enemy) {
 
         this.hitEnemy(enemy, 20);
-
+        this.player.sounds['hit'].play();
         if (bullet.texture.key === 'bullet') {
             bullet.destroy();
         }
@@ -371,6 +375,21 @@ export class Game extends Scene {
             'specialExplosion',
             'shield',
         ];
+
+        switch (this.player.state) {
+            case 'kick':
+                this.player.sounds['hit'].play();
+            case 'jumpKick':
+                this.player.sounds['hit'].play();
+            case 'punch':
+                this.player.sounds['player-punch'].play();
+                break;
+            case 'throw':
+                this.player.sounds['shield'].play();
+                break;
+            default:
+                break;
+        }
         let enemyOnFront = player.focusTo === 'right' 
             ? player.x <= enemy.x
             : player.x >= enemy.x;
@@ -481,7 +500,7 @@ export class Game extends Scene {
         let boxesPosition = this.map.getObjectLayer('boxes');
 
         boxesPosition.objects.forEach(boxData => {
-
+        this.boxesEnabled[boxData.id] = true;
             let potionName, flip;
             boxData.properties.forEach( property => {
                 switch (property.name) {
@@ -496,7 +515,7 @@ export class Game extends Scene {
             });
             // console.log('potionName', potionName);
             let box = new Box(this, boxData.x, boxData.y, 'chest', potionName, flip);
-            
+            box.id = boxData.id;
             boxesGroup.add(box);
             this.physics.add.overlap( this.player, box.potions, this.collectPotion, null, this);
         });
@@ -509,13 +528,16 @@ export class Game extends Scene {
     }
 
     boxInteraction(player, box) {
-        if(this.inputHandler.isFightActionPressed()){
-
+        if(this.inputHandler.isFightActionPressed() && this.boxesEnabled[box.id]){
+            this.boxesEnabled[box.id] = false;
             box.openBox();
+            this.player.sounds['chest'].play();
         }
     }
 
     collectPotion(player, potion) {
+        this.player.sounds['item'].play();
+
         switch (potion.name) {
             case 'health':
                 if(this.player.health < 100){
@@ -525,6 +547,7 @@ export class Game extends Scene {
 
                         this.player.health = newHealth;
                         this.healthbarUpdate();
+
                     
                 }
                 break;
@@ -546,13 +569,18 @@ export class Game extends Scene {
 
         }
         this.time.delayedCall( 200, () => {
+
             potion.setVelocityY(-200);
+            
+
             
         });        
         this.time.delayedCall( 500, () => {
-            
+            this.player.sounds['increase'].setVolume(0.3).play();
             potion.destroy();
+            
         });        
+    
     }
 
     addHealthBar( x, y ) {
@@ -566,7 +594,7 @@ export class Game extends Scene {
         healthbarBackground
             .fillStyle(0xbb2300, 1)
             .fillRect(10, 10, health, 15);
-        // Crear un gráfico para la barra de vida
+
         this.healthBar = this.add.graphics();
         this.healthBar
             .fillStyle(0x00c749, 1)
@@ -585,7 +613,7 @@ export class Game extends Scene {
         this.powerbarBackground
             .fillStyle(0xbb2300, 1)
             .fillRect(x, 10, power, 15);
-        // Crear un gráfico para la barra de vida
+
         this.powerBar = this.add.graphics();
         this.powerBar
             .fillStyle(0xfbe900, 1)
@@ -609,7 +637,8 @@ export class Game extends Scene {
     }
 
     powerBarBlick(repeatCount = 3) {
-        console.log('powerBarBlick');
+        // console.log('powerBarBlick');
+        this.player.sounds['error'].play();
         this.tweens.add({
             targets: this.powerbarBackground,
             alpha: 0,

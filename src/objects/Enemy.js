@@ -15,6 +15,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     movingDirectionY;
     attackCounter = 0;
     nextAttackWait = 2000;
+    sounds = [];
 
     constructor(scene, x, y, name) {
 
@@ -75,7 +76,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
                     });
 
                 } else {
-                    this.punchSound.play();
+                    this.sounds['enemy-punch'].play();
                 }
 
                 this.on(`animationcomplete-${this.name}-Attack`, () => {
@@ -110,7 +111,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.bullets.add(bullet);
             bullet.setVelocityX(500 * directionX);
             bullet.body.setAllowGravity(false);
-            this.shotSound.play();
+            this.sounds['enemy-shot'].play();
             this.bulletFired = false;
         }
     }
@@ -173,7 +174,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.state = 'dying';
             this.anims.play(`${this.name}-Death`, true);
             this.once('animationcomplete', () => {
-                this.dieSound.play();
+                this.sounds['enemy-die'].play();
                 this.destroy();
             });
         }
@@ -215,9 +216,18 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     addSounds() {
-        this.dieSound = this.scene.sound.add('die');
-        this.punchSound = this.scene.sound.add('enemyPunch');
-        this.shotSound = this.scene.sound.add('enemyShot');
-        this.shotSound.setVolume(0.6);
+
+        let enemySounds = [
+            'enemy-die',
+            'enemy-shot',
+            'enemy-punch',
+        ];
+        enemySounds.forEach( sound => {
+            this.sounds[sound] = this.scene.sound.add(sound);
+        });
+        // this.dieSound = this.scene.sound.add('die');
+        // this.punchSound = this.scene.sound.add('enemyPunch');
+        // this.shotSound = this.scene.sound.add('enemyShot');
+        // this.shotSound.setVolume(0.6);
     }
 }
