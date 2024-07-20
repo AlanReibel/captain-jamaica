@@ -94,16 +94,7 @@ export class Preloader extends Scene {
         });
         // main
         this.load.audio('bitest','sounds/bitest.mp3');
-        // enemy
-        // this.load.audio('die','sounds/laser1.mp3');
-        // this.load.audio('enemyPunch','sounds/punch3.mp3');
-        // this.load.audio('enemyShot','sounds/laser3.mp3');
-        // // captain
-        // this.load.audio('laser','sounds/laser2.mp3');
-        // this.load.audio('punch','sounds/punch3.mp3');
-        // this.load.audio('special','sounds/boomerang.mp3');
-        // this.load.audio('boomerang','sounds/boomerang2.mp3');
-        // this.load.audio('explosion','sounds/explosion.mp3');
+
 
     }
 

@@ -225,9 +225,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         enemySounds.forEach( sound => {
             this.sounds[sound] = this.scene.sound.add(sound);
         });
-        // this.dieSound = this.scene.sound.add('die');
-        // this.punchSound = this.scene.sound.add('enemyPunch');
-        // this.shotSound = this.scene.sound.add('enemyShot');
-        // this.shotSound.setVolume(0.6);
+
     }
 }

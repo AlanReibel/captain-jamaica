@@ -40,7 +40,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this
-            .setDepth(2)
+            .setDepth(3)
             .setBounce(0.2)
             .setCollideWorldBounds(true)
             .setScale(0.6)
@@ -646,34 +646,27 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     addSounds() {
         let playerSounds = [
-            'pre-punch',//x
+            'pre-punch',
             'player-punch',
-            'player-fire',//x
-            'jump',//x
-            'land',//x
-            'hurt',//x
+            'player-fire',
+            'jump',
+            'land',
+            'hurt',
             'shield',
-            'boomerang',//x
-            'whip',//x
+            'boomerang',
+            'whip',
             'hit',
-            'special',//x
-            'explosion',//x
-            'chest',//x
-            'item',//x
-            'increase',//x
-            'error',//x
+            'special',
+            'explosion',
+            'chest',
+            'item',
+            'increase',
+            'error',
         ];
 
         playerSounds.forEach( sound => {
             this.sounds[sound] = this.scene.sound.add(sound);
         });
-        // this.sounds['pre-punch] = this.scene.sound.add('punch');
-        // this.laserSound = this.scene.sound.add('laser');
-        // this.specialSound = this.scene.sound.add('special');
-        // this.explosionSound = this.scene.sound.add('explosion');
-        // this.boomerangSound = this.scene.sound.add('boomerang');
-        // this.laserSound.setVolume(0.4);
-
 
     }
 

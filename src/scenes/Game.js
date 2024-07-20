@@ -489,7 +489,7 @@ export class Game extends Scene {
 
         farBackObjectLayer.setDepth(0);
         backObjectLayer.setDepth(1);
-        frontObjectLayer.setDepth(3);
+        frontObjectLayer.setDepth(4);
 
         this.greenTilesLayer
             .setDepth(2)
@@ -520,7 +520,7 @@ export class Game extends Scene {
             this.physics.add.overlap( this.player, box.potions, this.collectPotion, null, this);
         });
 
-        boxesGroup.setDepth(3);
+        boxesGroup.setDepth(4);
         this.physics.add.collider(this.greenTilesLayer, boxesGroup);
         this.physics.add.overlap(this.player, boxesGroup, this.boxInteraction, null, this);
 
@@ -586,7 +586,7 @@ export class Game extends Scene {
     addHealthBar( x, y ) {
         this.uiContainer = this.add.container(x, y);
         this.uiContainer.setScrollFactor(0)
-            .setDepth(3);
+            .setDepth(4);
 
 
         let health = this.player.health;
