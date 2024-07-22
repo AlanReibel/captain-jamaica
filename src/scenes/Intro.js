@@ -15,6 +15,7 @@ sumiendo la isla en un estado de anarquía.
 
 Nuestro protagonista, un individuo resistente y 
 determinado, se encontró en medio de este tumulto. 
+
 En medio de los saqueos, un hombre armado le disparó, 
 dejándolo al borde de la muerte. La desesperación 
 y el miedo se apoderaron de él mientras yacía en 
@@ -45,6 +46,7 @@ control, plunging the island into a state of anarchy.
 
 Our protagonist, a resilient and determined individual, 
 found himself in the midst of this turmoil. 
+
 Amidst the looting, an armed man shot him, leaving him 
 on the brink of death. Desperation and fear consumed 
 him as he lay on the ground, surrounded by the chaos 
@@ -74,17 +76,17 @@ The battle for justice has only just begun.`
         this.images = {
             es: {
                 // 1: 'devasted-city',
-                7: 'shoting',
+                5: 'shoting',
                 10: 'lying',
-                17: 'elixir',
+                15: 'elixir',
                 20: 'effects',
                 25: 'reborn'
             },
             en: {
                 // 1: 'devasted-city',
-                6: 'shoting',
+                4: 'shoting',
                 9: 'lying',
-                15: 'elixir',
+                14: 'elixir',
                 18: 'effects',
                 23: 'reborn'
             }

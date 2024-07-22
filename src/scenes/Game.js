@@ -26,7 +26,7 @@ export class Game extends Scene {
     boxesEnabled = {};
 
     create() {
-        this.cameras.main.fadeIn( 200, 0, 0, 0 );
+        this.cameras.main.fadeIn(200, 0, 0, 0);
 
         this.gameOver = false;
         this.player = new Player(this, 100, 400, 'captain-idle');
@@ -46,7 +46,7 @@ export class Game extends Scene {
             if (this.guideIsOpen) {
                 this.scene.resume();
                 this.guideIsOpen = false;
-            }else {
+            } else {
                 this.scene.pause();
                 this.guideIsOpen = true;
             }
@@ -151,7 +151,7 @@ export class Game extends Scene {
         // game over
         if (this.gameOver) {
             this.music.stop();
-            this.scene.start('GameOver', { inputHandler: this.inputHandler});
+            this.scene.start('GameOver', { inputHandler: this.inputHandler });
         }
 
         if (this.player.anims.currentAnim.key === 'burst') {
@@ -193,7 +193,7 @@ export class Game extends Scene {
             });
         }
 
-        if(this.player.x > 3150 && this.player.y < 70) {
+        if (this.player.x > 3150 && this.player.y < 70) {
             this.finishGame()
         }
 
@@ -222,7 +222,7 @@ export class Game extends Scene {
             this.inputHandler.buttons['Y']
         ) {
             // this.player.special();
-            if( this.player.power >= 50) {
+            if (this.player.power >= 50) {
                 this.player.whip();
             } else {
                 this.powerBarBlick();
@@ -242,7 +242,7 @@ export class Game extends Scene {
     }
 
     hitEnemy(enemy, damage) {
-        
+
         enemy.hurt(damage);
     }
 
@@ -275,7 +275,7 @@ export class Game extends Scene {
 
     createEnemies() {
         this.landEnemies = this.physics.add.group();
-        
+
         this.flyingEnemies = this.physics.add.group({
             allowGravity: false,
         });
@@ -285,27 +285,34 @@ export class Game extends Scene {
         enemiesPositions.objects.forEach(enemyData => {
             let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
 
+            // newEnemy.setPipeline('Light2D');
             if (enemyData.name === 'flyingRobot') {
                 this.flyingEnemies.add(newEnemy);
             } else {
                 this.landEnemies.add(newEnemy);
                 this.physics.add.overlap(newEnemy.bullets, this.player, this.playerFired, null, this);
                 this.physics.add.collider(newEnemy.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
+                this.physics.add.collider(newEnemy.bullets, this.walls, this.destroyBullet, null, this);
             }
 
         });
 
         // this.physics.add.overlap(this.player.shield, this.landEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.landEnemies, this.handleBodyCollision, null, this);
-        this.physics.add.collider(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
+        this.physics.add.collider(this.walls, this.landEnemies, null, null, this);
         this.physics.add.collider(this.landEnemies, this.landEnemies, null, null, this);
-
+        
         // this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.flyingEnemies, this.handleBodyCollision, null, this);
-        this.physics.add.collider(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
+        this.physics.add.collider(this.walls, this.flyingEnemies, null, null, this);
+        
+        this.physics.add.collider(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.collider(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.player.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
+        this.physics.add.collider(this.player.bullets, this.walls, this.destroyBullet, null, this);
+
     }
 
     isEnemyInCameraView(enemy, visibleArea) {
@@ -317,7 +324,7 @@ export class Game extends Scene {
         );
     }
 
-    destroyBullet( bullet, map) {
+    destroyBullet(bullet, map) {
         bullet.destroy();
         let bulletExplosion = this.physics.add.sprite(bullet.x, bullet.y, 'explosion1');
         bulletExplosion.body.setAllowGravity(false);
@@ -390,12 +397,12 @@ export class Game extends Scene {
             default:
                 break;
         }
-        let enemyOnFront = player.focusTo === 'right' 
+        let enemyOnFront = player.focusTo === 'right'
             ? player.x <= enemy.x
             : player.x >= enemy.x;
 
- 
-        if ( damageStates.includes(currentState) 
+
+        if (damageStates.includes(currentState)
             && enemyOnFront
         ) {
 
@@ -448,8 +455,8 @@ export class Game extends Scene {
             .setScrollFactor(0)
             .setOrigin(0, 0);
 
-        this.addHealthBar( x, y);
-        this.addPowerBar( gamewidth);
+        this.addHealthBar(x, y);
+        this.addPowerBar(gamewidth);
         this.addSpecialUI(gamewidth / 2);
         this.addAmmoUI(gamewidth / 2);
     }
@@ -477,32 +484,49 @@ export class Game extends Scene {
     }
 
     addTileMaps() {
+
+
+
         this.map = this.make.tilemap({ key: 'tilemapJson' });
 
         const greenTiles = this.map.addTilesetImage('greenTiles2', 'tilemapImage2');
         const decoTiles = this.map.addTilesetImage('newObjectSet', 'objectsTilemap');
-        
+
         this.greenTilesLayer = this.map.createLayer('greenPlatforms', greenTiles);
+        this.walls = this.map.createLayer('walls', greenTiles);
         const backObjectLayer = this.map.createLayer('background', decoTiles);
+        const buildings = this.map.createLayer('buildings', decoTiles);
         const farBackObjectLayer = this.map.createLayer('farBackground', decoTiles);
         const frontObjectLayer = this.map.createLayer('foreground', decoTiles);
 
         farBackObjectLayer.setDepth(0);
-        backObjectLayer.setDepth(1);
-        frontObjectLayer.setDepth(4);
+        buildings.setDepth(1);
+        backObjectLayer.setDepth(2);
 
-        this.greenTilesLayer
-            .setDepth(2)
+        this.walls
+            .setDepth(3)
             .setCollisionByProperty({ collider: true });
-        this.physics.add.collider(this.player, this.greenTilesLayer);
+        this.physics.add.collider(this.player, this.walls);
+        frontObjectLayer.setDepth(4);
+        this.greenTilesLayer
+            .setDepth(5)
+            .setCollisionByProperty({ collider: true });
+
+        this.physics.add.collider(this.player, this.greenTilesLayer, null, function (player, platform) {
+            if (player.body.velocity.y > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        });
 
         let boxesGroup = this.physics.add.group();
         let boxesPosition = this.map.getObjectLayer('boxes');
 
         boxesPosition.objects.forEach(boxData => {
-        this.boxesEnabled[boxData.id] = true;
+            this.boxesEnabled[boxData.id] = true;
             let potionName, flip;
-            boxData.properties.forEach( property => {
+            boxData.properties.forEach(property => {
                 switch (property.name) {
                     case 'potion':
                         potionName = property.value;
@@ -510,25 +534,44 @@ export class Game extends Scene {
                     case 'flip':
                         flip = property.value;
                         break;
-                
+
                 }
             });
             // console.log('potionName', potionName);
             let box = new Box(this, boxData.x, boxData.y, 'chest', potionName, flip);
             box.id = boxData.id;
+            // box.setPipeline('Light2D');
             boxesGroup.add(box);
-            this.physics.add.overlap( this.player, box.potions, this.collectPotion, null, this);
+            this.physics.add.overlap(this.player, box.potions, this.collectPotion, null, this);
         });
 
         boxesGroup.setDepth(4);
         this.physics.add.collider(this.greenTilesLayer, boxesGroup);
+        this.physics.add.collider(this.walls, boxesGroup);
         this.physics.add.overlap(this.player, boxesGroup, this.boxInteraction, null, this);
 
+
+        // this.lights.enable();
+        // this.lights.setAmbientColor(0x808080);
+
+        // backObjectLayer.setPipeline('Light2D');
+        // buildings.setPipeline('Light2D');
+        // frontObjectLayer.setPipeline('Light2D');
+        // farBackObjectLayer.setPipeline('Light2D');
+        // this.walls.setPipeline('Light2D');
+        // this.player.setPipeline('Light2D');
+
+        // let lightsPosition = this.map.getObjectLayer('lights');
+        // lightsPosition.objects.forEach(light => {
+
+        //     let newLight = this.lights.addLight(light.x, light.y, 400)
+        //         .setIntensity(1)
+        // });
 
     }
 
     boxInteraction(player, box) {
-        if(this.inputHandler.isFightActionPressed() && this.boxesEnabled[box.id]){
+        if (this.inputHandler.isFightActionPressed() && this.boxesEnabled[box.id]) {
             this.boxesEnabled[box.id] = false;
             box.openBox();
             this.player.sounds['chest'].play();
@@ -540,26 +583,26 @@ export class Game extends Scene {
 
         switch (potion.name) {
             case 'health':
-                if(this.player.health < 100){
-                    let newHealth = this.player.health + potion.amount <= 100 
+                if (this.player.health < 100) {
+                    let newHealth = this.player.health + potion.amount <= 100
                         ? this.player.health + potion.amount
                         : 100;
 
-                        this.player.health = newHealth;
-                        this.healthbarUpdate();
+                    this.player.health = newHealth;
+                    this.healthbarUpdate();
 
-                    
+
                 }
                 break;
             case 'power':
-                if(this.player.power < 100){
-                    let newPower = this.player.power + potion.amount <= 100 
+                if (this.player.power < 100) {
+                    let newPower = this.player.power + potion.amount <= 100
                         ? this.player.power + potion.amount
                         : 100;
 
-                        this.player.power = newPower;
-                        this.powerbarUpdate();
-                    
+                    this.player.power = newPower;
+                    this.powerbarUpdate();
+
                 }
                 break;
             case 'ammo':
@@ -568,25 +611,23 @@ export class Game extends Scene {
                 break;
 
         }
-        this.time.delayedCall( 200, () => {
-
+        
+        this.time.delayedCall(200, () => {
             potion.setVelocityY(-200);
-            
+        });
 
-            
-        });        
-        this.time.delayedCall( 500, () => {
+        this.time.delayedCall(500, () => {
             this.player.sounds['increase'].setVolume(0.3).play();
             potion.destroy();
-            
-        });        
-    
+
+        });
+
     }
 
-    addHealthBar( x, y ) {
+    addHealthBar(x, y) {
         this.uiContainer = this.add.container(x, y);
         this.uiContainer.setScrollFactor(0)
-            .setDepth(4);
+            .setDepth(6);
 
 
         let health = this.player.health;
@@ -605,7 +646,7 @@ export class Game extends Scene {
 
     }
 
-    addPowerBar( width ) {
+    addPowerBar(width) {
 
         let power = this.player.power;
         this.powerbarBackground = this.add.graphics();
@@ -628,7 +669,7 @@ export class Game extends Scene {
     powerbarUpdate() {
 
         this.powerBar.clear();
-        if(this.player.power > 0) {
+        if (this.player.power > 0) {
             this.powerBar
                 .fillStyle(0xfbe900, 1)
                 .fillRect(this.powerBar.position, 10, this.player.power, 15);
@@ -643,9 +684,9 @@ export class Game extends Scene {
             targets: this.powerbarBackground,
             alpha: 0,
             ease: 'Linear',
-            duration: 200, 
-            yoyo: true, 
-            repeat: repeatCount - 1, 
+            duration: 200,
+            yoyo: true,
+            repeat: repeatCount - 1,
             onComplete: () => {
                 this.powerbarBackground.setAlpha(1);
             }
@@ -663,7 +704,7 @@ export class Game extends Scene {
         }
     }
 
-    addSpecialUI( midle ) {
+    addSpecialUI(midle) {
         let x = midle - 20;
         let specialMarker = this.add.image(x, 20, 'specialMarker');
         specialMarker.setScale(0.4);
@@ -672,7 +713,7 @@ export class Game extends Scene {
         this.uiContainer.add(specialMarker);
     }
 
-    addAmmoUI( midle ) {
+    addAmmoUI(midle) {
         let x = midle + 20;
         let ammoMarker = this.add.image(x, 20, 'ammo');
         // ammoMarker.setScale(0.4);
@@ -693,9 +734,9 @@ export class Game extends Scene {
         this.ammoMarkerFX.blackWhite();
     }
 
-    finishGame () {
+    finishGame() {
         this.cameras.main.fadeOut(250, 0, 0, 0);
-        this.scene.start('Finish', { inputHandler: this.inputHandler});
+        this.scene.start('Finish', { inputHandler: this.inputHandler });
     }
 
 }

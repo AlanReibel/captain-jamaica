@@ -26,7 +26,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
 
         this.addSounds();
-        this.setDepth(2);
+        this.setDepth(5);
         this.setCollideWorldBounds(true);
 
 

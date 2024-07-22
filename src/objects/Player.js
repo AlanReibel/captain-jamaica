@@ -40,7 +40,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this
-            .setDepth(3)
+            .setDepth(4)
             .setBounce(0.2)
             .setCollideWorldBounds(true)
             .setScale(0.6)
@@ -563,6 +563,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
             // console.log('special', special.width , special.height);
             special.setSize(this.originalWidth, this.originalHeight);
+            special.setDepth(5);
             special.setFlipX(flip);
             special.anims.play('special', true);
             this.scene.tweens.add({

@@ -147,13 +147,8 @@ export const enemies = {
             if( isNear ) {
                 let direction = player.x < enemy.x ? 'left' : 'right';
                 if(distance <= 20) {
-                    if(distance <=5) {
-                        enemy.move(direction);
-                    } else {
-
-                        enemy.stop();
-                        enemy.attack();
-                    }
+                    enemy.stop();
+                    enemy.attack();
 
                 } else {
                     enemy.move(direction);
