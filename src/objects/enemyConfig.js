@@ -127,11 +127,11 @@ export const enemies = {
     },
     basebolHitter: {
         animations: {
-            Idle: { frameWidth: 38, frameHeight: 34, frames: 4, frameRate: 12, repeat: -1 },
-            Death: { frameWidth: 38, frameHeight: 34, frames: 6, frameRate: 12, repeat: 0 },
+            Idle: { frameWidth: 38, frameHeight: 34, frames: 4, frameRate: 10, repeat: -1 },
+            Death: { frameWidth: 38, frameHeight: 34, frames: 6, frameRate: 8, repeat: 0 },
             Attack: { frameWidth: 38, frameHeight: 34, frames: 6, frameRate: 12, repeat: 0 },
-            Hurt: { frameWidth: 38, frameHeight: 34, frames: 2, frameRate: 12, repeat: 0 },
-            Walk: { frameWidth: 38, frameHeight: 34, frames: 6, frameRate: 12, repeat: -1 },
+            Hurt: { frameWidth: 38, frameHeight: 34, frames: 2, frameRate: 8, repeat: 0 },
+            Walk: { frameWidth: 38, frameHeight: 34, frames: 6, frameRate: 10, repeat: -1 },
         },
         damage: 10,
         fly: false,
