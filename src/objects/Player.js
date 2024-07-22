@@ -40,7 +40,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this
-            .setDepth(4)
+            .setDepth(5)
             .setBounce(0.2)
             .setCollideWorldBounds(true)
             .setScale(0.6)

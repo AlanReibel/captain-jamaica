@@ -500,17 +500,20 @@ export class Game extends Scene {
         const frontObjectLayer = this.map.createLayer('foreground', decoTiles);
 
         farBackObjectLayer.setDepth(0);
-        buildings.setDepth(1);
-        backObjectLayer.setDepth(2);
-
+        
         this.walls
-            .setDepth(3)
+            .setDepth(1)
             .setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player, this.walls);
-        frontObjectLayer.setDepth(4);
+
+        buildings.setDepth(2);
+        
         this.greenTilesLayer
-            .setDepth(5)
+            .setDepth(3)
             .setCollisionByProperty({ collider: true });
+            
+        backObjectLayer.setDepth(4);
+        frontObjectLayer.setDepth(5);
 
         this.physics.add.collider(this.player, this.greenTilesLayer, null, function (player, platform) {
             if (player.body.velocity.y > 0) {
@@ -545,7 +548,7 @@ export class Game extends Scene {
             this.physics.add.overlap(this.player, box.potions, this.collectPotion, null, this);
         });
 
-        boxesGroup.setDepth(4);
+        boxesGroup.setDepth(5);
         this.physics.add.collider(this.greenTilesLayer, boxesGroup);
         this.physics.add.collider(this.walls, boxesGroup);
         this.physics.add.overlap(this.player, boxesGroup, this.boxInteraction, null, this);
