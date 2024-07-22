@@ -455,10 +455,8 @@ export class Game extends Scene {
             .setScrollFactor(0)
             .setOrigin(0, 0);
 
-        this.addHealthBar(x, y);
-        this.addPowerBar(gamewidth);
-        this.addSpecialUI(gamewidth / 2);
-        this.addAmmoUI(gamewidth / 2);
+        this.addUiContainer(x, y, gamewidth);
+
     }
 
     moveBackground(direction) {
@@ -627,45 +625,70 @@ export class Game extends Scene {
 
     }
 
-    addHealthBar(x, y) {
+    addUiContainer(x, y, gamewidth) {
         this.uiContainer = this.add.container(x, y);
         this.uiContainer.setScrollFactor(0)
             .setDepth(6);
 
+        this.addHealthBar();
+        this.addPowerBar(gamewidth);
+        this.addSpecialUI(gamewidth / 2);
+        this.addAmmoUI(gamewidth / 2);
+    }
+
+    addHealthBar() {
 
         let health = this.player.health;
         let healthbarBackground = this.add.graphics();
+
+        let x = 10;
+        let y = 10;
+
         healthbarBackground
             .fillStyle(0xbb2300, 1)
-            .fillRect(10, 10, health, 15);
+            .fillRect(x, y, health, 15);
 
         this.healthBar = this.add.graphics();
         this.healthBar
             .fillStyle(0x00c749, 1)
-            .fillRect(10, 10, health, 15);
+            .fillRect(x, y, health, 15);
 
         this.uiContainer.add(healthbarBackground);
         this.uiContainer.add(this.healthBar);
 
+        let healthIcon = this.add.image(x + 2, y + 1, 'healthIcon')
+            .setOrigin(0);
+        this.uiContainer.add(healthIcon);
+
     }
+
+
+
 
     addPowerBar(width) {
 
         let power = this.player.power;
         this.powerbarBackground = this.add.graphics();
+
         let x = width - 10 - power;
+        let y = 10;
+
         this.powerbarBackground
             .fillStyle(0xbb2300, 1)
-            .fillRect(x, 10, power, 15);
+            .fillRect(x, y, power, 15);
 
         this.powerBar = this.add.graphics();
         this.powerBar
             .fillStyle(0xfbe900, 1)
-            .fillRect(x, 10, power, 15);
+            .fillRect(x, y, power, 15);
 
         this.powerBar.position = x;
         this.uiContainer.add(this.powerbarBackground);
         this.uiContainer.add(this.powerBar);
+
+        let powerIcon = this.add.image(x + 2, y + 1, 'powerIcon')
+        .setOrigin(0);
+        this.uiContainer.add(powerIcon);
 
     }
 

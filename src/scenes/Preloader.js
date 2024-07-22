@@ -20,7 +20,8 @@ export class Preloader extends Scene {
         this.load.setPath('assets');
 
         this.loadAudios();
-        this.loadImages();
+        this.loadBgImages();
+        this.loadHudImages();
         this.loadSpriteSheets();
         this.loadTileMaps();
         this.loadFXSprites();
@@ -106,7 +107,7 @@ export class Preloader extends Scene {
 
     }
 
-    loadImages() {
+    loadBgImages() {
         this.load.image('bullet', 'sprites/captain/bullet.png');
 
 
@@ -115,7 +116,13 @@ export class Preloader extends Scene {
         this.load.image('bg3', 'background/3.png');
         this.load.image('bg4', 'background/4.png');
         this.load.image('bg5', 'background/5.png');
+    }
+
+    loadHudImages() {
         this.load.image('specialMarker', 'ui/special.png');
+        this.load.image('healthIcon', 'ui/health.png');
+        this.load.image('powerIcon', 'ui/power.png');
+
     }
     
     loadTileMaps() {
