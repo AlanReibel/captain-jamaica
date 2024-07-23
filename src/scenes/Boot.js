@@ -17,7 +17,7 @@ export class Boot extends Scene {
             this.scene.start('Intro');
         })
 
-        this.addSkipButton();
+        this.addStartButton();
 
     }
 
@@ -40,7 +40,7 @@ export class Boot extends Scene {
 
     }
 
-    addSkipButton() {
+    addStartButton() {
         let gamewidth = this.game.config.width;
         let gameheight = this.game.config.height;
 

@@ -483,8 +483,6 @@ export class Game extends Scene {
 
     addTileMaps() {
 
-
-
         this.map = this.make.tilemap({ key: 'tilemapJson' });
 
         const greenTiles = this.map.addTilesetImage('greenTiles2', 'tilemapImage2');

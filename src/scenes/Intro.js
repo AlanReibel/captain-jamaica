@@ -70,6 +70,14 @@ or will he be consumed by the thirst for revenge and power?
 The fate of Jamaica lies in his hands. 
 The battle for justice has only just begun.`
         };
+        this.imageList = [                
+            'devasted-city',
+            'shoting',
+            'lying',
+            'elixir',
+            'effects',
+            'reborn'
+        ];
         this.currentLineIndex = 0;
         this.typing = false; // Indica si está en proceso de escritura
         this.speed = 50;
@@ -144,6 +152,30 @@ The battle for justice has only just begun.`
 
     }
 
+    // Método que se llama cuando esta escena se apaga
+    shutdown() {
+        this.cleanup();
+    }
+
+    // Método que se llama cuando esta escena se destruye
+    destroy() {
+        this.cleanup();
+    }
+
+    cleanup() {
+        // Destruir imágenes
+        if (this.introImage1) this.introImage1.destroy(true);
+        if (this.introImage2) this.introImage2.destroy(true);
+
+        this.imageList.forEach(imageName => {
+            this.textures.remove(imageName);
+        });
+
+        this.introMusic.destroy();
+        this.spaceSound.destroy();
+        this.enterSound.destroy();
+    }
+
     addSkipButton() {
         let gamewidth = this.game.config.width;
         let gameheight = this.game.config.height;
@@ -180,8 +212,10 @@ The battle for justice has only just begun.`
     }
 
     endIntro() {
+        console.log('intro', this);
         this.cameras.main.fadeOut(250, 0, 0, 0);
         this.game.sound.stopAll();
+
         this.cameras.main.once('camerafadeoutcomplete', function (camera) {
             this.scene.start('Preloader');
         }, this);
