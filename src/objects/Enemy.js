@@ -44,9 +44,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.shot = enemies[name].shot;
 
         this.bullets = this.scene.physics.add.group();
-
-
-
+        this.bullets.setDepth(5);
 
     }
 
@@ -81,7 +79,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
                 this.on(`animationcomplete-${this.name}-Attack`, () => {
                     this.state = 'idle';
-                    this.scene.time.delayedCall(500, () => {
+                    this.scene.time.delayedCall(2000, () => {
                         this.attackDone = true;
                         this.attackCounter++;
                     });

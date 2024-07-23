@@ -12,6 +12,7 @@ export class Box extends Phaser.Physics.Arcade.Sprite {
         this.potions = this.scene.physics.add.group();
 
         this.PotionName = potionName;
+        this.collected = false;
         this.potionAmounts = {
             health: 25,
             power: 50,

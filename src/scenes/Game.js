@@ -581,54 +581,68 @@ export class Game extends Scene {
 
     collectPotion(player, potion) {
 
-        this.time.delayedCall(200, () => {
-            potion.body.setVelocityY(-200);
-        });
+        if(!potion.collected) {
 
-        switch (potion.name) {
-            case 'health':
-                if (this.player.health < 100) {
-                    let newHealth = this.player.health + potion.amount <= 100
-                        ? this.player.health + potion.amount
-                        : 100;
+            potion.collected = true;
+            potion.removeCollidesWith(this.player);
+            this.time.delayedCall(200, () => {
+                potion.body.setVelocityY(-200);
+            });
+    
+            let updated = false;
+    
+            switch (potion.name) {
+                case 'health':
+                    if (this.player.health < 100) {
+                        let newHealth = this.player.health + potion.amount <= 100
+                            ? this.player.health + potion.amount
+                            : 100;
+    
+                        this.player.health = newHealth;
+                        this.healthbarUpdate();
+                        updated = true;
+                        this.uiBlink(this.healthBar);
+    
+                    }
+                    break;
+                case 'power':
+                    if (this.player.power < 100) {
+                        let newPower = this.player.power + potion.amount <= 100
+                            ? this.player.power + potion.amount
+                            : 100;
+    
+                        this.player.power = newPower;
+                        this.powerbarUpdate();
+                        updated = true;
+                        this.uiBlink(this.powerBar);
 
-                    this.player.health = newHealth;
-                    this.healthbarUpdate();
-                    this.player.sounds['item'].play();
-
-
+    
+                    }
+                    break;
+                case 'ammo':
+                    if(!this.player.ammoEnabled){
+                        this.player.ammoEnabled = true;
+                        this.enableAmmoMarker();
+                        updated = true;
+                        this.uiBlink(this.ammoMarker);
+    
                 }
-                break;
-            case 'power':
-                if (this.player.power < 100) {
-                    let newPower = this.player.power + potion.amount <= 100
-                        ? this.player.power + potion.amount
-                        : 100;
-
-                    this.player.power = newPower;
-                    this.powerbarUpdate();
-                    this.player.sounds['item'].play();
-
-                }
-                break;
-            case 'ammo':
-                if(!this.player.ammoEnabled){
-                    this.player.ammoEnabled = true;
-                    this.enableAmmoMarker();
-                    this.player.sounds['item'].play();
-
+                    break;
+    
             }
-                break;
-
+            
+            if(updated) {
+                this.player.sounds['item'].play();
+            }
+    
+            this.time.delayedCall(500, () => {
+                this.player.sounds['increase'].setVolume(0.3).play();
+                potion.destroy();
+    
+            });
         }
-        
 
 
-        this.time.delayedCall(500, () => {
-            this.player.sounds['increase'].setVolume(0.3).play();
-            potion.destroy();
-
-        });
 
     }
 
@@ -652,7 +666,7 @@ export class Game extends Scene {
         let y = 10;
 
         healthbarBackground
-            .fillStyle(0xbb2300, 1)
+            .fillStyle(0x000000, 1)
             .fillRect(x, y, health, 15);
 
         this.healthBar = this.add.graphics();
@@ -681,7 +695,7 @@ export class Game extends Scene {
         let y = 10;
 
         this.powerbarBackground
-            .fillStyle(0xbb2300, 1)
+            .fillStyle(0x000000, 1)
             .fillRect(x, y, power, 15);
 
         this.powerBar = this.add.graphics();
@@ -726,6 +740,21 @@ export class Game extends Scene {
         });
     }
 
+    uiBlink(target, repeatCount = 3) {
+
+        this.tweens.add({
+            targets: target,
+            alpha: 0,
+            ease: 'Linear',
+            duration: 200,
+            yoyo: true,
+            repeat: repeatCount - 1,
+            onComplete: () => {
+                target.setAlpha(1);
+            }
+        });
+    }
+
     healthbarUpdate() {
         this.healthBar.clear();
         this.healthBar
@@ -748,11 +777,11 @@ export class Game extends Scene {
 
     addAmmoUI(midle) {
         let x = midle + 20;
-        let ammoMarker = this.add.image(x, 20, 'ammo');
+        this.ammoMarker = this.add.image(x, 20, 'ammo');
         // ammoMarker.setScale(0.4);
-        ammoMarker.setOrigin(0.5);
-        this.ammoMarkerFX = ammoMarker.postFX.addColorMatrix();
-        this.uiContainer.add(ammoMarker);
+        this.ammoMarker.setOrigin(0.5);
+        this.ammoMarkerFX = this.ammoMarker.postFX.addColorMatrix();
+        this.uiContainer.add(this.ammoMarker);
     }
 
     disableSpecialMarker() {

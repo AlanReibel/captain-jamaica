@@ -366,6 +366,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             });
         } else {
             this.sounds['error'].play();
+            this.scene.uiBlink(this.scene.ammoMarker);
         }
     }
 
