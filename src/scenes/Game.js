@@ -580,7 +580,10 @@ export class Game extends Scene {
     }
 
     collectPotion(player, potion) {
-        this.player.sounds['item'].play();
+
+        this.time.delayedCall(200, () => {
+            potion.body.setVelocityY(-200);
+        });
 
         switch (potion.name) {
             case 'health':
@@ -591,6 +594,7 @@ export class Game extends Scene {
 
                     this.player.health = newHealth;
                     this.healthbarUpdate();
+                    this.player.sounds['item'].play();
 
 
                 }
@@ -603,19 +607,22 @@ export class Game extends Scene {
 
                     this.player.power = newPower;
                     this.powerbarUpdate();
+                    this.player.sounds['item'].play();
 
                 }
                 break;
             case 'ammo':
-                this.player.ammoEnabled = true;
-                this.enableAmmoMarker();
+                if(!this.player.ammoEnabled){
+                    this.player.ammoEnabled = true;
+                    this.enableAmmoMarker();
+                    this.player.sounds['item'].play();
+
+            }
                 break;
 
         }
         
-        this.time.delayedCall(200, () => {
-            potion.setVelocityY(-200);
-        });
+
 
         this.time.delayedCall(500, () => {
             this.player.sounds['increase'].setVolume(0.3).play();

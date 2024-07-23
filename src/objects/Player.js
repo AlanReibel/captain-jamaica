@@ -254,6 +254,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.shield = this.scene.physics.add.sprite(this.x, this.y, 'shield-fly');
         // this.shield.body.setAllowGravity(false);
         this.shield.setScale(0.6);
+        this.shield.setDepth(5);
         this.bullets.add(this.shield);
         let distance = 150;
         this.blockedMovement = true;

@@ -109,8 +109,9 @@ export const enemies = {
             let goFar = player.focusTo === direction 
                 ? distance <= 15 
                 : distance <= 20;
-
-            if( isNear ) {
+            let isOver = (player.x - enemy.x <= 10 &&  player.x - enemy.x >= -10) && (player.y - enemy.y >= 30 ||  player.y - enemy.y <= -30);
+            
+            if( isNear  && !isOver) {
                 if(goFar) {
                     direction = direction === 'left' ? 'right' : 'left';
                     enemy.move(direction);
@@ -143,8 +144,9 @@ export const enemies = {
             let treshhold = 200;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;
+            let isOver = (player.x - enemy.x <= 10 &&  player.x - enemy.x >= -10) && (player.y - enemy.y >= 30 ||  player.y - enemy.y <= -30);
 
-            if( isNear ) {
+            if( isNear && !isOver) {
                 let direction = player.x < enemy.x ? 'left' : 'right';
                 if(distance <= 20) {
                     enemy.stop();
