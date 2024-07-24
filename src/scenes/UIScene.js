@@ -62,7 +62,7 @@ export class UIScene extends Phaser.Scene {
             radius: radius,
             base: base,
             thumb: thumb,
-            dir: '8dir',
+            dir: '4dir',
             fixed: true,
             enable: true
         };
@@ -125,12 +125,15 @@ export class UIScene extends Phaser.Scene {
                 // console.log('holded',this.inputHandler.holding);
             }
         });
+        this.inputHandler.checkKeysDown(key);
     }
 
     onButtonUp( key, buttonCircle ) {
         buttonCircle.setFillStyle(0x000000);
         this.inputHandler.setButtonState(key, false);
         this.inputHandler.holding[key] = false;
+        this.inputHandler.checkKeysUp(key);
+
     }
 
     recordKeyPress(key) {

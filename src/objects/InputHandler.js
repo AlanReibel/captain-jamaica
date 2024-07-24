@@ -33,9 +33,11 @@ export class InputHandler {
 
         this.isMobile = this.isMobileDevice() || this.isTouchDevice();
 
+        this.emitter = new Phaser.Events.EventEmitter();
+
         this.createCombos();
-        if(this.isMobile) {
-            this.scene.game.scene.start('UIScene', { inputHandler: this});
+        if (this.isMobile) {
+            this.scene.game.scene.start('UIScene', { inputHandler: this });
 
             // this.scene.scale.setGameSize(this.scene.game.config.width, this.scene.game.config.height);
             // set game size
@@ -44,49 +46,78 @@ export class InputHandler {
             this.scene.scale.updateCenter();
 
         }
+
+        this.scene.input.keyboard.on('keydown', (event) => {
+            this.checkKeysDown(event.key);
+        });
+
+        this.scene.input.keyboard.on('keyup', (event) => {
+            this.checkKeysUp(event.key);
+        });
+
     }
 
-    isFightActionPressed() {
-        return this.qKey.isDown ||
-            this.eKey.isDown ||
-            this.fKey.isDown ||
-            this.cursors.space.isDown ||
-            // this.buttons['A'] ||
-            this.buttons['B'] ||
-            this.buttons['X'] ||
-            this.buttons['Y'];
+    checkKeysDown(key) {
+
+        switch (key) {
+            case 'w':
+            case 'A':
+            case 'ArrowUp':
+                this.emitter.emit('jumpKeyPressed');
+                break;
+
+            case 'a':
+            case 'd':
+            case 'ArrowLeft':
+            case 'ArrowRight':
+            case 'joystick':
+                this.emitter.emit('moveKeyPressed');
+                break;
+
+            case 'q':
+            case 'e':
+            case ' ':
+            case 'X':
+            case 'Y':
+            case 'B':
+                this.emitter.emit('fightActionPressed');
+                break;
+
+            default:
+                break;
+        }
+
     }
 
-    isFightActionLeaved() {
-        return this.cursors.space.isUp &&
-            this.qKey.isUp &&
-            this.fKey.isUp &&
-            this.eKey.isUp &&
-            // !this.buttons['A'] &&
-            !this.buttons['B'] &&
-            !this.buttons['X'] &&
-            !this.buttons['Y'];
-    }
+    checkKeysUp(key) {
 
-    isJumpLeaved() {
-        
-        return this.wKey.isUp &&
-            this.cursors.up.isUp &&
-            !this.buttons['A'];
-    }
+        switch (key) {
+            case 'w':
+            case 'A':
+            case 'ArrowUp':
+                this.emitter.emit('jumpKeyLeaved');
+                break;
 
-//     isMovementKeyPressed() {
-// // add joystick
-//         return this.cursors.left.isDown ||
-//             this.cursors.right.isDown ||
-//             this.aKey.isDown ||
-//             this.dKey.isDown;
-//     }
+            case 'a':
+            case 'd':
+            case 'ArrowLeft':
+            case 'ArrowRight':
+                this.emitter.emit('movingKeyUp');
+                break;
 
-    isJumpKeyPressed() {
-        return this.cursors.up.isDown ||
-            this.wKey.isDown ||
-            this.buttons['A'];
+            case 'q':
+            case 'e':
+            case ' ':
+            case 'X':
+            case 'Y':
+            case 'B':
+                this.emitter.emit('fightActionLeaved');
+                break;
+
+            default:
+                break;
+        }
+
     }
 
     isMobileDevice() {
@@ -103,7 +134,7 @@ export class InputHandler {
         this.screenSize = { width: width, height: height };
         const aspectRatio = 4 / 3;
         let newWidth, newHeight, scale;
-    
+
         if (width / height > aspectRatio) {
             newHeight = height;
             newWidth = height * aspectRatio;
@@ -119,14 +150,14 @@ export class InputHandler {
 
         this.width = newWidth;
         this.height = newHeight;
-    
+
         scale = Math.min(newWidth / this.scene.game.config.width, newHeight / this.scene.game.config.height);
         this.scene.cameras.main.setZoom(scale);
         this.scene.cameras.main.setViewport((width - newWidth) / 2, (height - newHeight) / 2, newWidth, newHeight);
         this.scene.cameras.main.setBounds(0, 0, this.scene.game.config.width, this.scene.game.config.height);
-        
+
     }
-    
+
     setButtonState(button, isPressed) {
         this.buttons[button] = isPressed;
     }
@@ -141,9 +172,22 @@ export class InputHandler {
 
         // Configurar el joystick
         this.joystick = joystickPlugin.add(this.scene, config);
-
-        // Crear las teclas del joystick
         this.joystickKeys = this.joystick.createCursorKeys();
+
+
+        this.joystick.on('pointerdown', () => {
+            // console.log('joystick press');
+            this.emitter.emit('moveKeyPressed');
+        });
+        this.joystick.on('update', () => {
+            // console.log('joystick update');
+            this.checkKeysDown('joystick');
+        });
+        this.joystick.on('pointerup', () => {
+            // console.log('joystick leave');
+
+            this.emitter.emit('movingKeyUp');
+        });
     }
 
     createCombos() {
@@ -152,7 +196,7 @@ export class InputHandler {
             Phaser.Input.Keyboard.KeyCodes.SPACE,
             Phaser.Input.Keyboard.KeyCodes.E
         ];
-        
+
         let combo3 = [
             Phaser.Input.Keyboard.KeyCodes.SPACE,
             Phaser.Input.Keyboard.KeyCodes.SPACE
@@ -160,8 +204,8 @@ export class InputHandler {
 
         // this.scene.input.keyboard.createCombo('QE', { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//69 = XY
         // this.scene.input.keyboard.createCombo('EE', { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//69 = YY
-        this.scene.input.keyboard.createCombo(combo2, { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//32 = XX
-        this.scene.input.keyboard.createCombo(combo3, { resetOnMatch: true,  maxKeyDelay: this.maxComboTime });//81 = XX
+        this.scene.input.keyboard.createCombo(combo2, { resetOnMatch: true, maxKeyDelay: this.maxComboTime });//32 = XX
+        this.scene.input.keyboard.createCombo(combo3, { resetOnMatch: true, maxKeyDelay: this.maxComboTime });//81 = XX
         // this.scene.input.keyboard.createCombo('CC', { resetOnMatch: true });//67
         // this.scene.input.keyboard.createCombo('FF', { resetOnMatch: true });//70
         this.scene.input.keyboard.on('keycombomatch', (event) => {
@@ -173,12 +217,12 @@ export class InputHandler {
             //     this.runCombo('combo1');
             // }
 
-            if(event.keyCodes[0] === 32 && event.keyCodes[1] === 69){
+            if (event.keyCodes[0] === 32 && event.keyCodes[1] === 69) {
 
                 this.runCombo('combo2');
             }
 
-            if(event.keyCodes[0] === 32 && event.keyCodes[1] === 32){
+            if (event.keyCodes[0] === 32 && event.keyCodes[1] === 32) {
 
                 this.runCombo('combo3');
             }
