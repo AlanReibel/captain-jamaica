@@ -123,6 +123,8 @@ export class UIScene extends Phaser.Scene {
             if(this.inputHandler.buttons[key]) {
                 this.inputHandler.holding[key] = true;
                 // console.log('holded',this.inputHandler.holding);
+                this.inputHandler.emitter.emit('holdAction');
+
             }
         });
         this.inputHandler.checkKeysDown(key);

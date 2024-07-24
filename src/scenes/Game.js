@@ -35,28 +35,10 @@ export class Game extends Scene {
         this.addTileMaps();
         this.createCamera();
         this.createEnemies();
-
+        this.enableDomGuide();
+        this.eventListeners();
+        
         console.log('game scene', this);
-        const guideButton = document.querySelector('#guideButton');
-
-        guideButton.classList.add('visible');
-        guideButton.addEventListener('pointerdown', () => {
-            if (this.guideIsOpen) {
-                this.scene.resume();
-                this.guideIsOpen = false;
-            } else {
-                this.scene.pause();
-                this.guideIsOpen = true;
-            }
-        });
-
-        this.inputHandler.emitter.on('fightActionPressed', this.handleFightActions, this);
-        this.inputHandler.emitter.on('jumpKeyPressed', this.handleJump, this);
-        this.inputHandler.emitter.on('moveKeyPressed', this.handleMovement, this);
-
-        this.inputHandler.emitter.on('fightActionLeaved', this.handleFightLeaved, this);
-        this.inputHandler.emitter.on('jumpKeyLeaved', this.jumpLeaved, this);
-        this.inputHandler.emitter.on('movingKeyUp', this.moveLeaved, this);
 
 
     }
@@ -89,10 +71,11 @@ export class Game extends Scene {
                 this.player.movingDirection = 'none';
             }
             
+            // if movement event was emmitet before and not cancelled (still pressing)
             if (this.player.isMoving) {
                 this.handleMovement();
             } else if(this.player.fightEnds) {
-
+            // if fight animation ended return to idle
                 this.player.idle();
             }
 
@@ -115,49 +98,55 @@ export class Game extends Scene {
             }
 
             // holding keys
-            if(this.inputHandler.qKey.isDown) {
-
-                this.handleKeyHolding(this.inputHandler.qKey, 'X');
+            if(this.inputHandler.canBeHold) {
+                this.inputHandler.holdingCheck()
             }
 
-            if(this.inputHandler.eKey.isDown) {
-                this.handleKeyHolding(this.inputHandler.eKey, 'Y');
-            }
-
-            // hold action
-            if (this.inputHandler.buttons['X'] && this.inputHandler.holding['X']) {
-                this.executeHoldAction('X', () => this.player.shieldAttack());
-            }
-
-            if (this.inputHandler.buttons['Y'] && this.inputHandler.holding['Y']) {
-                this.executeHoldAction('Y', () => this.player.special());
-            }
-
-            // console.log('player state', this.player.isMoving);
         }
+        // console.log('player state', this.player.state);
 
 
 
     }
 
-    handleKeyHolding(key, action) {
-        if (key.isDown) {
-            const duration = key.getDuration();
-            if (duration - this.inputHandler.holdingTime <= 20 && duration - this.inputHandler.holdingTime >= 0) {
-                this.inputHandler.holding[action] = true;
-                this.inputHandler.buttons[action] = true;
+    eventListeners() {
+        
+        this.inputHandler.emitter.on('fightActionPressed', this.handleFightActions, this);
+        this.inputHandler.emitter.on('jumpKeyPressed', this.handleJump, this);
+        this.inputHandler.emitter.on('moveKeyPressed', this.handleMovement, this);
+
+        this.inputHandler.emitter.on('fightActionLeaved', this.handleFightLeaved, this);
+        this.inputHandler.emitter.on('jumpKeyLeaved', this.jumpLeaved, this);
+        this.inputHandler.emitter.on('movingKeyUp', this.moveLeaved, this);
+        
+        this.inputHandler.emitter.on('holdAction', this.holdingAction, this);
+    }
+
+    enableDomGuide() {
+        const guideButton = document.querySelector('#guideButton');
+
+        guideButton.classList.add('visible');
+        guideButton.addEventListener('pointerdown', () => {
+            if (this.guideIsOpen) {
+                this.scene.resume();
+                this.guideIsOpen = false;
             } else {
-                this.inputHandler.holding[action] = false;
-                this.inputHandler.buttons[action] = false;
+                this.scene.pause();
+                this.guideIsOpen = true;
             }
-        }
+        });
     }
 
-    executeHoldAction(action, callback) {
-        this.inputHandler.holding[action] = false;
-        this.inputHandler.buttons[action] = false;
-        callback();
-        this.player.blockedFight = true;
+    holdingAction() {
+
+        if( this.inputHandler.holding['X'] || this.inputHandler.holding['q'] ) {
+            this.player.shieldAttack()
+        }
+        if( this.inputHandler.holding['Y'] || this.inputHandler.holding['e'] ) {
+            this.player.special();
+        }
+        this.inputHandler.canBeHold = false;
+
     }
 
     endGame() {
@@ -207,6 +196,7 @@ export class Game extends Scene {
 
     handleFightActions() {
 
+        // console.log('fight event called');
         if (this.player.movingDirection === 'down') {
             this.player.jumpKick();
         } else if (
@@ -240,9 +230,7 @@ export class Game extends Scene {
     }
 
     handleFightLeaved() {
-        if (this.player.fightEnds) {
-            this.player.blockedFight = false;
-        }
+        this.player.blockedFight = false;
 
     }
 

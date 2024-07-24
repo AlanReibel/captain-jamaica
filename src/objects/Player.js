@@ -345,17 +345,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     burst() {
-
         if(this.ammoEnabled) {
-
+            console.log('burst called',this.fightEnds);
+            
             this.resetSprite();
+            this.state = 'burst';
+            this.blockedFight = true;
+            this.fightEnds = false;
     
             this.setVelocityX(0);
             this.blockedMovement = true;
-            this.blockedFight = true;
-            this.fightEnds = false;
             this.anims.play('burst', true);
-            this.state = 'burst';
     
             this.on('animationcomplete-burst', (anim, frame) => {
                 this.resetSprite();
@@ -418,7 +418,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     whip() {
-        console.log('whip called');
         if (!this.isJumping) {
             let offsetX = this.focusTo === 'right' ? 24 : 90;
             let compensation = this.focusTo === 'right' ? 1 : -1;
@@ -630,7 +629,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     runCombo(name) {
-        // console.log('run combo',name);
 
         switch (name) {
             case 'combo1':

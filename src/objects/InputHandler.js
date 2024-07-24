@@ -7,18 +7,23 @@ export class InputHandler {
         'Y': false
     };
     holding = {
-        'A': false,
-        'B': false,
+        'q': false,
+        'e': false,
         'X': false,
         'Y': false
     };
     holdingTime = 500;
     maxComboTime = 500;
 
+    combo = false;
+    isHolding = false;
+    canBeHold = false;
+
 
     isMobile = true;
     orientation;
     screeSize;
+    lastKeyPressed;
 
     constructor(scene) {
         this.scene = scene;
@@ -29,11 +34,12 @@ export class InputHandler {
         this.dKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.qKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
         this.eKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
-        this.fKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+        // this.fKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
 
         this.isMobile = this.isMobileDevice() || this.isTouchDevice();
 
         this.emitter = new Phaser.Events.EventEmitter();
+
 
         this.createCombos();
         if (this.isMobile) {
@@ -48,10 +54,15 @@ export class InputHandler {
         }
 
         this.scene.input.keyboard.on('keydown', (event) => {
-            this.checkKeysDown(event.key);
+            if (!this.combo) {
+                this.checkKeysDown(event.key);
+            }
         });
 
         this.scene.input.keyboard.on('keyup', (event) => {
+            if (this.combo) {
+                this.combo = false;
+            }
             this.checkKeysUp(event.key);
         });
 
@@ -59,6 +70,7 @@ export class InputHandler {
 
     checkKeysDown(key) {
 
+        this.lastKeyPressed = key;
         switch (key) {
             case 'w':
             case 'A':
@@ -76,10 +88,12 @@ export class InputHandler {
 
             case 'q':
             case 'e':
-            case ' ':
+                this.lastKeyPressed = key;
+                this.canBeHold = true;
             case 'X':
             case 'Y':
             case 'B':
+            case ' ':
                 this.emitter.emit('fightActionPressed');
                 break;
 
@@ -107,9 +121,11 @@ export class InputHandler {
 
             case 'q':
             case 'e':
-            case ' ':
+                this.canBeHold = false;
+                this.holding[key] = false;
             case 'X':
             case 'Y':
+            case ' ':
             case 'B':
                 this.emitter.emit('fightActionLeaved');
                 break;
@@ -118,6 +134,24 @@ export class InputHandler {
                 break;
         }
 
+    }
+
+    holdingCheck(key = this.lastKeyPressed) {
+
+        // console.log('holdingCheck', key);
+        let keyObject = {
+            'q': this.qKey,
+            'e': this.eKey,
+            'X': null,
+            'Y': null,
+        };
+
+        const duration = keyObject[key].getDuration();
+        if (duration >= this.holdingTime ) {
+            // console.log('holded', key);
+            this.holding[key] = true;
+            this.emitter.emit('holdAction');
+        } 
     }
 
     isMobileDevice() {
@@ -209,7 +243,6 @@ export class InputHandler {
         // this.scene.input.keyboard.createCombo('CC', { resetOnMatch: true });//67
         // this.scene.input.keyboard.createCombo('FF', { resetOnMatch: true });//70
         this.scene.input.keyboard.on('keycombomatch', (event) => {
-
             // console.log('key codes',event.keyCodes);
 
             // if(event.keyCodes[0] === 81 && event.keyCodes[1] === 69){
@@ -233,6 +266,8 @@ export class InputHandler {
     }
 
     runCombo(name) {
+        this.combo = true;
+
         this.scene.player.runCombo(name);
 
     }
