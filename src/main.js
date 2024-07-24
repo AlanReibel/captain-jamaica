@@ -12,6 +12,7 @@ import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-p
 
 const config = {
     type: Phaser.AUTO,
+    // type: Phaser.WEBGL,
     width: 400,
     height: 300,
     parent: 'game-container',
@@ -50,7 +51,13 @@ const config = {
     },
     input: {
         activePointers: 3 // Permitir hasta 3 punteros activos
-    }
+    },
+    fps: {
+        target: 60,
+
+        // forceSetTimeOut: true // Fuerza el uso de setTimeout en lugar de requestAnimationFrame
+    },
+
 };
 
 export default new Phaser.Game(config);

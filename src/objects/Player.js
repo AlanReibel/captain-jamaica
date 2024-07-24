@@ -3,6 +3,7 @@ import { Bullet } from '../objects/Bullet.js';
 export class Player extends Phaser.Physics.Arcade.Sprite {
 
     state = 'idle';
+    isMoving = false;
     isJumping = false;
     blockedJump = false;
     velocity = 100;
@@ -417,7 +418,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     whip() {
-        // console.log('whip called');
+        console.log('whip called');
         if (!this.isJumping) {
             let offsetX = this.focusTo === 'right' ? 24 : 90;
             let compensation = this.focusTo === 'right' ? 1 : -1;
@@ -431,7 +432,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
             this.setVelocityX(0);
             this.anims.play('whip', true);
-
             this.setPosition(this.originalX + (22 * compensation), this.y - 1);
             this.setOffset(offsetX, 10);
             this.setScale(0.58);
@@ -591,7 +591,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.scene.time.delayedCall(2110, () => {
 
                 if (this.state === 'special') {
-                    console.log('this', this);
                     special.setSize(special.width, special.height);
                     this.state = 'specialExplosion';
                     this.sounds['explosion'].play();

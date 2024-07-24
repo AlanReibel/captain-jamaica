@@ -15,7 +15,6 @@ export class Game extends Scene {
     textScore;
     lives = 3;
     textLives;
-    gameOver = false;
     map;
 
     enemies;
@@ -28,7 +27,6 @@ export class Game extends Scene {
     create() {
         this.cameras.main.fadeIn(200, 0, 0, 0);
 
-        this.gameOver = false;
         this.player = new Player(this, 100, 400, 'captain-idle');
         this.inputHandler = new InputHandler(this);
 
@@ -52,192 +50,199 @@ export class Game extends Scene {
             }
         });
 
+        this.inputHandler.emitter.on('fightActionPressed', this.handleFightActions, this);
+        this.inputHandler.emitter.on('jumpKeyPressed', this.handleJump, this);
+        this.inputHandler.emitter.on('moveKeyPressed', this.handleMovement, this);
+
+        this.inputHandler.emitter.on('fightActionLeaved', this.handleFightLeaved, this);
+        this.inputHandler.emitter.on('jumpKeyLeaved', this.jumpLeaved, this);
+        this.inputHandler.emitter.on('movingKeyUp', this.moveLeaved, this);
+
+
     }
 
-    update() {
+    update(time, delta) {
 
-        // reset fight
-        if (this.player.body.velocity.y <= - 20) {
+        // console.log('time',time);
+        // console.log('delta',delta);
+        // console.log('fps', this.game.loop.actualFps);
 
-            this.player.movingDirection = 'down';
+        // Incrementar el contador de cuadros
+        this.frameCount = (this.frameCount || 0) + 1;
+        let checkingRate = this.game.loop.actualFps < 50 ? 4 : 1;
 
-            if (
-                this.inputHandler.isFightActionPressed() &&
-                !this.player.blockedFight
-            ) {
-                this.player.jumpKick();
+        // every 6fps 
+        if (this.frameCount % checkingRate === 0) {
+            // console.log('frameCount',this.frameCount);
+
+            // reset fight
+            if (this.player.body.velocity.y <= -20) {
+                this.player.movingDirection = 'down';
+
+            } else if (this.player.body.velocity.x === 0 && this.player.body.blocked.down) {
+                this.player.movingDirection = 'none';
             }
 
-        } else if (this.player.body.velocity.x == 0 && this.player.body.blocked.down) {
-            this.player.movingDirection = 'none';
+
+            if (this.player.movingDirection === 'down' && this.player.body.blocked.down && this.player.fightEnds) {
+                this.player.land();
+                this.player.movingDirection = 'none';
+            }
+            
+            if (this.player.isMoving) {
+                this.handleMovement();
+            } else if(this.player.fightEnds) {
+
+                this.player.idle();
+            }
+
+            // Animación del jugador 'burst'
+            this.handleBurstAnimation();
+
+            // Actualización de enemigos terrestres
+            if (this.landEnemies) {
+                this.updateEnemies(this.landEnemies);
+            }
+
+            // Actualización de enemigos voladores
+            if (this.flyingEnemies) {
+                this.updateEnemies(this.flyingEnemies);
+            }
+
+            // Finalizar juego
+            if (this.player.x > 3150 && this.player.y < 70) {
+                this.finishGame();
+            }
+
+            // holding keys
+            if(this.inputHandler.qKey.isDown) {
+
+                this.handleKeyHolding(this.inputHandler.qKey, 'X');
+            }
+
+            if(this.inputHandler.eKey.isDown) {
+                this.handleKeyHolding(this.inputHandler.eKey, 'Y');
+            }
+
+            // hold action
+            if (this.inputHandler.buttons['X'] && this.inputHandler.holding['X']) {
+                this.executeHoldAction('X', () => this.player.shieldAttack());
+            }
+
+            if (this.inputHandler.buttons['Y'] && this.inputHandler.holding['Y']) {
+                this.executeHoldAction('Y', () => this.player.special());
+            }
+
+            // console.log('player state', this.player.isMoving);
         }
 
-        if (this.player.movingDirection === 'down' && this.player.body.blocked.down && this.player.fightEnds) {
-            this.player.land();
-            this.player.movingDirection = 'none';
-        }
 
-        if (this.inputHandler.isFightActionLeaved() && this.player.fightEnds) {
-            this.player.blockedFight = false;
-        }
 
-        if (this.inputHandler.isJumpLeaved()) {
-            this.player.blockedJump = false;
-        }
+    }
 
-        // fighting
-        if (this.inputHandler.isFightActionPressed() && !this.player.blockedFight) {
-            this.handleFightActions();
-        }
-
-        // holding keys
-        // space holding
-        if (this.inputHandler.qKey.isDown) {
-            let duration = this.inputHandler.qKey.getDuration();
-
+    handleKeyHolding(key, action) {
+        if (key.isDown) {
+            const duration = key.getDuration();
             if (duration - this.inputHandler.holdingTime <= 20 && duration - this.inputHandler.holdingTime >= 0) {
-                this.inputHandler.holding['X'] = true;
-                this.inputHandler.buttons['X'] = true;
+                this.inputHandler.holding[action] = true;
+                this.inputHandler.buttons[action] = true;
             } else {
-                this.inputHandler.holding['X'] = false;
-                this.inputHandler.buttons['X'] = false;
-
+                this.inputHandler.holding[action] = false;
+                this.inputHandler.buttons[action] = false;
             }
-
         }
+    }
 
-        // E key holding
-        if (this.inputHandler.eKey.isDown) {
-            let duration = this.inputHandler.eKey.getDuration();
+    executeHoldAction(action, callback) {
+        this.inputHandler.holding[action] = false;
+        this.inputHandler.buttons[action] = false;
+        callback();
+        this.player.blockedFight = true;
+    }
 
-            if (duration - this.inputHandler.holdingTime <= 20 && duration - this.inputHandler.holdingTime >= 0) {
-                this.inputHandler.holding['Y'] = true;
-                this.inputHandler.buttons['Y'] = true;
-            } else {
-                this.inputHandler.holding['Y'] = false;
-                this.inputHandler.buttons['Y'] = false;
+    endGame() {
+        this.music.stop();
+        this.scene.start('GameOver', { inputHandler: this.inputHandler });
+    }
 
-            }
-
-        }
-
-        // hold action
-        if (this.inputHandler.buttons['X'] && this.inputHandler.holding['X']) {
-            this.inputHandler.holding['X'] = false;
-            this.inputHandler.buttons['X'] = false;
-            this.player.shieldAttack();
-            this.player.blockedFight = true;
-        }
-
-        if (this.inputHandler.buttons['Y'] && this.inputHandler.holding['Y']) {
-            this.inputHandler.buttons['Y'] = false;
-            this.inputHandler.holding['Y'] = false;
-            this.player.special();
-            this.player.blockedFight = true;
-        }
-
-        // move if end of fight action
-        if (this.player.fightEnds) {
-            this.handleMovement();
-        }
-        // jump
-        if (
-            this.inputHandler.isJumpKeyPressed() &&
-            this.player.body.blocked.down &&
-            !this.player.blockedJump
-        ) {
-            this.player.handleJump();
-        }
-        // game over
-        if (this.gameOver) {
-            this.music.stop();
-            this.scene.start('GameOver', { inputHandler: this.inputHandler });
-        }
-
-        if (this.player.anims.currentAnim.key === 'burst') {
-
-            let currentFrame = this.player.anims.currentFrame;
-
-            if (currentFrame.index >= 3 &&
-                currentFrame.index % 2 == 1) {
-
+    handleBurstAnimation() {
+        if (this.player.state === 'burst') {
+            const currentFrame = this.player.anims.currentFrame;
+            if (currentFrame.index >= 3 && currentFrame.index % 2 === 1) {
                 if (!this.player.bulletFired) {
-
                     this.player.fireBullet(this);
                     this.player.bulletFired = true;
                 }
-
             } else {
                 this.player.bulletFired = false;
-
             }
         } else {
             this.player.bulletFired = false;
         }
+    }
 
-        if (this.landEnemies) {
-
-            this.landEnemies.children.iterate((enemy) => {
+    updateEnemies(enemiesGroup) {
+        // Dividir la actualización de enemigos en chunks
+        const chunkSize = 10;
+        const enemies = enemiesGroup.getChildren();
+        for (let i = 0; i < enemies.length; i++) {
+            if (this.frameCount % chunkSize === i % chunkSize) {
+                const enemy = enemies[i];
                 if (this.isEnemyInCameraView(enemy, this.cameras.main.worldView)) {
                     enemy.update();
                 }
-            });
+            }
         }
+    }
 
-        if (this.flyingEnemies) {
-
-            this.flyingEnemies.children.iterate((enemy) => {
-                if (this.isEnemyInCameraView(enemy, this.cameras.main.worldView)) {
-                    enemy.update();
-                }
-            });
+    handleJump() {
+        if (this.player.body.blocked.down && !this.player.blockedJump) {
+            this.player.handleJump();
         }
+    }
 
-        if (this.player.x > 3150 && this.player.y < 70) {
-            this.finishGame()
-        }
-
+    jumpLeaved() {
+        this.player.blockedJump = false;
     }
 
     handleFightActions() {
-        // pressed Q key or X button
-        if (
+
+        if (this.player.movingDirection === 'down') {
+            this.player.jumpKick();
+        } else if (
+            // pressed Q key or X button
             this.inputHandler.qKey.isDown ||
             this.inputHandler.buttons['X']
         ) {
             this.player.shieldHit();
 
-        }
-        // pressed space key or B button
-        else if (
+        } else if (
+            // pressed space key or B button
             this.inputHandler.cursors.space.isDown ||
             this.inputHandler.buttons['B']
         ) {
             this.player.punch();
 
-        }
-        // pressed E key or Y button
-        else if (
+        } else if (
+            // pressed E key or Y button
             this.inputHandler.eKey.isDown ||
             this.inputHandler.buttons['Y']
         ) {
             // this.player.special();
-            if (this.player.power >= 50) {
+            if (this.player.power >= 25) {
                 this.player.whip();
             } else {
                 this.powerBarBlick();
             }
 
         }
-        // pressed space key or X button
-        // else if (
-        //     this.inputHandler.cursors.space.isDown ||
-        //     this.inputHandler.buttons['X']
-        // ) {
 
+    }
 
-        // }
-
+    handleFightLeaved() {
+        if (this.player.fightEnds) {
+            this.player.blockedFight = false;
+        }
 
     }
 
@@ -247,6 +252,7 @@ export class Game extends Scene {
     }
 
     handleMovement() {
+        this.player.isMoving = true;
         // pressed left or A
         if (
             this.inputHandler.cursors.left.isDown ||
@@ -254,7 +260,7 @@ export class Game extends Scene {
             this.inputHandler.joystickKeys?.left.isDown
         ) {
             this.player.move('left');
-            this.moveBackground(-1);
+            // this.moveBackground(-1);
             // this.cameras.main.scrollX -= 5;
         }
         // pressed right or D
@@ -264,13 +270,17 @@ export class Game extends Scene {
             this.inputHandler.joystickKeys?.right.isDown
         ) {
             this.player.move('right');
-            this.moveBackground(1);
+            // this.moveBackground(1);
             // this.cameras.main.scrollX += 5;
         }
         // idle if else
         else {
             this.player.idle();
         }
+    }
+
+    moveLeaved() {
+        this.player.isMoving = false;
     }
 
     createEnemies() {
@@ -285,7 +295,6 @@ export class Game extends Scene {
         enemiesPositions.objects.forEach(enemyData => {
             let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
 
-            // newEnemy.setPipeline('Light2D');
             if (enemyData.name === 'flyingRobot') {
                 this.flyingEnemies.add(newEnemy);
             } else {
@@ -302,12 +311,12 @@ export class Game extends Scene {
         this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
         this.physics.add.collider(this.walls, this.landEnemies, null, null, this);
         this.physics.add.collider(this.landEnemies, this.landEnemies, null, null, this);
-        
+
         // this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.flyingEnemies, this.handleBodyCollision, null, this);
         this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
         this.physics.add.collider(this.walls, this.flyingEnemies, null, null, this);
-        
+
         this.physics.add.collider(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.player.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
@@ -486,30 +495,30 @@ export class Game extends Scene {
         this.map = this.make.tilemap({ key: 'tilemapJson' });
 
         const greenTiles = this.map.addTilesetImage('greenTiles2', 'tilemapImage2');
-        const decoTiles = this.map.addTilesetImage('newObjectSet', 'objectsTilemap');
-
         this.greenTilesLayer = this.map.createLayer('greenPlatforms', greenTiles);
         this.walls = this.map.createLayer('walls', greenTiles);
+        this.walls
+            .setDepth(1)
+            .setCollisionByProperty({ collider: true });
+        this.physics.add.collider(this.player, this.walls);
+
+        const decoTiles = this.map.addTilesetImage('newObjectSet', 'objectsTilemap');
         const backObjectLayer = this.map.createLayer('background', decoTiles);
         const buildings = this.map.createLayer('buildings', decoTiles);
         const farBackObjectLayer = this.map.createLayer('farBackground', decoTiles);
         const frontObjectLayer = this.map.createLayer('foreground', decoTiles);
 
         farBackObjectLayer.setDepth(0);
-        
-        this.walls
-            .setDepth(1)
-            .setCollisionByProperty({ collider: true });
-        this.physics.add.collider(this.player, this.walls);
+
 
         buildings.setDepth(2);
-        
+        backObjectLayer.setDepth(4);
+        frontObjectLayer.setDepth(5);
+
         this.greenTilesLayer
             .setDepth(3)
             .setCollisionByProperty({ collider: true });
-            
-        backObjectLayer.setDepth(4);
-        frontObjectLayer.setDepth(5);
+
 
         this.physics.add.collider(this.player, this.greenTilesLayer, null, function (player, platform) {
             if (player.body.velocity.y > 0) {
@@ -539,7 +548,6 @@ export class Game extends Scene {
             // console.log('potionName', potionName);
             let box = new Box(this, boxData.x, boxData.y, 'chest', potionName, flip);
             box.id = boxData.id;
-            // box.setPipeline('Light2D');
             boxesGroup.add(box);
             this.physics.add.overlap(this.player, box.potions, this.collectPotion, null, this);
         });
@@ -550,27 +558,10 @@ export class Game extends Scene {
         this.physics.add.overlap(this.player, boxesGroup, this.boxInteraction, null, this);
 
 
-        // this.lights.enable();
-        // this.lights.setAmbientColor(0x808080);
-
-        // backObjectLayer.setPipeline('Light2D');
-        // buildings.setPipeline('Light2D');
-        // frontObjectLayer.setPipeline('Light2D');
-        // farBackObjectLayer.setPipeline('Light2D');
-        // this.walls.setPipeline('Light2D');
-        // this.player.setPipeline('Light2D');
-
-        // let lightsPosition = this.map.getObjectLayer('lights');
-        // lightsPosition.objects.forEach(light => {
-
-        //     let newLight = this.lights.addLight(light.x, light.y, 400)
-        //         .setIntensity(1)
-        // });
-
     }
 
     boxInteraction(player, box) {
-        if (this.inputHandler.isFightActionPressed() && this.boxesEnabled[box.id]) {
+        if (!this.player.fightEnds && this.boxesEnabled[box.id]) {
             this.boxesEnabled[box.id] = false;
             box.openBox();
             this.player.sounds['chest'].play();
@@ -579,28 +570,28 @@ export class Game extends Scene {
 
     collectPotion(player, potion) {
 
-        if(!potion.collected) {
+        if (!potion.collected) {
 
             potion.collected = true;
             potion.removeCollidesWith(this.player);
             this.time.delayedCall(200, () => {
                 potion.body.setVelocityY(-200);
             });
-    
+
             let updated = false;
-    
+
             switch (potion.name) {
                 case 'health':
                     if (this.player.health < 100) {
                         let newHealth = this.player.health + potion.amount <= 100
                             ? this.player.health + potion.amount
                             : 100;
-    
+
                         this.player.health = newHealth;
                         this.healthbarUpdate();
                         updated = true;
                         this.uiBlink(this.healthBar);
-    
+
                     }
                     break;
                 case 'power':
@@ -608,35 +599,35 @@ export class Game extends Scene {
                         let newPower = this.player.power + potion.amount <= 100
                             ? this.player.power + potion.amount
                             : 100;
-    
+
                         this.player.power = newPower;
                         this.powerbarUpdate();
                         updated = true;
                         this.uiBlink(this.powerBar);
 
-    
+
                     }
                     break;
                 case 'ammo':
-                    if(!this.player.ammoEnabled){
+                    if (!this.player.ammoEnabled) {
                         this.player.ammoEnabled = true;
                         this.enableAmmoMarker();
                         updated = true;
                         this.uiBlink(this.ammoMarker);
-    
-                }
+
+                    }
                     break;
-    
+
             }
-            
-            if(updated) {
+
+            if (updated) {
                 this.player.sounds['item'].play();
             }
-    
+
             this.time.delayedCall(500, () => {
                 this.player.sounds['increase'].setVolume(0.3).play();
                 potion.destroy();
-    
+
             });
         }
 
@@ -706,7 +697,7 @@ export class Game extends Scene {
         this.uiContainer.add(this.powerBar);
 
         let powerIcon = this.add.image(x + 2, y + 1, 'powerIcon')
-        .setOrigin(0);
+            .setOrigin(0);
         this.uiContainer.add(powerIcon);
 
     }
@@ -760,38 +751,37 @@ export class Game extends Scene {
             .fillRect(10, 10, this.player.health, 15);
 
         if (this.player.health <= 0) {
-            this.gameOver = true;
+            // this.gameOver = true;
+            this.endGame();
         }
     }
 
     addSpecialUI(midle) {
         let x = midle - 20;
-        let specialMarker = this.add.image(x, 20, 'specialMarker');
-        specialMarker.setScale(0.4);
-        specialMarker.setOrigin(0.5);
-        this.specialMarkerFX = specialMarker.postFX.addColorMatrix();
-        this.uiContainer.add(specialMarker);
+        this.specialMarker = this.add.image(x, 20, 'specialMarker');
+        this.specialMarker.setScale(0.4);
+        this.specialMarker.setOrigin(0.5);
+        
+        this.uiContainer.add(this.specialMarker);
     }
 
     addAmmoUI(midle) {
         let x = midle + 20;
         this.ammoMarker = this.add.image(x, 20, 'ammo');
-        // ammoMarker.setScale(0.4);
         this.ammoMarker.setOrigin(0.5);
-        this.ammoMarkerFX = this.ammoMarker.postFX.addColorMatrix();
         this.uiContainer.add(this.ammoMarker);
     }
 
     disableSpecialMarker() {
-        this.specialMarkerFX.blackWhite();
+        this.specialMarker.setAlpha(0.5);
     }
 
     enableAmmoMarker() {
-        this.ammoMarkerFX.reset();
+        this.ammoMarker.setAlpha(1);
     }
 
     disableAmmoMarker() {
-        this.ammoMarkerFX.blackWhite();
+        this.ammoMarker.setAlpha(0.5);
     }
 
     finishGame() {
