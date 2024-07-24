@@ -855,60 +855,6 @@
                         }]
                 }, 
                 {
-                 "id":6,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":7,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":8,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":9,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":10,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":11,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
                  "id":12,
                  "properties":[
                         {
@@ -1017,60 +963,6 @@
                         }]
                 }, 
                 {
-                 "id":24,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":25,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":26,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":27,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":28,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":29,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
                  "id":36,
                  "properties":[
                         {
@@ -1125,24 +1017,6 @@
                         }]
                 }, 
                 {
-                 "id":42,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":43,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
                  "id":44,
                  "properties":[
                         {
@@ -1158,24 +1032,6 @@
                          "name":"collider",
                          "type":"bool",
                          "value":true
-                        }]
-                }, 
-                {
-                 "id":46,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":47,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
                         }]
                 }, 
                 {
@@ -1233,24 +1089,6 @@
                         }]
                 }, 
                 {
-                 "id":60,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":61,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
                  "id":62,
                  "properties":[
                         {
@@ -1266,24 +1104,6 @@
                          "name":"collider",
                          "type":"bool",
                          "value":true
-                        }]
-                }, 
-                {
-                 "id":64,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":65,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
                         }]
                 }, 
                 {
@@ -1341,60 +1161,6 @@
                         }]
                 }, 
                 {
-                 "id":78,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":79,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":80,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":81,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":82,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":83,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
                  "id":90,
                  "properties":[
                         {
@@ -1446,60 +1212,6 @@
                          "name":"collider",
                          "type":"bool",
                          "value":true
-                        }]
-                }, 
-                {
-                 "id":96,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":97,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":98,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":99,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":100,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":101,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":false
                         }]
                 }, 
                 {
@@ -1749,25 +1461,6 @@
          "spacing":0,
          "tilecount":4183,
          "tileheight":16,
-         "tiles":[
-                {
-                 "id":100,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":101,
-                 "properties":[
-                        {
-                         "name":"collider",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }],
          "tilewidth":16
         }],
  "tilewidth":16,
