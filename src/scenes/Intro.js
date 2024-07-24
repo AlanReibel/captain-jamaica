@@ -163,12 +163,15 @@ The battle for justice has only just begun.`
     }
 
     cleanup() {
-        // Destruir imágenes
+    
         if (this.introImage1) this.introImage1.destroy(true);
         if (this.introImage2) this.introImage2.destroy(true);
 
         this.imageList.forEach(imageName => {
             this.textures.remove(imageName);
+        });
+        this.keySounds.forEach(sound => {
+            sound.destroy();
         });
 
         this.introMusic.destroy();

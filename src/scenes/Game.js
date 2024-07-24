@@ -47,7 +47,7 @@ export class Game extends Scene {
 
         // console.log('time',time);
         // console.log('delta',delta);
-        // console.log('fps', this.game.loop.actualFps);
+        console.log('fps', this.game.loop.actualFps);
 
         // Incrementar el contador de cuadros
         this.frameCount = (this.frameCount || 0) + 1;
@@ -74,9 +74,14 @@ export class Game extends Scene {
             // if movement event was emmitet before and not cancelled (still pressing)
             if (this.player.isMoving) {
                 this.handleMovement();
-            } else if(this.player.fightEnds) {
+            } else if(
+                this.player.fightEnds && 
+                this.player.state !== 'idle' 
+            ) {
             // if fight animation ended return to idle
                 this.player.idle();
+        // console.log('player state', this.player.state);
+
             }
 
             // Animación del jugador 'burst'
@@ -260,9 +265,8 @@ export class Game extends Scene {
             this.player.move('right');
             // this.moveBackground(1);
             // this.cameras.main.scrollX += 5;
-        }
-        // idle if else
-        else {
+        } else {
+            // idle if else
             this.player.idle();
         }
     }
@@ -364,8 +368,8 @@ export class Game extends Scene {
     handleBodyCollision(player, enemy) {
         // Verifica si el jugador está en una animación de lucha
         let damage = {
-            punch: 20,
-            kick: 30,
+            punch: 25,
+            kick: 35,
             shield: 50,
             whip: 100,
             specialExplosion: 150,

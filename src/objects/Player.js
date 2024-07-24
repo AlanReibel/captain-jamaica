@@ -170,6 +170,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.vulnerable = true;
                 this.blockedMovement = false;
                 this.state = 'idle';
+                this.idle();
                 // console.log(`anim: ${anim.key} finish`, {
                 //     state: this.state,
                 //     isJumping: this.isJumping,
@@ -201,6 +202,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     idle() {
+
         this.setVelocityX(0);
         if (
             this.state !== 'throw' &&
@@ -215,7 +217,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.state !== 'punch' &&
             this.state !== 'burst'
         ) {
-            this.anims.play('idle', true);
+            this.anims.play( 'idle', true);
             this.state = 'idle';
         }
     }
@@ -321,6 +323,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.on('animationcomplete-catch', (anim, frame) => {
             this.state = 'idle';
+            this.idle();
             this.fightEnds = true;
             this.blockedMovement = false;
         });
@@ -360,6 +363,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.on('animationcomplete-burst', (anim, frame) => {
                 this.resetSprite();
                 this.state = 'idle';
+                this.idle();
                 this.fightEnds = true;
                 this.blockedMovement = false;
                 this.ammoEnabled = false;
@@ -381,6 +385,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.sounds['pre-punch'].play();
             this.on('animationcomplete-kick', (anim, frame) => {
                 this.state = 'idle';
+                this.idle();
                 this.fightEnds = true;
             });
         }
@@ -396,6 +401,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.sounds['pre-punch'].play();
             this.on('animationcomplete-punch', (anim, frame) => {
                 this.state = 'idle';
+                this.idle();
                 this.fightEnds = true;
             });
         }
@@ -412,6 +418,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.sounds['pre-punch'].play();
             this.on('animationcomplete-punch2', (anim, frame) => {
                 this.state = 'idle';
+                this.idle();
                 this.fightEnds = true;
             });
         }
@@ -517,6 +524,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.on('animationcomplete-jump', (anim, frame) => {
                 // this.anims.play('idle');
                 this.state = 'idle';
+                this.idle();
                 this.isJumping = false;
             });
         }
@@ -532,6 +540,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.state = 'jumpKick';
         this.on('animationcomplete-jumpKick', (anim, frame) => {
             this.state = 'idle';
+            this.idle();
             this.fightEnds = true;
         });
     }
@@ -603,6 +612,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.resetSprite();
                 this.setVisible(true);
                 this.state = 'idle';
+                this.idle();
                 this.vulnerable = true;
                 this.fightEnds = true;
                 this.blockedMovement = false;
@@ -623,6 +633,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.state = 'landing';
         this.on('animationcomplete-land', (anim, frame) => {
             this.state = 'idle';
+            this.idle();
             this.movingDirection = this.focusTo;
             this.blockedMovement = false;
         });
