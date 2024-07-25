@@ -138,20 +138,20 @@ export class InputHandler {
 
     holdingCheck(key = this.lastKeyPressed) {
 
-        // console.log('holdingCheck', key);
-        let keyObject = {
-            'q': this.qKey,
-            'e': this.eKey,
-            'X': null,
-            'Y': null,
-        };
+        if(key === 'e' || key === 'q') {
 
-        const duration = keyObject[key].getDuration();
-        if (duration >= this.holdingTime ) {
-            // console.log('holded', key);
-            this.holding[key] = true;
-            this.emitter.emit('holdAction');
-        } 
+            let keyObject = {
+                'q': this.qKey,
+                'e': this.eKey,
+            };
+    
+            const duration = keyObject[key].getDuration();
+            if (duration >= this.holdingTime ) {
+                // console.log('holded', key);
+                this.holding[key] = true;
+                this.emitter.emit('holdAction');
+            } 
+        }
     }
 
     isMobileDevice() {

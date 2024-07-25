@@ -47,7 +47,7 @@ export class Game extends Scene {
 
         // console.log('time',time);
         // console.log('delta',delta);
-        console.log('fps', this.game.loop.actualFps);
+        // console.log('fps', this.game.loop.actualFps);
 
         // Incrementar el contador de cuadros
         this.frameCount = (this.frameCount || 0) + 1;
