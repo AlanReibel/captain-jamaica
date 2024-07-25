@@ -159,22 +159,6 @@ export class Game extends Scene {
         this.scene.start('GameOver', { inputHandler: this.inputHandler });
     }
 
-    handleBurstAnimation() {
-        if (this.player.state === 'burst') {
-            const currentFrame = this.player.anims.currentFrame;
-            if (currentFrame.index >= 3 && currentFrame.index % 2 === 1) {
-                if (!this.player.bulletFired) {
-                    this.player.fireBullet(this);
-                    this.player.bulletFired = true;
-                }
-            } else {
-                this.player.bulletFired = false;
-            }
-        } else {
-            this.player.bulletFired = false;
-        }
-    }
-
     updateEnemies(enemiesGroup) {
         // Dividir la actualización de enemigos en chunks
         const chunkSize = 10;
@@ -224,7 +208,7 @@ export class Game extends Scene {
             this.inputHandler.buttons['Y']
         ) {
             // this.player.special();
-            if (this.player.power >= 25) {
+            if (this.player.power >= 25 && this.player.state !== 'burst') {
                 this.player.whip();
             } else {
                 this.powerBarBlick();
@@ -237,6 +221,22 @@ export class Game extends Scene {
     handleFightLeaved() {
         this.player.blockedFight = false;
 
+    }
+
+    handleBurstAnimation() {
+        if (this.player.state === 'burst') {
+            const currentFrame = this.player.anims.currentFrame;
+            if (currentFrame.index >= 3 && currentFrame.index % 2 === 1) {
+                if (!this.player.bulletFired) {
+                    this.player.fireBullet(this);
+                    this.player.bulletFired = true;
+                }
+            } else {
+                this.player.bulletFired = false;
+            }
+        } else {
+            this.player.bulletFired = false;
+        }
     }
 
     hitEnemy(enemy, damage) {
