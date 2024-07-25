@@ -412,7 +412,7 @@ export class Game extends Scene {
             this.hitEnemy(enemy, damage[currentState]);
         }
 
-        if (enemy.state === 'attacking' && this.player.vulnerable) {
+        if (enemy.state === 'attacking' && !enemy.attackDone && this.player.vulnerable) {
             let damage = enemy.damage || 0;
             // console.log('enemy', enemy.damage);
             this.player.takeDamage(damage);
@@ -709,6 +709,7 @@ export class Game extends Scene {
 
     powerBarBlick(repeatCount = 3) {
         // console.log('powerBarBlick');
+
         this.player.sounds['error'].play();
         this.tweens.add({
             targets: this.powerbarBackground,

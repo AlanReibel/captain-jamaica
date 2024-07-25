@@ -70,7 +70,9 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
                 this.state = 'attacking';
                 let flip = this.focusTo === 'left';
                 this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
-                
+                if(this.name === 'weelRobot') {
+                    this.attackMovement();
+                }
                 if(this.shot) {
 
                     this.scene.time.delayedCall(100, () => {
@@ -101,6 +103,16 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
                 this.attackCounter = 0;
             });
         }
+    }
+
+    attackMovement() {
+        this.scene.tweens.add({
+            targets: this,
+            y: this.y - 20,
+            ease: 'Power1',
+            duration: 200,
+
+        });
     }
 
     fire(scene) {
