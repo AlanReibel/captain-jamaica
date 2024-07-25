@@ -2,19 +2,23 @@ import { enemies } from './enemyConfig';
 
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
-    invulnerable = false;
+    startPosition;
     state = 'idle';
     focusTo = 'right';
-    bulletFired = false;
+    
     bullets;
     bulletImage;
     bulletDamage;
-    startPosition;
-    attackDone = false;
+    bulletFired = false;
+
     movingDirectionX;
     movingDirectionY;
+    
+    invulnerable = false;
+    attackDone = true;
     attackCounter = 0;
     nextAttackWait = 2000;
+
     sounds = [];
 
     constructor(scene, x, y, name) {
@@ -55,62 +59,62 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     attack() {
-        if(this.attackCounter < 2) {
 
-            if (this.state !== 'attacking' && !this.attackDone) {
+        if(this.state === 'attacking') {
+            return;
+        } else if(this.attackCounter < 2 ) {
+
+
+            if (this.attackDone) {
                 this.attackDone = false;
                 this.state = 'attacking';
                 let flip = this.focusTo === 'left';
                 this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
                 
                 if(this.shot) {
-                    this.scene.time.delayedCall(200, () => {
+
+                    this.scene.time.delayedCall(100, () => {
                         this.fire(this.scene);
-                        if(this.name == 'mutantDog') {
-                            this.scene.time.delayedCall(100, () => {
-                                this.fire(this.scene);
-                            });
-                        }
                     });
 
                 } else {
-                    this.sounds['enemy-punch'].play();
-                }
 
-                this.on(`animationcomplete-${this.name}-Attack`, () => {
+                    this.sounds['enemy-punch'].play();
+
+                }
+                
+                this.scene.time.delayedCall( 200, () => {
                     this.state = 'idle';
-                    this.scene.time.delayedCall(2000, () => {
-                        this.attackDone = true;
-                        this.attackCounter++;
-                    });
+                    this.attackCounter++;
+                    this.attackDone = true;
+                    if(this.shot) {
+                        this.bulletFired = false;
+                    }
                 });
     
             }
 
         } else {
-
-            this.attackDone = true;
+            this.state = 'attacking';
             this.scene.time.delayedCall( this.nextAttackWait, () => {
+                this.state = 'idle';
                 this.attackCounter = 0;
-                this.attackDone = false;
             });
-
         }
     }
 
     fire(scene) {
-
         if( !this.bulletFired ) {
 
             let directionX = this.focusTo === 'right' ? 1 : -1;
             this.bulletFired = true;
             let bullet = scene.physics.add.image(this.x, this.y, this.bulletImage);
             bullet.damage = this.bulletDamage;
+            bullet.setDepth(5);
             this.bullets.add(bullet);
             bullet.setVelocityX(500 * directionX);
             bullet.body.setAllowGravity(false);
             this.sounds['enemy-shot'].play();
-            this.bulletFired = false;
         }
     }
 

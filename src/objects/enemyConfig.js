@@ -227,30 +227,33 @@ export const enemies = {
         behavior: (scene, enemy) => {
 
             let player = scene.player;
-            let threshhold = 200;
+            let treshhold = 200;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
-            let isNear = distance <= threshhold;
-            let direction = player.x < enemy.x ? 'left' : 'right';
-            let soNear = player.focusTo === direction 
-                ? distance <= 20 
-                : distance <= 25;
-            let goFar = player.focusTo === direction 
-                ? distance <= 15 
-                : distance <= 20;
+            let isNear = distance <= treshhold;
+            let playerAtLeftSide = Phaser.Math.CeilTo(player.x) < Phaser.Math.CeilTo(enemy.x);
 
-            if( isNear ) {
-                if(goFar) {
-                    direction = direction === 'left' ? 'right' : 'left';
+            if(playerAtLeftSide) {
+                enemy.focusTo = 'left';
+            } else {
+                enemy.focusTo = 'right';
+            }
+
+            // console.log('difference',difference);
+            if( isNear) {
+                
+                if(distance <= 30) {
+                    let direction = playerAtLeftSide ? 'right' : 'left';
                     enemy.move(direction);
-                } else if(soNear) {
+
+                } else {
                     enemy.stop();
                     enemy.attack();
-                } else {
-                    enemy.move(direction);
                 }
+
             } else {
                 enemy.stop();
             }
+
         }
     },
 };

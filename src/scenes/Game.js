@@ -326,10 +326,14 @@ export class Game extends Scene {
     }
 
     destroyBullet(bullet, map) {
+console.log('bullet',bullet);
+
+        
         bullet.destroy();
         let bulletExplosion = this.physics.add.sprite(bullet.x, bullet.y, 'explosion1');
+        bulletExplosion.setDepth(5);
         bulletExplosion.body.setAllowGravity(false);
-        bulletExplosion.anims.play('explosion1', true);
+        bulletExplosion.anims.play('explosion1');
 
         bulletExplosion.on('animationcomplete-explosion1', (anim, frame) => {
             bulletExplosion.destroy();
@@ -337,12 +341,12 @@ export class Game extends Scene {
     }
 
     playerFired(player, bullet) {
-
         if (this.player.vulnerable && this.player.state !== 'special') {
             this.player.vulnerable = false;
             this.player.takeDamage(bullet.damage);
             this.healthbarUpdate();
             this.destroyBullet(bullet);
+
             this.player.sounds['hit'].play();
         }
 
