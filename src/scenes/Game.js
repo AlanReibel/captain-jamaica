@@ -326,9 +326,7 @@ export class Game extends Scene {
     }
 
     destroyBullet(bullet, map) {
-console.log('bullet',bullet);
 
-        
         bullet.destroy();
         let bulletExplosion = this.physics.add.sprite(bullet.x, bullet.y, 'explosion1');
         bulletExplosion.setDepth(5);
