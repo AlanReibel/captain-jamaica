@@ -254,54 +254,58 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     throwShield() {
-        this.shield = this.scene.physics.add.sprite(this.x, this.y, 'shield-fly');
-        // this.shield.body.setAllowGravity(false);
-        this.shield.setScale(0.6);
-        this.shield.setDepth(5);
-        this.bullets.add(this.shield);
-        let distance = 150;
-        this.blockedMovement = true;
-        this.anims.play('throw', true);
-        this.state = 'throw';
+        
+        if(this.state !== 'throw') {
 
-        this.scene.time.delayedCall(400, () => {
-            // if (this.state === 'throw') {
-            this.sounds['boomerang'].play();
-            // }
-        });
-
-        this.scene.time.delayedCall(375, () => {
-
-            // if (this.state === 'throw') {
-
-            let shieldPosition = {
-                x: this.focusTo == 'right'
-                    ? this.x + (this.width / 2)
-                    : this.x - (this.width / 2),
-                y: this.y
-            };
-            this.shield.setPosition(shieldPosition.x, shieldPosition.y);
-
-            // this.shield.setVisible(true);
-            this.shield.anims.play('fly', true);
-
-            let shieldTarget = this.focusTo == 'right'
-                ? shieldPosition.x + distance
-                : shieldPosition.x - distance;
-
-            this.scene.tweens.add({
-                targets: this.shield,
-                x: shieldTarget,
-                y: shieldPosition.y,
-                duration: 333,
-                ease: 'Power1',
-                onComplete: () => {
-                    this.flyBackTween();
-                }
+            this.shield = this.scene.physics.add.sprite(this.x, this.y, 'shield-fly');
+            // this.shield.body.setAllowGravity(false);
+            this.shield.setScale(0.6);
+            this.shield.setDepth(5);
+            this.bullets.add(this.shield);
+            let distance = 150;
+            this.blockedMovement = true;
+            this.anims.play('throw', true);
+            this.state = 'throw';
+    
+            this.scene.time.delayedCall(400, () => {
+                // if (this.state === 'throw') {
+                this.sounds['boomerang'].play();
+                // }
             });
-            // }
-
-        });
+    
+            this.scene.time.delayedCall(375, () => {
+    
+                // if (this.state === 'throw') {
+    
+                let shieldPosition = {
+                    x: this.focusTo == 'right'
+                        ? this.x + (this.width / 2)
+                        : this.x - (this.width / 2),
+                    y: this.y
+                };
+                this.shield.setPosition(shieldPosition.x, shieldPosition.y);
+    
+                // this.shield.setVisible(true);
+                this.shield.anims.play('fly', true);
+    
+                let shieldTarget = this.focusTo == 'right'
+                    ? shieldPosition.x + distance
+                    : shieldPosition.x - distance;
+    
+                this.scene.tweens.add({
+                    targets: this.shield,
+                    x: shieldTarget,
+                    y: shieldPosition.y,
+                    duration: 333,
+                    ease: 'Power1',
+                    onComplete: () => {
+                        this.flyBackTween();
+                    }
+                });
+                // }
+    
+            });
+        }
 
     }
 

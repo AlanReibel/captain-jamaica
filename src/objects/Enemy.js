@@ -5,17 +5,18 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     startPosition;
     state = 'idle';
     focusTo = 'right';
-    
+
     bullets;
     bulletImage;
     bulletDamage;
     bulletFired = false;
 
     movingDirectionX;
-    movingDirectionY;
-    
+    movingDirectionY = 'none';
+
     invulnerable = false;
-    attackDone = true;
+    shouldAttack = true;
+    attackDone = false;
     attackCounter = 0;
     nextAttackWait = 2000;
 
@@ -30,11 +31,11 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
 
         this.addSounds();
-        this.setDepth(5);
-        this.setCollideWorldBounds(true);
+        this.setBounce(0.2);
+        this.body.collideWorldBounds = true;
 
 
-        this.startPosition = {x: this.x, y: this.y}
+        this.startPosition = { x: this.x, y: this.y }
         this.anims.play(`${name}-Idle`);
 
         // Establecer propiedades básicas
@@ -46,8 +47,11 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.bulletDamage = enemies[name].bulletDamage;
         this.damage = enemies[name].damage;
         this.shot = enemies[name].shot;
+        this.fly = enemies[name].fly || false;
 
         this.bullets = this.scene.physics.add.group();
+        
+        this.setDepth(5);
         this.bullets.setDepth(5);
 
     }
@@ -59,21 +63,22 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     attack() {
-
-        if(this.state === 'attacking') {
+        if (this.state === 'attacking') {
             return;
-        } else if(this.attackCounter < 2 ) {
+        } else if (this.attackCounter < 2) {
 
 
-            if (this.attackDone) {
+            if (this.shouldAttack) {
+
                 this.attackDone = false;
+                this.shouldAttack = false;
                 this.state = 'attacking';
                 let flip = this.focusTo === 'left';
                 this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
-                if(this.name === 'weelRobot') {
+                if (this.name === 'weelRobot') {
                     this.attackMovement();
                 }
-                if(this.shot) {
+                if (this.shot) {
 
                     this.scene.time.delayedCall(100, () => {
                         this.fire(this.scene);
@@ -84,21 +89,22 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
                     this.sounds['enemy-punch'].play();
 
                 }
-                
-                this.scene.time.delayedCall( 200, () => {
+
+                this.scene.time.delayedCall(200, () => {
                     this.state = 'idle';
                     this.attackCounter++;
                     this.attackDone = true;
-                    if(this.shot) {
+                    this.shouldAttack = true;
+                    if (this.shot) {
                         this.bulletFired = false;
                     }
                 });
-    
+
             }
 
         } else {
             this.state = 'attacking';
-            this.scene.time.delayedCall( this.nextAttackWait, () => {
+            this.scene.time.delayedCall(this.nextAttackWait, () => {
                 this.state = 'idle';
                 this.attackCounter = 0;
             });
@@ -116,7 +122,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     fire(scene) {
-        if( !this.bulletFired ) {
+        if (!this.bulletFired) {
 
             let directionX = this.focusTo === 'right' ? 1 : -1;
             this.bulletFired = true;
@@ -146,22 +152,51 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    move(direction = this.focusTo) {
-        if(this.state !== 'attacking') {
-            this.movingDirectionX = direction;
-            this.turn = direction !== this.focusTo;
-            this.focusTo = direction;
+    move(directionX = this.focusTo, directionY = 'none') {
+        if (this.state !== 'attacking') {
+
+            this.movingDirectionX = directionX;
+            this.turn = directionX !== this.focusTo;
+            this.focusTo = directionX;
             this.state = 'walk';
-            if (direction === 'left') {
-                this.setVelocityX(- this.speed);
-                this.anims.play(`${this.name}-Walk`, true).setFlipX(true);
-    
+
+            switch (directionX) {
+                case 'left':
+                    this.setVelocityX(- this.speed);
+                    this.anims.play(`${this.name}-Walk`, true).setFlipX(true);
+                    break;
+                case 'right':
+                    this.setVelocityX(this.speed);
+                    this.anims.play(`${this.name}-Walk`, true).setFlipX(false);
+                    break;
+                case 'none':
+                    this.setVelocityX(0);
+                    break;
+
             }
-            if (direction === 'right') {
-                this.setVelocityX(this.speed);
-                this.anims.play(`${this.name}-Walk`, true).setFlipX(false);
-    
+
+            if (this.fly) {
+                this.movingDirectionY = directionY;
+                switch (directionY) {
+                    case 'up':
+                        this.setVelocityY(-80);
+                        this.anims.play(`${this.name}-Walk`, true).setFlipX(false);
+                        break;
+                    case 'down':
+                        this.setVelocityY(120);
+                        break;
+                    case 'none':
+                        this.setVelocityY(0);
+                        break;
+
+                }
             }
+
+            // console.log('moving dir', {
+            //     x: this.movingDirectionX,
+            //     y: this.movingDirectionY,
+            //     blocked: this
+            // });
         }
 
     }
@@ -213,7 +248,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     static createAnimations(scene) {
 
         for (const [enemyName, enemyData] of Object.entries(enemies)) {
-            
+
             for (const [animationName, animationData] of Object.entries(enemyData.animations)) {
                 scene.anims.create({
                     key: `${enemyName}-${animationName}`,
@@ -236,7 +271,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             'enemy-shot',
             'enemy-punch',
         ];
-        enemySounds.forEach( sound => {
+        enemySounds.forEach(sound => {
             this.sounds[sound] = this.scene.sound.add(sound);
         });
 

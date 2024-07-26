@@ -12,77 +12,91 @@ export const enemies = {
         speed: 50,
         health: 100,
         behavior: (scene, enemy) => {
-            let player = scene.player;
-            let worldView = scene.cameras.main.worldView;
+            let {player} = scene;
+            let {worldView} = scene.cameras.main;
             let bounds = {
                 left: worldView.x + 30,
                 right: worldView.x + worldView.width - 30,
                 top: worldView.y + 30,
-                bottom: worldView.y + worldView.health - 30
+                bottom: worldView.y + worldView.height - 30
             };
-            let distance = 50;
-            let isNear = Phaser.Math.Distance.BetweenPoints(player, enemy) <= distance;
+
+            let shouldAttackDistance = 150;
+            let attackDistance = 50;
+            let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
+            let isNear = distance <= attackDistance;
             let limitHeight = player.y - (player.height / 2);
-            enemy.move(enemy.focusTo);
-            
-            if (enemy.x < bounds.left || enemy.body.blocked.left) {
-                // enemy.setVelocityX(enemy.body.velocity.x * -1);
-                enemy.focusTo = 'right';
-            }
-            if (enemy.x > bounds.right || enemy.body.blocked.right) {
-                // enemy.setVelocityX(enemy.body.velocity.x * -1);
-                enemy.focusTo = 'left';
-            }
-            // Verificar los límites verticales
-            if (enemy.y < bounds.top || enemy.y > bounds.bottom) {
-                enemy.setVelocityY(0);
-                enemy.movingDirectionY = 'none';
-            }
 
-            // go down
-            if(
-                player.x - enemy.x < 20 && // is over the player
-                player.x - enemy.x > - 20 && // is over the player
-                !enemy.attackDone && // pending attack
-                enemy.y < limitHeight && // is higher than player
-                enemy.movingDirectionY !== 'up'
-                || enemy.body.blocked.up
-            ) {
-                enemy.movingDirectionY = 'down';
-                enemy.setVelocityY(120);
-                enemy.setVelocityX(0);
+            // console.log('moving dir before', {
+            //     x: enemy.movingDirectionX,
+            //     y: enemy.movingDirectionY,
+            // });
+
+            // console.log('blocked', enemy.body.blocked);
+
+            switch (enemy.movingDirectionX) {
+                case 'left':
+                    if (enemy.x <= bounds.left || enemy.body.blocked.left) {
+                        enemy.focusTo = 'right';
+                        enemy.movingDirectionX = 'right';
+                    }
+                    break;
+                case 'right':
+                    if (enemy.x >= bounds.right || enemy.body.blocked.right) {
+                        enemy.focusTo = 'left';
+                        enemy.movingDirectionX = 'left';
+                    }
+                    break;
             }
 
-            // attack
-            if(isNear && !enemy.attackDone) {
-                enemy.stop();
-                enemy.attack();
+            switch (enemy.movingDirectionY) {
+                case 'up':
+                    if (enemy.y <= bounds.top || enemy.body.blocked.up) {
+                        let playerSide = player.x < enemy.x ? 'left' : 'right';
+                        enemy.movingDirectionY = 'none';
+                        enemy.movingDirectionX = playerSide;
+                        enemy.attackDone = false;
+                    }
+                    break;
+                case 'down':
+
+                    if (isNear) {
+
+                        enemy.stop();
+                        enemy.attack();
+                    }
+
+                    if (enemy.y >= bounds.bottom || enemy.y >= limitHeight || enemy.body.blocked.down) {
+                        enemy.movingDirectionY = 'up';
+                        enemy.movingDirectionX = enemy.focusTo;
+                    }
+
+                    if (enemy.attackDone) {
+                        enemy.movingDirectionY = 'up';
+                    }
+
+                    break;
+                case 'none':
+                    if (!enemy.attackDone) {
+
+                        if (player.x - enemy.x < 20 && // is over the player
+                            player.x - enemy.x > - 20) {
+                            enemy.movingDirectionY = 'down';
+                            enemy.movingDirectionX = 'none';
+    
+                        } 
+                    }
+                    break
             }
 
-            // go up
-            if(enemy.attackDone) {
-                //attack is done
-                if(
-                    enemy.y - enemy.startPosition.y > 10 &&
-                    enemy.y - enemy.startPosition.y < -10 ||
-                    enemy.body.blocked.down
-                ) {
-                    enemy.movingDirectionY = 'up';
-                    enemy.setVelocityY(-80);
-                } else {
-                    enemy.attackDone = false;
-                }
-            } else {
-                //attack is pending
-                if(enemy.y >= limitHeight || enemy.body.blocked.down) {
-                    enemy.movingDirectionY = 'up';
-                    enemy.setVelocityY(-80);
-
-                }
-            }
 
 
-
+            enemy.move(enemy.movingDirectionX, enemy.movingDirectionY);
+            // console.log('moving dir after', {
+            //     x: enemy.movingDirectionX,
+            //     y: enemy.movingDirectionY,
+            //     // blocked: this
+            // });
         }
     },
     weelRobot: {
@@ -103,19 +117,19 @@ export const enemies = {
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= threshhold;
             let direction = player.x < enemy.x ? 'left' : 'right';
-            let soNear = player.focusTo === direction 
-                ? distance <= 20 
+            let soNear = player.focusTo === direction
+                ? distance <= 20
                 : distance <= 25;
-            let goFar = player.focusTo === direction 
-                ? distance <= 15 
+            let goFar = player.focusTo === direction
+                ? distance <= 15
                 : distance <= 20;
-            let isOver = (player.x - enemy.x <= 10 &&  player.x - enemy.x >= -10) && (player.y - enemy.y >= 30 ||  player.y - enemy.y <= -30);
-            
-            if( isNear  && !isOver) {
-                if(goFar) {
+            let isOver = (player.x - enemy.x <= 10 && player.x - enemy.x >= -10) && (player.y - enemy.y >= 30 || player.y - enemy.y <= -30);
+
+            if (isNear && !isOver) {
+                if (goFar) {
                     direction = direction === 'left' ? 'right' : 'left';
                     enemy.move(direction);
-                } else if(soNear) {
+                } else if (soNear) {
                     enemy.stop();
                     enemy.attack();
                 } else {
@@ -144,18 +158,18 @@ export const enemies = {
             let treshhold = 200;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;
-            let isOver = (player.x - enemy.x <= 10 &&  player.x - enemy.x >= -10) && (player.y - enemy.y >= 30 ||  player.y - enemy.y <= -30);
+            let isOver = (player.x - enemy.x <= 10 && player.x - enemy.x >= -10) && (player.y - enemy.y >= 30 || player.y - enemy.y <= -30);
 
-            if( isNear && !isOver) {
+            if (isNear && !isOver) {
                 let direction = player.x < enemy.x ? 'left' : 'right';
-                if(distance <= 20) {
+                if (distance <= 20) {
                     enemy.stop();
                     enemy.attack();
 
                 } else {
                     enemy.move(direction);
                 }
-                
+
             } else {
                 enemy.stop();
             }
@@ -186,16 +200,16 @@ export const enemies = {
             let isNear = distance <= treshhold;
             let playerAtLeftSide = Phaser.Math.CeilTo(player.x) < Phaser.Math.CeilTo(enemy.x);
 
-            if(playerAtLeftSide) {
+            if (playerAtLeftSide) {
                 enemy.focusTo = 'left';
             } else {
                 enemy.focusTo = 'right';
             }
 
             // console.log('difference',difference);
-            if( isNear) {
-                
-                if(distance <= 30) {
+            if (isNear) {
+
+                if (distance <= 30) {
                     let direction = playerAtLeftSide ? 'right' : 'left';
                     enemy.move(direction);
 
@@ -232,16 +246,16 @@ export const enemies = {
             let isNear = distance <= treshhold;
             let playerAtLeftSide = Phaser.Math.CeilTo(player.x) < Phaser.Math.CeilTo(enemy.x);
 
-            if(playerAtLeftSide) {
+            if (playerAtLeftSide) {
                 enemy.focusTo = 'left';
             } else {
                 enemy.focusTo = 'right';
             }
 
             // console.log('difference',difference);
-            if( isNear) {
-                
-                if(distance <= 30) {
+            if (isNear) {
+
+                if (distance <= 30) {
                     let direction = playerAtLeftSide ? 'right' : 'left';
                     enemy.move(direction);
 

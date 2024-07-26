@@ -287,10 +287,17 @@ export class Game extends Scene {
         enemiesPositions.objects.forEach(enemyData => {
             let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
 
-            if (enemyData.name === 'flyingRobot') {
+            this.physics.add.collider( this.walls, newEnemy);
+
+            if (newEnemy.fly) {
                 this.flyingEnemies.add(newEnemy);
+
             } else {
                 this.landEnemies.add(newEnemy);
+                this.physics.add.collider( this.greenTilesLayer, newEnemy);
+            }
+
+            if(newEnemy.shot) {
                 this.physics.add.overlap(newEnemy.bullets, this.player, this.playerFired, null, this);
                 this.physics.add.collider(newEnemy.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
                 this.physics.add.collider(newEnemy.bullets, this.walls, this.destroyBullet, null, this);
@@ -300,14 +307,14 @@ export class Game extends Scene {
 
         // this.physics.add.overlap(this.player.shield, this.landEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.landEnemies, this.handleBodyCollision, null, this);
-        this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
-        this.physics.add.collider(this.walls, this.landEnemies, null, null, this);
+        // this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
+        // this.physics.add.collider(this.walls, this.landEnemies, null, null, this);
         this.physics.add.collider(this.landEnemies, this.landEnemies, null, null, this);
 
         // this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.handleHitCollision, null, this);
         this.physics.add.overlap(this.player, this.flyingEnemies, this.handleBodyCollision, null, this);
-        this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
-        this.physics.add.collider(this.walls, this.flyingEnemies, null, null, this);
+        // this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
+        // this.physics.add.collider(this.walls, this.flyingEnemies, null, null, this);
 
         this.physics.add.collider(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
