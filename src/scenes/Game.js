@@ -260,8 +260,13 @@ export class Game extends Scene {
     }
 
     moveLeaved() {
-        this.player.isMoving = false;
-        this.player.idle();
+
+        let stillMoving = this.inputHandler.aKey.isDown || this.inputHandler.dKey.isDown || this.inputHandler.cursors.left.isDown || this.inputHandler.cursors.right.isDown;
+        if(!stillMoving) {
+
+            this.player.isMoving = false;
+            this.player.idle();
+        }
     }
 
     createEnemies() {
@@ -661,9 +666,6 @@ export class Game extends Scene {
         this.uiContainer.add(healthIcon);
 
     }
-
-
-
 
     addPowerBar(width) {
 
