@@ -632,14 +632,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     land() {
         this.isJumping = false;
-        this.anims.play('land', true);
+        this.anims.play({ key: 'land', frameRate: 15 }, true);
         this.sounds['land'].play();
         this.state = 'landing';
+
         this.on('animationcomplete-land', (anim, frame) => {
             this.state = 'idle';
             this.idle();
             this.movingDirection = this.focusTo;
             this.blockedMovement = false;
+
+            
         });
     }
 
