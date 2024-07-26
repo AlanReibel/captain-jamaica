@@ -37,7 +37,7 @@ export class Game extends Scene {
         this.createEnemies();
         this.enableDomGuide();
         this.eventListeners();
-        
+
         console.log('game scene', this);
 
 
@@ -55,7 +55,7 @@ export class Game extends Scene {
 
         // every 6fps 
         if (this.frameCount % checkingRate === 0) {
-            // console.log('frameCount',this.frameCount);
+
 
             // reset fight
             if (this.player.body.velocity.y <= -20) {
@@ -69,19 +69,6 @@ export class Game extends Scene {
             if (this.player.movingDirection === 'down' && this.player.body.blocked.down && this.player.fightEnds) {
                 this.player.land();
                 this.player.movingDirection = 'none';
-            }
-            
-            // if movement event was emmitet before and not cancelled (still pressing)
-            if (this.player.isMoving) {
-                this.handleMovement();
-            } else if(
-                this.player.fightEnds && 
-                this.player.state !== 'idle' 
-            ) {
-            // if fight animation ended return to idle
-                this.player.idle();
-        // console.log('player state', this.player.state);
-
             }
 
             // Animación del jugador 'burst'
@@ -103,10 +90,14 @@ export class Game extends Scene {
             }
 
             // holding keys
-            if(this.inputHandler.canBeHold) {
+            if (this.inputHandler.canBeHold) {
                 this.inputHandler.holdingCheck()
             }
+        }
 
+        // if movement event was emmitet before and not cancelled (still pressing)
+        if (this.player.isMoving) {
+            this.handleMovement();
         }
         // console.log('player state', this.player.state);
 
@@ -115,7 +106,7 @@ export class Game extends Scene {
     }
 
     eventListeners() {
-        
+
         this.inputHandler.emitter.on('fightActionPressed', this.handleFightActions, this);
         this.inputHandler.emitter.on('jumpKeyPressed', this.handleJump, this);
         this.inputHandler.emitter.on('moveKeyPressed', this.handleMovement, this);
@@ -123,7 +114,7 @@ export class Game extends Scene {
         this.inputHandler.emitter.on('fightActionLeaved', this.handleFightLeaved, this);
         this.inputHandler.emitter.on('jumpKeyLeaved', this.jumpLeaved, this);
         this.inputHandler.emitter.on('movingKeyUp', this.moveLeaved, this);
-        
+
         this.inputHandler.emitter.on('holdAction', this.holdingAction, this);
     }
 
@@ -144,10 +135,10 @@ export class Game extends Scene {
 
     holdingAction() {
 
-        if( this.inputHandler.holding['X'] || this.inputHandler.holding['q'] ) {
+        if (this.inputHandler.holding['X'] || this.inputHandler.holding['q']) {
             this.player.shieldAttack()
         }
-        if( this.inputHandler.holding['Y'] || this.inputHandler.holding['e'] ) {
+        if (this.inputHandler.holding['Y'] || this.inputHandler.holding['e']) {
             this.player.special();
         }
         this.inputHandler.canBeHold = false;
@@ -265,14 +256,12 @@ export class Game extends Scene {
             this.player.move('right');
             // this.moveBackground(1);
             // this.cameras.main.scrollX += 5;
-        } else {
-            // idle if else
-            this.player.idle();
         }
     }
 
     moveLeaved() {
         this.player.isMoving = false;
+        this.player.idle();
     }
 
     createEnemies() {
@@ -287,17 +276,17 @@ export class Game extends Scene {
         enemiesPositions.objects.forEach(enemyData => {
             let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
 
-            this.physics.add.collider( this.walls, newEnemy);
+            this.physics.add.collider(this.walls, newEnemy);
 
             if (newEnemy.fly) {
                 this.flyingEnemies.add(newEnemy);
 
             } else {
                 this.landEnemies.add(newEnemy);
-                this.physics.add.collider( this.greenTilesLayer, newEnemy);
+                this.physics.add.collider(this.greenTilesLayer, newEnemy);
             }
 
-            if(newEnemy.shot) {
+            if (newEnemy.shot) {
                 this.physics.add.overlap(newEnemy.bullets, this.player, this.playerFired, null, this);
                 this.physics.add.collider(newEnemy.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
                 this.physics.add.collider(newEnemy.bullets, this.walls, this.destroyBullet, null, this);
@@ -763,7 +752,7 @@ export class Game extends Scene {
         this.specialMarker = this.add.image(x, 20, 'specialMarker');
         this.specialMarker.setScale(0.4);
         this.specialMarker.setOrigin(0.5);
-        
+
         this.uiContainer.add(this.specialMarker);
     }
 
