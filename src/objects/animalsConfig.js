@@ -99,8 +99,7 @@ export const animals = {
                         }
                         break;
                 }
-                console.log('bat block',animal.body.blocked);
-                console.log('bat block',animal.movingDirectionX, animal.movingDirectionY);
+
                 animal.move(animal.movingDirectionX, animal.movingDirectionY);
             }
 

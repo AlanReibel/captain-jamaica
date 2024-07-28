@@ -168,12 +168,15 @@ export class Game extends Scene {
     }
 
     handleJump() {
-        if (this.player.body.blocked.down && !this.player.blockedJump) {
+        // console.log('handleJump',this.player.body.blocked.down);
+        if (this.player.body.blocked.down) {
             this.player.handleJump();
+            // console.log('jumped');
         }
     }
 
     jumpLeaved() {
+        // console.log('jumpLeaved');
         this.player.blockedJump = false;
     }
 
