@@ -687,6 +687,7 @@ export class Game extends Scene {
 
         healthbarBackground
             .fillStyle(0x000000, 1)
+            .setAlpha(0.5)
             .fillRect(x, y, health, 15);
 
         this.healthBar = this.add.graphics();
@@ -713,6 +714,7 @@ export class Game extends Scene {
 
         this.powerbarBackground
             .fillStyle(0x000000, 1)
+            .setAlpha(0.5)
             .fillRect(x, y, power, 15);
 
         this.powerBar = this.add.graphics();
@@ -758,8 +760,7 @@ export class Game extends Scene {
         });
     }
 
-    uiBlink(target, repeatCount = 3) {
-
+    uiBlink(target, repeatCount = 3, disabled = false) {
         this.tweens.add({
             targets: target,
             alpha: 0,
@@ -768,7 +769,11 @@ export class Game extends Scene {
             yoyo: true,
             repeat: repeatCount - 1,
             onComplete: () => {
-                target.setAlpha(1);
+                if(disabled) {
+                    target.setAlpha(0.5);
+                } else {
+                    target.setAlpha(1);
+                }
             }
         });
     }

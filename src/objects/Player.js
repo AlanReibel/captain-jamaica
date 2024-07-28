@@ -353,7 +353,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     burst() {
         if(this.ammoEnabled) {
-            console.log('burst called',this.fightEnds);
             
             this.resetSprite();
             this.state = 'burst';
@@ -375,7 +374,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             });
         } else {
             this.sounds['error'].play();
-            this.scene.uiBlink(this.scene.ammoMarker);
+            this.scene.uiBlink(this.scene.ammoMarker,2, true);
+
         }
     }
 
