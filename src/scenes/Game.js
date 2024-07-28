@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { Player } from '../objects/Player.js';
 import { InputHandler } from '../objects/InputHandler.js';
 import { Enemy } from '../objects/Enemy.js';
+import { Animal } from '../objects/Animal.js';
 import { Box } from '../objects/Box.js';
 
 export class Game extends Scene {
@@ -35,6 +36,7 @@ export class Game extends Scene {
         this.addTileMaps();
         this.createCamera();
         this.createEnemies();
+        this.createAnimals();
         this.enableDomGuide();
         this.eventListeners();
 
@@ -71,17 +73,22 @@ export class Game extends Scene {
                 this.player.movingDirection = 'none';
             }
 
-            // Animación del jugador 'burst'
             this.handleBurstAnimation();
 
-            // Actualización de enemigos terrestres
             if (this.landEnemies) {
-                this.updateEnemies(this.landEnemies);
+                this.updateChars(this.landEnemies);
             }
 
-            // Actualización de enemigos voladores
             if (this.flyingEnemies) {
-                this.updateEnemies(this.flyingEnemies);
+                this.updateChars(this.flyingEnemies);
+            }
+
+            if (this.flyingAnimals) {
+                this.updateChars(this.flyingAnimals);
+            }
+
+            if (this.landAnimals) {
+                this.updateChars(this.landAnimals);
             }
 
             // Finalizar juego
@@ -150,15 +157,15 @@ export class Game extends Scene {
         this.scene.start('GameOver', { inputHandler: this.inputHandler });
     }
 
-    updateEnemies(enemiesGroup) {
+    updateChars(charGroup) {
         // Dividir la actualización de enemigos en chunks
         const chunkSize = 10;
-        const enemies = enemiesGroup.getChildren();
-        for (let i = 0; i < enemies.length; i++) {
+        const characters = charGroup.getChildren();
+        for (let i = 0; i < characters.length; i++) {
             if (this.frameCount % chunkSize === i % chunkSize) {
-                const enemy = enemies[i];
-                if (this.isEnemyInCameraView(enemy, this.cameras.main.worldView)) {
-                    enemy.update();
+                const char = characters[i];
+                if (this.isCharInCameraView(char, this.cameras.main.worldView)) {
+                    char.update();
                 }
             }
         }
@@ -279,10 +286,11 @@ export class Game extends Scene {
         let enemiesPositions = this.map.getObjectLayer('enemies');
 
         enemiesPositions.objects.forEach(enemyData => {
+
             let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
 
             this.physics.add.collider(this.walls, newEnemy);
-
+            this.physics.add.overlap(this.player, newEnemy, this.handleBodyCollision, null, this);
             if (newEnemy.fly) {
                 this.flyingEnemies.add(newEnemy);
 
@@ -299,16 +307,7 @@ export class Game extends Scene {
 
         });
 
-        // this.physics.add.overlap(this.player.shield, this.landEnemies, this.handleHitCollision, null, this);
-        this.physics.add.overlap(this.player, this.landEnemies, this.handleBodyCollision, null, this);
-        // this.physics.add.collider(this.greenTilesLayer, this.landEnemies, null, null, this);
-        // this.physics.add.collider(this.walls, this.landEnemies, null, null, this);
         this.physics.add.collider(this.landEnemies, this.landEnemies, null, null, this);
-
-        // this.physics.add.overlap(this.player.shield, this.flyingEnemies, this.handleHitCollision, null, this);
-        this.physics.add.overlap(this.player, this.flyingEnemies, this.handleBodyCollision, null, this);
-        // this.physics.add.collider(this.greenTilesLayer, this.flyingEnemies, null, null, this);
-        // this.physics.add.collider(this.walls, this.flyingEnemies, null, null, this);
 
         this.physics.add.collider(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
@@ -317,12 +316,47 @@ export class Game extends Scene {
 
     }
 
-    isEnemyInCameraView(enemy, visibleArea) {
+    createAnimals() {
+        this.landAnimals = this.physics.add.group();
+
+        this.flyingAnimals = this.physics.add.group({
+            allowGravity: false,
+        });
+
+        let animalsPositions = this.map.getObjectLayer('animals');
+
+        animalsPositions.objects.forEach(animalData => {
+            // console.log('animalData',animalData);
+            let flip = false;
+
+
+            animalData.properties?.forEach(property => {
+                if (property.name === 'flip') {
+                    flip = property.value;
+                }
+            });
+
+            let newAnimal = new Animal(this, animalData.x, animalData.y, animalData.name, flip);
+            this.physics.add.collider(this.walls, newAnimal);
+
+            if (newAnimal.fly) {
+                this.flyingAnimals.add(newAnimal);
+
+            } else {
+                this.landAnimals.add(newAnimal);
+                this.physics.add.collider(this.greenTilesLayer, newAnimal);
+            }
+
+        });
+
+    }
+
+    isCharInCameraView(char, visibleArea) {
         return (
-            enemy.x + enemy.width > visibleArea.x && // Verifica el lado izquierdo
-            enemy.x < visibleArea.x + visibleArea.width && // Verifica el lado derecho
-            enemy.y + enemy.height > visibleArea.y && // Verifica la parte superior
-            enemy.y < visibleArea.y + visibleArea.height // Verifica la parte inferior
+            char.x + char.width > visibleArea.x && // Verifica el lado izquierdo
+            char.x < visibleArea.x + visibleArea.width && // Verifica el lado derecho
+            char.y + char.height > visibleArea.y && // Verifica la parte superior
+            char.y < visibleArea.y + visibleArea.height // Verifica la parte inferior
         );
     }
 
@@ -369,7 +403,7 @@ export class Game extends Scene {
     }
 
     handleBodyCollision(player, enemy) {
-        // Verifica si el jugador está en una animación de lucha
+        
         let damage = {
             punch: 25,
             kick: 35,
@@ -387,7 +421,7 @@ export class Game extends Scene {
             'shield',
         ];
 
-        switch (this.player.state) {
+        switch (currentState) {
             case 'kick':
                 this.player.sounds['hit'].play();
             case 'jumpKick':
@@ -401,17 +435,17 @@ export class Game extends Scene {
             default:
                 break;
         }
+
         let enemyOnFront = player.focusTo === 'right'
             ? player.x <= enemy.x
             : player.x >= enemy.x;
 
 
-        if (damageStates.includes(currentState)
-            && enemyOnFront
-        ) {
+        if (damageStates.includes(currentState) && enemyOnFront) {
 
             this.hitEnemy(enemy, damage[currentState]);
         }
+
 
         if (enemy.state === 'attacking' && !enemy.attackDone && this.player.vulnerable) {
             let damage = enemy.damage || 0;

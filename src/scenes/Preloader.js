@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { Enemy } from '../objects/Enemy';
+import { Animal } from '../objects/Animal';
 import { Box } from '../objects/Box';
 import { Player } from '../objects/Player';
 
@@ -33,6 +34,7 @@ export class Preloader extends Scene {
 
         Player.createAnimations(this);
         Enemy.createAnimations(this);
+        Animal.createAnimations(this);
         Box.createAnimations(this);
         this.defineFXAnimations();
 
@@ -50,17 +52,14 @@ export class Preloader extends Scene {
     }
 
     addProgressBar() {
-        //  A simple progress bar. This is the outline of the bar.
+        
         let barBorder = this.add.rectangle(200, 150, 300, 31);
         barBorder.setStrokeStyle(1, 0x000000);
 
-        //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
         const bar = this.add.rectangle(200, 150, 298, 30, 0xf6e800);
 
-        //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
         this.load.on('progress', (progress) => {
 
-            //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
             bar.width = 4 + (300 * progress);
 
         });
@@ -102,8 +101,12 @@ export class Preloader extends Scene {
     loadSpriteSheets() {
 
         this.captainSprites();
-        this.enemiesSprites();
+
+        Enemy.loadResources(this);
+        Animal.loadResources(this);
+
         this.boxSprites();
+        this.uiImages();
 
     }
 
@@ -175,12 +178,6 @@ export class Preloader extends Scene {
         });
     }
 
-    enemiesSprites() {
-
-        Enemy.loadResources(this);
-
-    }
-
     loadFXSprites() {
         this.load.spritesheet('explosion1',
             'sprites/fx/explosion1.png',
@@ -193,9 +190,11 @@ export class Preloader extends Scene {
             'sprites/boxes/chest.png',
             { frameWidth: 32, frameHeight: 32 }
         );
+    }
+
+    uiImages() {
         this.load.image('power', 'sprites/boxes/power.png');
         this.load.image('health', 'sprites/boxes/health.png');
         this.load.image('ammo', 'sprites/boxes/ammo.png');
-
     }
 }
