@@ -409,7 +409,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -492,7 +492,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -755,7 +755,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -976,24 +976,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":61,
-                 "name":"rat",
-                 "point":true,
-                 "properties":[
-                        {
-                         "name":"flip",
-                         "type":"bool",
-                         "value":true
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1878.66666666667,
-                 "y":276
-                }, 
-                {
-                 "height":0,
                  "id":62,
                  "name":"rat",
                  "point":true,
@@ -1145,8 +1127,110 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":2138.66666666667,
-                 "y":358
+                 "x":2119.66666666667,
+                 "y":217.75
+                }, 
+                {
+                 "height":0,
+                 "id":71,
+                 "name":"bat",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"flip",
+                         "type":"bool",
+                         "value":false
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":480.333333333333,
+                 "y":320.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":72,
+                 "name":"bat",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"flip",
+                         "type":"bool",
+                         "value":false
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2205.66666666667,
+                 "y":332.666666666667
+                }, 
+                {
+                 "height":0,
+                 "id":73,
+                 "name":"bat",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"flip",
+                         "type":"bool",
+                         "value":false
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2495.58333333333,
+                 "y":367.583333333333
+                }, 
+                {
+                 "height":0,
+                 "id":74,
+                 "name":"bat",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2838,
+                 "y":296.5
+                }, 
+                {
+                 "height":0,
+                 "id":75,
+                 "name":"bat",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"flip",
+                         "type":"bool",
+                         "value":true
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2764.5,
+                 "y":228
+                }, 
+                {
+                 "height":0,
+                 "id":76,
+                 "name":"bat",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"flip",
+                         "type":"bool",
+                         "value":true
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2403,
+                 "y":389
                 }],
          "opacity":1,
          "properties":[
@@ -1183,7 +1267,7 @@
          "y":0
         }],
  "nextlayerid":20,
- "nextobjectid":71,
+ "nextobjectid":77,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

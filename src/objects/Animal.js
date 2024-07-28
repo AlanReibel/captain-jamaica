@@ -2,13 +2,18 @@ import { animals } from './animalsConfig';
 
 export class Animal extends Phaser.Physics.Arcade.Sprite {
 
-
+    movingDirectionX;
+    movingDirectionY;
+    state = 'idle';
 
     constructor(scene, x, y, name, flip) {
         super(scene, x, y, `${name}-Idle`);
         this.name = name;
         this.scene = scene;
+
         const configData = animals[name];
+
+        this.speed = configData.speed;
         this.behavior = configData.behavior;
         this.fly = configData.fly;
         this.width = configData.width;
@@ -16,6 +21,9 @@ export class Animal extends Phaser.Physics.Arcade.Sprite {
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
+
+        this.setBounce(0.2);
+        this.body.collideWorldBounds = true;
 
         this.focusTo = flip ? 'left' : 'right';
         // this.setSize(this.width,this.height);
@@ -28,16 +36,7 @@ export class Animal extends Phaser.Physics.Arcade.Sprite {
         this.setOrigin(0.5);
         this.setScale(0.8);
 
-
-
-        this.body.collideWorldBounds = true;
         this.anims.play(`${name}-Idle`);
-
-
-
-        
-
-        this.speed = animals[name].speed;
 
     }
 
@@ -46,6 +45,7 @@ export class Animal extends Phaser.Physics.Arcade.Sprite {
     }
 
     move(directionX = this.focusTo, directionY = 'none') {
+        this.movingDirectionX = directionX;
         switch (directionX) {
             case 'left':
                 this.setVelocityX(- this.speed);
@@ -65,10 +65,10 @@ export class Animal extends Phaser.Physics.Arcade.Sprite {
             this.movingDirectionY = directionY;
             switch (directionY) {
                 case 'up':
-                    this.setVelocityY(-50);
+                    this.setVelocityY(-this.speed);
                     break;
                 case 'down':
-                    this.setVelocityY(20);
+                    this.setVelocityY(this.speed);
                     break;
                 case 'none':
                     this.setVelocityY(0);

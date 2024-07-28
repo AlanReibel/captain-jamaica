@@ -158,15 +158,11 @@ export class Game extends Scene {
     }
 
     updateChars(charGroup) {
-        // Dividir la actualización de enemigos en chunks
-        const chunkSize = 10;
         const characters = charGroup.getChildren();
         for (let i = 0; i < characters.length; i++) {
-            if (this.frameCount % chunkSize === i % chunkSize) {
-                const char = characters[i];
-                if (this.isCharInCameraView(char, this.cameras.main.worldView)) {
-                    char.update();
-                }
+            const char = characters[i];
+            if (this.isCharInCameraView(char, this.cameras.main.worldView)) {
+                char.update();
             }
         }
     }
@@ -269,7 +265,7 @@ export class Game extends Scene {
     moveLeaved() {
 
         let stillMoving = this.inputHandler.aKey.isDown || this.inputHandler.dKey.isDown || this.inputHandler.cursors.left.isDown || this.inputHandler.cursors.right.isDown;
-        if(!stillMoving) {
+        if (!stillMoving) {
 
             this.player.isMoving = false;
             this.player.idle();
@@ -337,7 +333,6 @@ export class Game extends Scene {
             });
 
             let newAnimal = new Animal(this, animalData.x, animalData.y, animalData.name, flip);
-            this.physics.add.collider(this.walls, newAnimal);
 
             if (newAnimal.fly) {
                 this.flyingAnimals.add(newAnimal);
@@ -348,6 +343,10 @@ export class Game extends Scene {
             }
 
         });
+
+        this.physics.add.collider(this.flyingAnimals, this.walls);
+        this.physics.add.collider(this.landAnimals, this.walls);
+
 
     }
 
@@ -403,7 +402,7 @@ export class Game extends Scene {
     }
 
     handleBodyCollision(player, enemy) {
-        
+
         let damage = {
             punch: 25,
             kick: 35,
