@@ -36,7 +36,7 @@ export class InputHandler {
         this.eKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         // this.fKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
 
-        // this.isMobile = this.isMobileDevice() || this.isTouchDevice();
+        this.isMobile = this.isMobileDevice() || this.isTouchDevice();
 
         this.emitter = new Phaser.Events.EventEmitter();
 
