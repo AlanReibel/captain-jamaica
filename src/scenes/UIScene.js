@@ -73,18 +73,18 @@ export class UIScene extends Phaser.Scene {
 
     addVirtualButtons() {
 
-        const radius = Math.min(30, this.width * 0.06);
+        const radius = Math.min(30, this.width * 0.09);
         const position = {
-            x: this.width - (radius * 4),
+            x: this.width - (radius * 3.3),
             y: this.isPortrait 
-                ? this.height - (radius * 5)
+                ? this.height - (radius * 3.5)
                 : (this.height / 2 ) + (radius * 2)
         };
         const buttons = [
-            { key: 'A', x: position.x, y: position.y + (radius * 2) },
-            { key: 'B', x: position.x + (radius * 2), y: position.y },
-            { key: 'X', x: position.x - (radius * 2), y: position.y },
-            { key: 'Y', x: position.x, y: position.y - (radius * 2) }
+            { key: 'A', x: position.x, y: position.y + (radius * 1.7) },
+            { key: 'B', x: position.x + (radius * 1.7), y: position.y },
+            { key: 'X', x: position.x - (radius * 1.7), y: position.y },
+            { key: 'Y', x: position.x, y: position.y - (radius * 1.7) }
         ];
 
         buttons.forEach( button => {
