@@ -250,7 +250,7 @@ export class Game extends Scene {
             this.inputHandler.joystickKeys?.left.isDown
         ) {
             this.player.move('left');
-            // this.moveBackground(-1);
+            this.moveBackground(-1);
             // this.cameras.main.scrollX -= 5;
         }
         // pressed right or D
@@ -260,7 +260,7 @@ export class Game extends Scene {
             this.inputHandler.joystickKeys?.right.isDown
         ) {
             this.player.move('right');
-            // this.moveBackground(1);
+            this.moveBackground(1);
             // this.cameras.main.scrollX += 5;
         }
     }
@@ -687,7 +687,7 @@ export class Game extends Scene {
 
         healthbarBackground
             .fillStyle(0x000000, 1)
-            .setAlpha(0.5)
+            .setAlpha(0.3)
             .fillRect(x, y, health, 15);
 
         this.healthBar = this.add.graphics();
@@ -714,7 +714,7 @@ export class Game extends Scene {
 
         this.powerbarBackground
             .fillStyle(0x000000, 1)
-            .setAlpha(0.5)
+            .setAlpha(0.3)
             .fillRect(x, y, power, 15);
 
         this.powerBar = this.add.graphics();
