@@ -217,7 +217,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.state !== 'punch' &&
             this.state !== 'burst'
         ) {
-            this.anims.play( 'idle', true);
+            this.anims.play('idle', true);
             this.state = 'idle';
         }
     }
@@ -254,8 +254,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     throwShield() {
-        
-        if(this.state !== 'throw') {
+
+        if (this.state !== 'throw') {
 
             this.shield = this.scene.physics.add.sprite(this.x, this.y, 'shield-fly');
             // this.shield.body.setAllowGravity(false);
@@ -266,44 +266,44 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.blockedMovement = true;
             this.anims.play('throw', true);
             this.state = 'throw';
-    
+
             this.scene.time.delayedCall(400, () => {
                 // if (this.state === 'throw') {
                 this.sounds['boomerang'].play();
                 // }
             });
-    
+
             this.scene.time.delayedCall(375, () => {
-    
-                // if (this.state === 'throw') {
-    
-                let shieldPosition = {
-                    x: this.focusTo == 'right'
-                        ? this.x + (this.width / 2)
-                        : this.x - (this.width / 2),
-                    y: this.y
-                };
-                this.shield.setPosition(shieldPosition.x, shieldPosition.y);
-    
-                // this.shield.setVisible(true);
-                this.shield.anims.play('fly', true);
-    
-                let shieldTarget = this.focusTo == 'right'
-                    ? shieldPosition.x + distance
-                    : shieldPosition.x - distance;
-    
-                this.scene.tweens.add({
-                    targets: this.shield,
-                    x: shieldTarget,
-                    y: shieldPosition.y,
-                    duration: 333,
-                    ease: 'Power1',
-                    onComplete: () => {
-                        this.flyBackTween();
-                    }
-                });
-                // }
-    
+
+                if (this.shield) {
+
+                    let shieldPosition = {
+                        x: this.focusTo == 'right'
+                            ? this.x + (this.width / 2)
+                            : this.x - (this.width / 2),
+                        y: this.y
+                    };
+                    this.shield.setPosition(shieldPosition.x, shieldPosition.y);
+
+                    // this.shield.setVisible(true);
+                    this.shield.anims.play('fly', true);
+
+                    let shieldTarget = this.focusTo == 'right'
+                        ? shieldPosition.x + distance
+                        : shieldPosition.x - distance;
+
+                    this.scene.tweens.add({
+                        targets: this.shield,
+                        x: shieldTarget,
+                        y: shieldPosition.y,
+                        duration: 333,
+                        ease: 'Power1',
+                        onComplete: () => {
+                            this.flyBackTween();
+                        }
+                    });
+                }
+
             });
         }
 
@@ -352,17 +352,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     burst() {
-        if(this.ammoEnabled) {
-            
+        if (this.ammoEnabled) {
+
             this.resetSprite();
             this.state = 'burst';
             this.blockedFight = true;
             this.fightEnds = false;
-    
+
             this.setVelocityX(0);
             this.blockedMovement = true;
             this.anims.play('burst', true);
-    
+
             this.on('animationcomplete-burst', (anim, frame) => {
                 this.resetSprite();
                 this.state = 'idle';
@@ -374,7 +374,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             });
         } else {
             this.sounds['error'].play();
-            this.scene.uiBlink(this.scene.ammoMarker,2, true);
+            this.scene.uiBlink(this.scene.ammoMarker, 2, true);
 
         }
     }
@@ -453,7 +453,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                     this.sounds['whip'].play();
 
                     this.state = 'whip';
-                } 
+                }
 
             });
 
@@ -467,7 +467,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             });
 
             this.on('animationcomplete-whip', (anim, frame) => {
-                
+
                 this.resetSprite();
                 this.blockedMovement = false;
             });
@@ -508,7 +508,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         // console.log('before jump state', this);
         if (!this.blockedJump) {
             // this.anims.pause();
-            if(this.state === 'whip') {
+            if (this.state === 'whip') {
                 this.resetSprite();
             }
             this.isJumping = true;
@@ -553,7 +553,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     special() {
         if (!this.isJumping
-             && this.specialEnabled
+            && this.specialEnabled
         ) {
 
             this.fightEnds = false;
@@ -644,7 +644,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.movingDirection = this.focusTo;
             this.blockedMovement = false;
 
-            
+
         });
     }
 
@@ -684,21 +684,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             'error',
         ];
 
-        playerSounds.forEach( sound => {
+        playerSounds.forEach(sound => {
             this.sounds[sound] = this.scene.sound.add(sound);
         });
 
     }
 
     startBlink(repeatCount) {
-        
+
         this.scene.tweens.add({
             targets: this,
             alpha: 0.3,
             ease: 'Linear',
-            duration: 200, 
-            yoyo: true, 
-            repeat: repeatCount - 1, 
+            duration: 200,
+            yoyo: true,
+            repeat: repeatCount - 1,
             onComplete: () => {
                 this.setAlpha(1);
             }
