@@ -14,6 +14,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     shieldThrown = false;
     shieldCached = true;
 
+    actionsDamage = {
+        punch: 25,
+        kick: 35,
+        shield: 50,
+        whip: 100,
+        specialExplosion: 150,
+    };
+
     health = 100;
     power = 100;
     vulnerable = true;
@@ -286,6 +294,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                     this.shield.setPosition(shieldPosition.x, shieldPosition.y);
 
                     // this.shield.setVisible(true);
+                    console.log('shield',this.shield);
                     this.shield.anims.play('fly', true);
 
                     let shieldTarget = this.focusTo == 'right'

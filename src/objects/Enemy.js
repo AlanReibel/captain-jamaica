@@ -13,8 +13,9 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     movingDirectionX;
     movingDirectionY = 'none';
+    blockedMovement = false;
 
-    invulnerable = false;
+    vulnerable = true;
     shouldAttack = true;
     attackDone = false;
     attackCounter = 0;
@@ -40,8 +41,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         // Establecer propiedades básicas
         this.scene = scene;
-        this.health = enemies[name].health || 100;
-        this.speed = enemies[name].speed || 100;
+        this.health = enemies[name].health;
+        this.speed = enemies[name].speed;
         this.behavior = enemies[name].behavior;
         this.bulletImage = enemies[name].bulletImage;
         this.bulletDamage = enemies[name].bulletDamage;
@@ -50,7 +51,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.fly = enemies[name].fly || false;
 
         this.bullets = this.scene.physics.add.group();
-        
+
         this.setDepth(5);
         this.bullets.setDepth(5);
 
@@ -63,18 +64,18 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     attack() {
-        if (this.state === 'attacking') {
+        if (this.state === 'attacking' || this.state === 'dying') {
             return;
         } else if (this.attackCounter < 2) {
 
 
             if (this.shouldAttack) {
-
+                this.blockedMovement = true;
                 this.attackDone = false;
                 this.shouldAttack = false;
                 this.state = 'attacking';
                 let flip = this.focusTo === 'left';
-                this.anims.play(`${this.name}-Attack`, true).setFlipX(flip);
+                this.anims.play(`${this.name}-Attack`).setFlipX(flip);
                 if (this.name === 'weelRobot') {
                     this.attackMovement();
                 }
@@ -90,22 +91,27 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
                 }
 
-                this.scene.time.delayedCall(200, () => {
-                    this.state = 'idle';
+                this.on(`animationcomplete-${this.name}-Attack`, () => {
+
                     this.attackCounter++;
                     this.attackDone = true;
                     this.shouldAttack = true;
+                    this.blockedMovement = false;
+
                     if (this.shot) {
                         this.bulletFired = false;
                     }
+
+                    this.idle();
+
                 });
 
             }
 
         } else {
-            this.state = 'attacking';
+            // this.state = 'attacking';
             this.scene.time.delayedCall(this.nextAttackWait, () => {
-                this.state = 'idle';
+                // this.idle();
                 this.attackCounter = 0;
             });
         }
@@ -138,23 +144,23 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     hurt(damage) {
 
-        if (this.state !== 'hurt' && !this.invulnerable) {
+        if (this.state !== 'hurt' && this.vulnerable) {
             this.state = 'hurt';
-            this.invulnerable = true; // Enemigo es invulnerable después de ser golpeado
+            this.vulnerable = false;
             this.anims.play(`${this.name}-Hurt`, true);
             this.takeDamage(damage);
-            // Después de un tiempo, permite que el enemigo pueda recibir daño de nuevo
-            this.once('animationcomplete', () => {
-                this.invulnerable = false;
-                this.state = 'idle';
+            this.on(`animationcomplete-${this.name}-Hurt`, () => {
+                this.vulnerable = true;
+                this.idle();
+
             });
+
 
         }
     }
 
     move(directionX = this.focusTo, directionY = 'none') {
-        if (this.state !== 'attacking') {
-
+        if (!this.blockedMovement && this.state !== 'attacking' && this.state !== 'dying') {
             this.movingDirectionX = directionX;
             this.turn = directionX !== this.focusTo;
             this.focusTo = directionX;
@@ -192,23 +198,24 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
                 }
             }
 
-            // console.log('moving dir', {
-            //     x: this.movingDirectionX,
-            //     y: this.movingDirectionY,
-            //     blocked: this
-            // });
         }
 
     }
 
-
-    stop() {
-        if (this.state !== 'attacking' && this.state !== 'hurt' && this.state !== 'dying') {
-            this.setVelocityX(0);
+    idle() {
+        if (
+            (this.state === 'hurt' && this.vulnerable) && 
+            this.state !== 'dying' || 
+            (this.state === 'attacking' && this.attackDone)
+        ) {
             this.state = 'idle';
             let flip = this.focusTo === 'left';
-            this.anims.play(`${this.name}-Idle`, true).setFlipX(flip);
+            this.anims.play(`${this.name}-Idle`).setFlipX(flip);
         }
+    }
+
+    stop() {
+        this.move('none');
     }
 
     takeDamage(amount) {
@@ -216,13 +223,17 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         if (this.health <= 0) {
             this.die();
         }
+
     }
 
     die() {
         if (this.state !== 'dying') {
+            this.vulnerable = false;
             this.state = 'dying';
             this.anims.play(`${this.name}-Death`, true);
-            this.once('animationcomplete', () => {
+
+            this.on(`animationcomplete-${this.name}-Death`, () => {
+
                 this.sounds['enemy-die'].play();
                 this.destroy();
             });

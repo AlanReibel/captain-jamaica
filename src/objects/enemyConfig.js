@@ -10,7 +10,7 @@ export const enemies = {
         damage: 5,
         fly: true,
         speed: 50,
-        health: 100,
+        health: 50,
         behavior: (scene, enemy) => {
             let {player} = scene;
             let {worldView} = scene.cameras.main;
@@ -21,18 +21,10 @@ export const enemies = {
                 bottom: worldView.y + worldView.height - 30
             };
 
-            let shouldAttackDistance = 150;
-            let attackDistance = 50;
+            let attackDistance = 30;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= attackDistance;
             let limitHeight = player.y - (player.height / 2);
-
-            // console.log('moving dir before', {
-            //     x: enemy.movingDirectionX,
-            //     y: enemy.movingDirectionY,
-            // });
-
-            // console.log('blocked', enemy.body.blocked);
 
             switch (enemy.movingDirectionX) {
                 case 'left':
@@ -92,11 +84,8 @@ export const enemies = {
 
 
             enemy.move(enemy.movingDirectionX, enemy.movingDirectionY);
-            // console.log('moving dir after', {
-            //     x: enemy.movingDirectionX,
-            //     y: enemy.movingDirectionY,
-            //     // blocked: this
-            // });
+            
+
         }
     },
     weelRobot: {
@@ -109,7 +98,7 @@ export const enemies = {
         },
         damage: 5,
         speed: 50,
-        health: 100,
+        health: 50,
         behavior: (scene, enemy) => {
 
             let player = scene.player;
@@ -151,7 +140,7 @@ export const enemies = {
         damage: 10,
         fly: false,
         speed: 50,
-        health: 100,
+        health: 75,
         behavior: (scene, enemy) => {
 
             let player = scene.player;

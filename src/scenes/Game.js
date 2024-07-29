@@ -364,7 +364,9 @@ export class Game extends Scene {
 
     destroyBullet(bullet, map) {
 
-        bullet.destroy();
+        if (bullet.texture.key !== 'shield-fly') {
+            bullet.destroy();
+        }
         let bulletExplosion = this.physics.add.sprite(bullet.x, bullet.y, 'explosion1');
         bulletExplosion.setDepth(5);
         bulletExplosion.body.setAllowGravity(false);
@@ -391,37 +393,21 @@ export class Game extends Scene {
     }
 
     handleBulletCollision(bullet, enemy) {
-
-        this.hitEnemy(enemy, 20);
-        this.player.sounds['hit'].play();
-        if (bullet.texture.key === 'bullet') {
+        let damage;
+        if (bullet.texture.key !== 'shield-fly') {
             bullet.destroy();
+            damage = 25;
+        } else {
+            damage = 50;
         }
+        this.hitEnemy(enemy, damage);
 
-    }
 
-    handleHitCollision(shield, enemy) {
-        this.hitEnemy(enemy);
     }
 
     handleBodyCollision(player, enemy) {
 
-        let damage = {
-            punch: 25,
-            kick: 35,
-            shield: 50,
-            whip: 100,
-            specialExplosion: 150,
-        };
-
         let currentState = this.player.state;
-        let damageStates = [
-            'punch',
-            'kick',
-            'whip',
-            'specialExplosion',
-            'shield',
-        ];
 
         switch (currentState) {
             case 'kick':
@@ -443,9 +429,9 @@ export class Game extends Scene {
             : player.x >= enemy.x;
 
 
-        if (damageStates.includes(currentState) && enemyOnFront) {
+        if (Object.keys(this.player.actionsDamage).includes(currentState) && enemyOnFront) {
 
-            this.hitEnemy(enemy, damage[currentState]);
+            this.hitEnemy(enemy, this.player.actionsDamage[currentState]);
         }
 
 
