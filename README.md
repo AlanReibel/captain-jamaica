@@ -6,6 +6,9 @@ By the moment the demo have only one level.
 You can play the demo deployed on github pages:
 **[Captain Jamaica Demo](https://alanreibel.github.io/captain-jamaica/)**
 
+![screenshot](screenshot.png)
+
+
 Is playable in desktop with keyboard and in mobile with screen buttons.
 Check the buttons guide by pressing the [Guide] button on the top left corner.
 
