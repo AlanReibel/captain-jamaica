@@ -6,11 +6,10 @@ By the moment the demo have only one level.
 You can play the demo deployed on github pages:
 **[Captain Jamaica Demo](https://alanreibel.github.io/captain-jamaica/)**
 
-![screenshot](screenshot.png)
-
-
 Is playable in desktop with keyboard and in mobile with screen buttons.
 Check the buttons guide by pressing the [Guide] button on the top left corner.
+Screen buttons can be loaded in landscape and portrait. Adaptative UI is handleled in load process. So if you swich the orientation will need to reload by the moment.
+![screenshot](screenshot.png)
 
 
 Developed with Phaser 3 & Vite template
