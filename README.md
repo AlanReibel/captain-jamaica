@@ -47,12 +47,21 @@ So if you swich the orientation will need to reload by the moment.
 
 Is actually on development and I want to share it to get some feedback.
 
-#### Sounds
+### Sounds
 
 - I generated all sound fx (but typewriter) with an electribe er-1 Korg modulator. 
-- Music production and sounds editing with Ableton Live
+- Music production and sounds editing with Ableton Live.
+- Typewriter sounds from pixabay.com
 
+### Credits
 
+- The main character sprites and animations were designed by Oral Ferguson.
+- Original history written by Oral Ferguson.
+- Other Graphics (Backgrounds, Tiles & Enemies) from craftpix.net
+
+### AI generated and customized pictures
+- Intro images
+- Buildings and cars
 
 
 Developed with Phaser 3 & Vite template
