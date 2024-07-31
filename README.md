@@ -77,4 +77,10 @@ This template has been updated for:
 | `npm run dev` | Launch a development web server |
 | `npm run build` | Create a production build in the `dist` folder |
 
+
+## Licencias
+
+- [Game code license](./licenses/GAME-LICENSE)
+- [Phaser MIT license](./licenses/PHASER-LICENSE)
+
 All rights reserved.
