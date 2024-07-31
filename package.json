@@ -16,9 +16,9 @@
     "homepage": "https://alanreibel.itch.io/captain-jamaica-demo",
     "scripts": {
         "dev": "vite --config vite/config.dev.mjs",
-        "build": "vite build --config vite/config.prod.mjs && npm run copy-licenses",
+        "build": "rm -rf dist/ && vite build --config vite/config.prod.mjs && npm run copy-licenses",
         "deploy": "gh-pages -d dist",
-        "copy-licenses": "cp licenses/** dist/licenses"
+        "copy-licenses": "mkdir dist/licenses && cp licenses/* dist/licenses"
     },
     "devDependencies": {
         "eslint": "^7.32.0",
