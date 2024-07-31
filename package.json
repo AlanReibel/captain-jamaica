@@ -1,19 +1,19 @@
 {
-    "name": "template-vite",
-    "description": "A Phaser 3 template using Vite.",
-    "version": "1.3.0",
+    "name": "captain-jamaica-demo",
+    "description": "A shot em up & platform game demo of a jamaican hero",
+    "version": "1.0.0",
     "type": "module",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/phaserjs/template-vite.git"
+        "url": "git+https://github.com/AlanReibel/captain-jamaica.git"
     },
-    "author": "Phaser Studio <support@phaser.io> (https://phaser.io/)",
-    "license": "MIT",
-    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+    "author": "Alan Reibel <reibeltel@gmail.com>",
+    "license": "All rights reserved",
+    "licenseUrl": "https://github.com/AlanReibel/captain-jamaica/blob/main/licenses/GAME-LICENSE",
     "bugs": {
-        "url": "https://github.com/phaserjs/template-vite/issues"
+        "url": "https://github.com/AlanReibel/captain-jamaica/issues"
     },
-    "homepage": "https://github.com/phaserjs/template-vite#readme",
+    "homepage": "https://alanreibel.itch.io/captain-jamaica-demo",
     "scripts": {
         "dev": "vite --config vite/config.dev.mjs",
         "build": "vite build --config vite/config.prod.mjs && npm run copy-licenses",
