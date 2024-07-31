@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0" />
     <!-- <link rel="stylesheet" href="/style.css"> -->
     <title>Captain Jamaica Demo</title>
-  <script type="module" crossorigin src="./assets/index-BQMq6CYw.js"></script>
+  <script type="module" crossorigin src="./assets/index-Ck3UPE3t.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/phaser-C2_wa_Fb.js">
 </head>
 <style>
@@ -77,7 +77,9 @@
 </body>
 <script>
     const userLang = navigator.language || navigator.userLanguage;
-    const userLanguage = userLang.substring(0,2);
+    let userLanguage = userLang.substring(0,2);
+    userLanguage = userLanguage === 'es' ? 'es' : 'en';
+    console.log('lang',userLanguage);
     let guideShown = false;
     const buttonsList = {
             'es': `
