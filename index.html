@@ -76,7 +76,9 @@
 </body>
 <script>
     const userLang = navigator.language || navigator.userLanguage;
-    const userLanguage = userLang.substring(0,2);
+    let userLanguage = userLang.substring(0,2);
+    userLanguage = userLanguage === 'es' ? 'es' : 'en';
+    console.log('lang',userLanguage);
     let guideShown = false;
     const buttonsList = {
             'es': `

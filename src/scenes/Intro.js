@@ -105,7 +105,8 @@ The battle for justice has only just begun.`
     create() {
 
         const userLang = navigator.language || navigator.userLanguage;
-        const userLanguage = userLang.substring(0,2);
+        let userLanguage = userLang.substring(0,2);
+        userLanguage = userLanguage === 'es' ? 'es' : 'en';
         this.textArray = this.fullText[userLanguage].split('\n');
         this.userLanguage = userLanguage;
 
