@@ -18,9 +18,10 @@
         "dev": "vite --config vite/config.dev.mjs",
         "build": "rm -rf dist/ && vite build --config vite/config.prod.mjs && npm run copy-licenses",
         "deploy": "gh-pages -d dist",
-        "copy-licenses": "mkdir dist/licenses && cp licenses/* dist/licenses"
+        "copy-licenses": "cpx licenses/* dist/licenses"
     },
     "devDependencies": {
+        "cpx": "^1.5.0",
         "eslint": "^7.32.0",
         "eslint-config-standard": "^16.0.3",
         "eslint-plugin-import": "^2.25.1",
