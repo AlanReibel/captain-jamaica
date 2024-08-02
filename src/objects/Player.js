@@ -266,6 +266,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.state !== 'throw') {
 
             this.shield = this.scene.physics.add.sprite(this.x, this.y, 'shield-fly');
+            this.shield.setVisible(false);
             // this.shield.body.setAllowGravity(false);
             this.shield.setScale(0.6);
             this.shield.setDepth(5);
@@ -292,9 +293,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                         y: this.y
                     };
                     this.shield.setPosition(shieldPosition.x, shieldPosition.y);
+                    this.shield.setVisible(true);
 
-                    // this.shield.setVisible(true);
-                    console.log('shield',this.shield);
                     this.shield.anims.play('fly', true);
 
                     let shieldTarget = this.focusTo == 'right'
@@ -517,7 +517,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         // console.log('before jump state', this);
         if (!this.blockedJump) {
             // this.anims.pause();
-            if (this.state === 'whip') {
+            if (this.state === 'whip' || this.state === 'throw') {
                 this.resetSprite();
             }
             this.isJumping = true;
