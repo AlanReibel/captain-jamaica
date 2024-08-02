@@ -308,8 +308,8 @@ export class Game extends Scene {
 
         this.physics.add.collider(this.landEnemies, this.landEnemies, null, null, this);
 
-        this.physics.add.collider(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
-        this.physics.add.collider(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.overlap(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.overlap(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
         this.physics.add.collider(this.player.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
         this.physics.add.collider(this.player.bullets, this.walls, this.destroyBullet, null, this);
 
@@ -395,7 +395,7 @@ export class Game extends Scene {
     handleBulletCollision(bullet, enemy) {
         let damage;
         if (bullet.texture.key !== 'shield-fly') {
-            bullet.destroy();
+            this.destroyBullet(bullet);
             damage = 25;
         } else {
             damage = 50;

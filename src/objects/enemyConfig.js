@@ -147,7 +147,7 @@ export const enemies = {
             let treshhold = 200;
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;
-            let isOver = (player.x - enemy.x <= 10 && player.x - enemy.x >= -10) && (player.y - enemy.y >= 30 || player.y - enemy.y <= -30);
+            let isOver = (player.x - enemy.x <= 20 && player.x - enemy.x >= -20) && (player.y - enemy.y >= 30 || player.y - enemy.y <= -30);
             let { worldView } = scene.cameras.main;
             let bounds = {
                 left: worldView.x + 30,
@@ -182,18 +182,22 @@ export const enemies = {
                     break;
             }
 
-            if (isNear && !isOver) {
+            if (isNear) {
 
-                if (distance <= 20) {
+                if(isOver) {
                     enemy.stop();
-                    enemy.attack();
-
                 } else {
-                    enemy.move(enemy.movingDirectionX);
+
+                    if (distance <= 20) {
+                        enemy.stop();
+                        enemy.attack();
+    
+                    } else {
+                        enemy.move(enemy.movingDirectionX);
+                    }
                 }
-            } else {
-                enemy.stop();
-            }
+
+            } 
 
 
 
