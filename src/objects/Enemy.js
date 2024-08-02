@@ -22,7 +22,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     attackCounter = 0;
     nextAttackWait = 2000;
 
-    sounds = [];
+    sounds = {};
 
     constructor(scene, x, y, name) {
 
@@ -32,7 +32,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.addSounds();
         this.setBounce(0.2);
         this.body.collideWorldBounds = true;
 
@@ -275,17 +274,5 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
 
     }
-
-    addSounds() {
-
-        let enemySounds = [
-            'enemy-die',
-            'enemy-shot',
-            'enemy-punch',
-        ];
-        enemySounds.forEach(sound => {
-            this.sounds[sound] = this.scene.sound.add(sound);
-        });
-
-    }
+    
 }

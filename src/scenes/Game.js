@@ -284,9 +284,20 @@ export class Game extends Scene {
 
         let enemiesPositions = this.map.getObjectLayer('enemies');
 
+        const enemySoundsList = [
+            'enemy-die',
+            'enemy-shot',
+            'enemy-punch',
+        ];
+        let enemySounds = {};
+        enemySoundsList.forEach(sound => {
+            enemySounds[sound] = this.sound.add(sound);
+        });
+
         enemiesPositions.objects.forEach(enemyData => {
 
             let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
+            newEnemy.sounds = enemySounds;
 
             this.physics.add.collider(this.walls, newEnemy);
             this.physics.add.overlap(this.player, newEnemy, this.handleBodyCollision, null, this);
