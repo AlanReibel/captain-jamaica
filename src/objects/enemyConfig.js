@@ -12,8 +12,8 @@ export const enemies = {
         speed: 50,
         health: 50,
         behavior: (scene, enemy) => {
-            let {player} = scene;
-            let {worldView} = scene.cameras.main;
+            let { player } = scene;
+            let { worldView } = scene.cameras.main;
             let bounds = {
                 left: worldView.x + 30,
                 right: worldView.x + worldView.width - 30,
@@ -75,8 +75,8 @@ export const enemies = {
                             player.x - enemy.x > - 20) {
                             enemy.movingDirectionY = 'down';
                             enemy.movingDirectionX = 'none';
-    
-                        } 
+
+                        }
                     }
                     break
             }
@@ -84,7 +84,7 @@ export const enemies = {
 
 
             enemy.move(enemy.movingDirectionX, enemy.movingDirectionY);
-            
+
 
         }
     },
@@ -148,20 +148,53 @@ export const enemies = {
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;
             let isOver = (player.x - enemy.x <= 10 && player.x - enemy.x >= -10) && (player.y - enemy.y >= 30 || player.y - enemy.y <= -30);
+            let { worldView } = scene.cameras.main;
+            let bounds = {
+                left: worldView.x + 30,
+                right: worldView.x + worldView.width - 30,
+                top: worldView.y + 30,
+                bottom: worldView.y + worldView.height - 30
+            };
+
+
+            if (enemy.blockedTurn) {
+                scene.time.delayedCall(3000, () => {
+                    enemy.blockedTurn = false;
+                });
+            } else {
+                enemy.movingDirectionX = player.x < enemy.x ? 'left' : 'right';
+            }
+
+            switch (enemy.movingDirectionX) {
+                case 'left':
+                    if (enemy.x <= bounds.left || enemy.body.blocked.left) {
+                        enemy.focusTo = 'right';
+                        enemy.movingDirectionX = 'right';
+                        enemy.blockedTurn = true;
+                    }
+                    break;
+                case 'right':
+                    if (enemy.x >= bounds.right || enemy.body.blocked.right) {
+                        enemy.focusTo = 'left';
+                        enemy.movingDirectionX = 'left';
+                        enemy.blockedTurn = true;
+                    }
+                    break;
+            }
 
             if (isNear && !isOver) {
-                let direction = player.x < enemy.x ? 'left' : 'right';
+
                 if (distance <= 20) {
                     enemy.stop();
                     enemy.attack();
 
                 } else {
-                    enemy.move(direction);
+                    enemy.move(enemy.movingDirectionX);
                 }
-
             } else {
                 enemy.stop();
             }
+
 
 
 
@@ -204,7 +237,7 @@ export const enemies = {
                     enemy.move(direction);
 
                 } else {
-                    if(
+                    if (
                         (enemy.focusTo === 'left' && playerAtLeftSide) ||
                         (enemy.focusTo === 'right' && !playerAtLeftSide)
                     ) {

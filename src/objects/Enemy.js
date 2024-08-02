@@ -14,6 +14,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     movingDirectionX;
     movingDirectionY = 'none';
     blockedMovement = false;
+    blockedTurn = false;
 
     vulnerable = true;
     shouldAttack = true;
