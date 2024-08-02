@@ -163,7 +163,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         if (!this.blockedMovement && this.state !== 'attacking' && this.state !== 'dying') {
             this.movingDirectionX = directionX;
             this.turn = directionX !== this.focusTo;
-            this.focusTo = directionX;
+            this.focusTo = directionX === 'none' ? this.focusTo : directionX;
             this.state = 'walk';
 
             switch (directionX) {

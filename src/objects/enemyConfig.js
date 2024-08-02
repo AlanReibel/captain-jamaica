@@ -188,6 +188,7 @@ export const enemies = {
             let distance = Phaser.Math.Distance.BetweenPoints(player, enemy);
             let isNear = distance <= treshhold;
             let playerAtLeftSide = Phaser.Math.CeilTo(player.x) < Phaser.Math.CeilTo(enemy.x);
+            let direction;
 
             if (playerAtLeftSide) {
                 enemy.focusTo = 'left';
@@ -199,12 +200,20 @@ export const enemies = {
             if (isNear) {
 
                 if (distance <= 30) {
-                    let direction = playerAtLeftSide ? 'right' : 'left';
+                    direction = playerAtLeftSide ? 'right' : 'left';
                     enemy.move(direction);
 
                 } else {
-                    enemy.stop();
-                    enemy.attack();
+                    if(
+                        (enemy.focusTo === 'left' && playerAtLeftSide) ||
+                        (enemy.focusTo === 'right' && !playerAtLeftSide)
+                    ) {
+                        enemy.stop();
+                        enemy.attack();
+                    } else {
+                        direction = playerAtLeftSide ? 'right' : 'left';
+                        enemy.move(direction);
+                    }
                 }
 
             } else {
