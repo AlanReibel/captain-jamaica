@@ -21,7 +21,8 @@ Check the buttons guide by pressing the [Guide] button on the top left corner in
 #### Desktop - PC
 
 - (Arrows / WSAD) -&gt; Move
-- (w / up arrow) -&gt; Jump 
+- (W / Arrow up) -&gt; Jump 
+- (S / Arrown down + Space bar) -&gt; Jump down
 - (Space bar) -&gt; Punch
 - (Space bar + Space bar) -&gt; Kick
 - (Q) -&gt; Shield hit
@@ -34,6 +35,7 @@ Check the buttons guide by pressing the [Guide] button on the top left corner in
 
 - (Joystic) -&gt; Move
 - (A) -&gt; Jump 
+- (Joystic down + A) -&gt; Jump down
 - (B) -&gt; Punch 
 - (B + B) -&gt; Kick
 - (X) -&gt; Shield hit 
