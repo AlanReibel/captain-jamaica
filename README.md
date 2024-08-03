@@ -7,7 +7,6 @@ You can play the demo deployed on github pages:
 **[Captain Jamaica Demo](https://alanreibel.github.io/captain-jamaica/)**
 
 **[Also is published in Itch.io](https://alanreibel.itch.io/captain-jamaica-demo)**
-<iframe frameborder="0" src="https://itch.io/embed/2866956?border_width=2&amp;bg_color=222222&amp;fg_color=ffe762&amp;link_color=029118&amp;border_color=ffe762" width="554" height="169"><a href="https://alanreibel.itch.io/captain-jamaica-demo">Captain Jamaica Demo by AlanReibel</a></iframe>
 
 
 ![screenshot](https://img.itch.zone/aW1hZ2UvMjg2Njk1Ni8xNzE0MDAyMS5wbmc=/original/Memnfg.png)
