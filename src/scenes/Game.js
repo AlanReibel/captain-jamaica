@@ -130,11 +130,14 @@ export class Game extends Scene {
     }
 
     jumpDownPressed() {
+        console.log('jumpDownPressed');
         this.player.blockedJumpDown = false;
         this.player.isJumpingDown = true;
     }
 
     jumpDownLeaved() {
+        console.log('jumpDownLeaved');
+
         this.player.blockedJumpDown = false;
     }
 
@@ -182,17 +185,13 @@ export class Game extends Scene {
 
     handleJump() {
 
-        let jumpDown = this.inputHandler.buttons['A'] && this.inputHandler.joystickKeys?.down.isDown;
 
-        // console.log('handleJump',this.player.body.blocked.down);
-        if (this.player.body.blocked.down && !jumpDown) {
+        if (this.player.body.blocked.down && !this.player.isJumpingDown) {
             this.player.handleJump();
-            // console.log('jumped');
         }
     }
 
     jumpLeaved() {
-        // console.log('jumpLeaved');
         this.player.blockedJump = false;
     }
 

@@ -117,7 +117,6 @@ export class InputHandler {
             case 'A':
                 if(this.joystickKeys.down.isUp) {
                     this.emitter.emit('jumpDownLeaved');
-                    break;
                 }
             case 'w':
             case 'ArrowUp':
