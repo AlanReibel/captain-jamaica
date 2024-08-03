@@ -5,7 +5,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     state = 'idle';
     isMoving = false;
     isJumping = false;
+    isJumpingDown = false;
     blockedJump = false;
+    blockedJumpDown = false;
     velocity = 100;
     specialEnabled = true;
     ammoEnabled = true;
@@ -646,7 +648,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.play({ key: 'land', frameRate: 15 }, true);
         this.sounds['land'].play();
         this.state = 'landing';
-
+        this.isJumpingDown = false;
         this.on('animationcomplete-land', (anim, frame) => {
             this.state = 'idle';
             this.idle();

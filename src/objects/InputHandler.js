@@ -72,8 +72,11 @@ export class InputHandler {
 
         this.lastKeyPressed = key;
         switch (key) {
-            case 'w':
             case 'A':
+                if(this.joystickKeys.down.isDown) {
+                    this.emitter.emit('jumpDownPressed');
+                }
+            case 'w':
             case 'ArrowUp':
                 this.emitter.emit('jumpKeyPressed');
                 break;
@@ -86,6 +89,10 @@ export class InputHandler {
                 this.emitter.emit('moveKeyPressed');
                 break;
 
+            case ' ':
+                if(this.sKey.isDown) {
+                    this.emitter.emit('jumpDownPressed');
+                }
             case 'q':
             case 'e':
                 this.lastKeyPressed = key;
@@ -93,7 +100,6 @@ export class InputHandler {
             case 'X':
             case 'Y':
             case 'B':
-            case ' ':
                 this.emitter.emit('fightActionPressed');
                 break;
 
@@ -106,26 +112,36 @@ export class InputHandler {
     checkKeysUp(key) {
 
         switch (key) {
-            case 'w':
             case 'A':
+                if(this.joystickKeys.down.isUp) {
+                    this.emitter.emit('jumpDownLeaved');
+                }
+            case 'w':
             case 'ArrowUp':
                 this.emitter.emit('jumpKeyLeaved');
                 break;
 
             case 'a':
             case 'd':
+            case 's':
+                if(this.cursors.space.isUp) {
+                    this.emitter.emit('jumpDownLeaved');
+                }
             case 'ArrowLeft':
             case 'ArrowRight':
                 this.emitter.emit('movingKeyUp');
                 break;
-
+            case ' ':
+                if(this.sKey.isUp) {
+                    this.emitter.emit('jumpDownLeaved');
+                }
             case 'q':
             case 'e':
                 this.canBeHold = false;
                 this.holding[key] = false;
+
             case 'X':
             case 'Y':
-            case ' ':
             case 'B':
                 this.emitter.emit('fightActionLeaved');
                 break;

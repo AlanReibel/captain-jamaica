@@ -58,15 +58,17 @@ export class Game extends Scene {
         // every 6fps 
         if (this.frameCount % checkingRate === 0) {
 
+            if (this.player.body.velocity.y > 200 && this.player.isJumpingDown) {
+                this.player.isJumpingDown = false;
 
-            // reset fight
+            }
+            
             if (this.player.body.velocity.y <= -20) {
                 this.player.movingDirection = 'down';
 
             } else if (this.player.body.velocity.x === 0 && this.player.body.blocked.down) {
                 this.player.movingDirection = 'none';
             }
-
 
             if (this.player.movingDirection === 'down' && this.player.body.blocked.down && this.player.fightEnds) {
                 this.player.land();
@@ -117,12 +119,23 @@ export class Game extends Scene {
         this.inputHandler.emitter.on('fightActionPressed', this.handleFightActions, this);
         this.inputHandler.emitter.on('jumpKeyPressed', this.handleJump, this);
         this.inputHandler.emitter.on('moveKeyPressed', this.handleMovement, this);
+        this.inputHandler.emitter.on('jumpDownPressed', this.jumpDownPressed, this);
 
         this.inputHandler.emitter.on('fightActionLeaved', this.handleFightLeaved, this);
         this.inputHandler.emitter.on('jumpKeyLeaved', this.jumpLeaved, this);
         this.inputHandler.emitter.on('movingKeyUp', this.moveLeaved, this);
+        this.inputHandler.emitter.on('jumpDownLeaved', this.jumpDownLeaved, this);
 
         this.inputHandler.emitter.on('holdAction', this.holdingAction, this);
+    }
+
+    jumpDownPressed() {
+        this.player.blockedJumpDown = false;
+        this.player.isJumpingDown = true;
+    }
+
+    jumpDownLeaved() {
+        this.player.blockedJumpDown = false;
     }
 
     enableDomGuide() {
@@ -168,8 +181,11 @@ export class Game extends Scene {
     }
 
     handleJump() {
+
+        let jumpDown = this.inputHandler.buttons['A'] && this.inputHandler.joystickKeys?.down.isDown;
+
         // console.log('handleJump',this.player.body.blocked.down);
-        if (this.player.body.blocked.down) {
+        if (this.player.body.blocked.down && !jumpDown) {
             this.player.handleJump();
             // console.log('jumped');
         }
@@ -366,10 +382,10 @@ export class Game extends Scene {
 
     isCharInCameraView(char, visibleArea) {
         return (
-            char.x + char.width > visibleArea.x && // Verifica el lado izquierdo
-            char.x < visibleArea.x + visibleArea.width && // Verifica el lado derecho
-            char.y + char.height > visibleArea.y && // Verifica la parte superior
-            char.y < visibleArea.y + visibleArea.height // Verifica la parte inferior
+            char.x + char.width > visibleArea.x &&
+            char.x < visibleArea.x + visibleArea.width &&
+            char.y + char.height > visibleArea.y &&
+            char.y < visibleArea.y + visibleArea.height
         );
     }
 
@@ -548,8 +564,15 @@ export class Game extends Scene {
             .setCollisionByProperty({ collider: true });
 
 
-        this.physics.add.collider(this.player, this.greenTilesLayer, null, function (player, platform) {
-            if (player.body.velocity.y > 0) {
+        this.physics.add.collider(this.player, this.greenTilesLayer, null, (player, platform) => {
+            let playerGoesUp = player.body.velocity.y > 0;
+
+            if (player.isJumpingDown && !player.blockedJumpDown) {
+                return false;
+            }
+
+            if (playerGoesUp) {
+                player.isJumpingDown = false;
                 return true;
             } else {
                 return false;
@@ -766,7 +789,7 @@ export class Game extends Scene {
             yoyo: true,
             repeat: repeatCount - 1,
             onComplete: () => {
-                if(disabled) {
+                if (disabled) {
                     target.setAlpha(0.5);
                 } else {
                     target.setAlpha(1);
