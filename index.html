@@ -10,7 +10,7 @@
     <meta http-equiv="Expires" content="0" />
     <!-- <link rel="stylesheet" href="/style.css"> -->
     <title>Captain Jamaica Demo</title>
-  <script type="module" crossorigin src="./assets/index-C86EJlIO.js"></script>
+  <script type="module" crossorigin src="./assets/index-CsAe0Y9w.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/phaser-C2_wa_Fb.js">
 </head>
 <style>
@@ -83,16 +83,20 @@
     let guideShown = false;
     const buttonsList = {
             'es': `
+(Joystic) -> Mover
 (A) -> Saltar 
-(B)  -> Puñetazo 
+(Joystic abajo + A) -> Saltar abajo
+(B) -> Puñetazo 
 (B + B) -> Patada
-(X)  -> Golpe de escudo
+(X) -> Golpe de escudo
 (Mantén X) -> Escudo boomerang
 (Y) -> Látigo
 (Mantén Y) -> Ataque Especial 
 (B + Y) -> Disparo ráfaga
             `,
             'en': `
+(Joystic) -> Move
+(Joystic down + A) -> Jump down
 (A) -> Jump 
 (B) -> Punch 
 (B + B) -> Kick
@@ -106,8 +110,9 @@
 
     const keyssList = {
             'es': `
-(Flechas/WSAD) -> mover
-(w / flecha arriba) -> Saltar 
+(Flechas/WSAD) -> Mover
+(W / Flecha arriba) -> Saltar 
+(S / Flecha abajo) + Barra espacio) -> Saltar abajo
 (Barra espacio) -> Puñetazo 
 (Espacio + Espacio) -> Patada
 (Q) -> Golpe escudo
@@ -118,7 +123,8 @@
             `,
             'en': `
 (Arrows / WSAD) -> Move
-(w / up arrow) -> Jump 
+(W / Arrow up) -> Jump 
+(S / Arrow down + Space bar) -> Jump down
 (Space bar) -> Punch 
 (Space bar + Space bar) -> Kick
 (Q) -> Shield hit
