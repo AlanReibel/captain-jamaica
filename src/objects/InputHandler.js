@@ -75,6 +75,7 @@ export class InputHandler {
             case 'A':
                 if(this.joystickKeys.down.isDown) {
                     this.emitter.emit('jumpDownPressed');
+                    break;
                 }
             case 'w':
             case 'ArrowUp':
@@ -90,8 +91,9 @@ export class InputHandler {
                 break;
 
             case ' ':
-                if(this.sKey.isDown) {
+                if(this.sKey.isDown || this.cursors.down.isDown) {
                     this.emitter.emit('jumpDownPressed');
+                    break;
                 }
             case 'q':
             case 'e':
@@ -115,25 +117,29 @@ export class InputHandler {
             case 'A':
                 if(this.joystickKeys.down.isUp) {
                     this.emitter.emit('jumpDownLeaved');
+                    break;
                 }
             case 'w':
             case 'ArrowUp':
                 this.emitter.emit('jumpKeyLeaved');
                 break;
 
-            case 'a':
-            case 'd':
+            case 'ArrowDown':
             case 's':
                 if(this.cursors.space.isUp) {
                     this.emitter.emit('jumpDownLeaved');
+                    break;
                 }
+            case 'a':
+            case 'd':
             case 'ArrowLeft':
             case 'ArrowRight':
                 this.emitter.emit('movingKeyUp');
                 break;
             case ' ':
-                if(this.sKey.isUp) {
+                if(this.sKey.isUp && this.cursors.down.isUp) {
                     this.emitter.emit('jumpDownLeaved');
+                    break;
                 }
             case 'q':
             case 'e':
