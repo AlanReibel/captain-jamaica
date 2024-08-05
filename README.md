@@ -6,8 +6,8 @@ By the moment the demo have only one level.
 You can play the demo deployed on github pages:
 **[Captain Jamaica Demo](https://alanreibel.github.io/captain-jamaica/)**
 
-Also is published in Itch.io
-**[Captain Jamaica Demo](https://alanreibel.itch.io/captain-jamaica-demo)**
+**[Also is published in Itch.io](https://alanreibel.itch.io/captain-jamaica-demo)**
+
 
 ![screenshot](https://img.itch.zone/aW1hZ2UvMjg2Njk1Ni8xNzE0MDAyMS5wbmc=/original/Memnfg.png)
 ![screenshot](https://img.itch.zone/aW1hZ2UvMjg2Njk1Ni8xNzE2MTUyOC5wbmc=/original/rcBMs8.png)
