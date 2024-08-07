@@ -233,7 +233,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     move(direction) {
-        if (!this.blockedMovement) {
+        if (!this.blockedMovement && this.fightEnds) {
 
             this.originalX = this.x;
             this.originalY = this.y;

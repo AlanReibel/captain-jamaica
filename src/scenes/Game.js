@@ -136,8 +136,6 @@ export class Game extends Scene {
     }
 
     jumpDownLeaved() {
-        console.log('jumpDownLeaved');
-
         this.player.blockedJumpDown = false;
     }
 
@@ -434,7 +432,7 @@ export class Game extends Scene {
     handleBodyCollision(player, enemy) {
 
         let currentState = this.player.state;
-
+        
         switch (currentState) {
             case 'kick':
                 this.player.sounds['hit'].play();
