@@ -89,7 +89,7 @@
 
     .row {
         display: flex;
-        align-items: flex-end;
+        align-items: center;
         gap: .5rem;
     }
 
@@ -106,14 +106,18 @@
             border-style: inset;
             border-width: 3px 4px 5px;
             background: #fff;
+        }
 
-
+        .row:first-of-type {
+            align-items: flex-end;
         }
     }
 
     .buttons {
         span {
-            border: 1px solid #000;
+            border: 1px solid #ff0000;
+            background-color: #000;
+            color: #fff;
             border-radius: 50%;
             width: 1rem;
             height: 1rem;
@@ -159,6 +163,8 @@
             margin: auto;
         }
     }
+
+    
 </style>
 
 <body>
@@ -188,12 +194,12 @@
 
     <div class="row">
         <strong>Mover:</strong>
-        &#x2B05;
+        &#xFFE9;
         <div class="joystick" >
             <div class="top" ></div>
             <div class="bottom"></div>
         </div>
-        &#x27A1;
+        &#xFFEB;
     </div>
 
     <div class="row">
@@ -207,7 +213,7 @@
             <div class="top" ></div>
             <div class="bottom"></div>
         </div>
-        &#x2B07;
+        &#xFFEC;
         +
         <span>A</span>
     </div>
@@ -260,12 +266,12 @@
 
     <div class="row">
         <strong>Move:</strong>
-        &#x2B05;
+        &#xFFE9;
         <div class="joystick" >
             <div class="top" ></div>
             <div class="bottom"></div>
         </div>
-        &#x27A1;
+        	&#xFFEB;
     </div>
 
     <div class="row">
@@ -279,7 +285,7 @@
             <div class="top" ></div>
             <div class="bottom"></div>
         </div>
-        &#x2B07;
+        &#xFFEC;
         +
         <span>A</span>
     </div>
@@ -336,10 +342,10 @@
     <div class="row">
         <strong>Mover: </strong>
         <div class="arrows">
-            <span class="up">&#x2B06;</span>
-            <span class="left">&#x2B05;</span>    
-            <span class="down">&#x2B07;</span>
-            <span class="right">&#x27A1;</span>
+            <span class="up">&#x2b9d;</span>
+            <span class="left">&#x2b9c;</span>    
+            <span class="down">&#x2b9f;</span>
+            <span class="right">&#11166;</span>
         </div>
         /
         <div class="arrows">
@@ -354,14 +360,14 @@
     <div class="row">
         <strong>Saltar:</strong>
         <span>W</span> / 
-        <span>&#x2B06;</span>
+        <span>&#x2b89;</span>
     </div>
 
     <div class="row">
         <strong>Saltar abajo:</strong>
         <span>S</span> 
         / 
-        <span>&#x2B07;</span>
+        <span>&#x2b9f;</span>
         + 
         <span>Barra espacio</span> 
     </div>
@@ -412,10 +418,10 @@
     <div class="row">
         <strong>Move: </strong>
         <div class="arrows">
-            <span class="up">&#x2B06;</span>
-            <span class="left">&#x2B05;</span>    
-            <span class="down">&#x2B07;</span>
-            <span class="right">&#x27A1;</span>
+            <span class="up">&#x2b9d;</span>
+            <span class="left">&#x2b9c;</span>    
+            <span class="down">&#x2b9f;</span>
+            <span class="right">&#11166;</span>
         </div>
         /
         <div class="arrows">
@@ -430,14 +436,14 @@
     <div class="row">
         <strong>Jump:</strong>
         <span>W</span> / 
-        <span>&#x2B06;</span>
+        <span>&#x2b9d;</span>
     </div>
 
     <div class="row">
         <strong>Jump down:</strong>
         <span>S</span> 
         / 
-        <span>&#x2B07;</span>
+        <span>&#x2b9f;</span>
         + 
         <span>Space bar</span> 
     </div>
