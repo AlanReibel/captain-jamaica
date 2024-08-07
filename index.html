@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="./favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -14,8 +15,19 @@
   <link rel="modulepreload" crossorigin href="./assets/phaser-C2_wa_Fb.js">
 </head>
 <style>
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(assets/fonts/lato400.woff2) format('woff2');
+        unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+
     body {
-        margin:0;
+        font-family: "Lato", sans-serif;
+        font-weight: 400;
+        margin: 0;
         padding: 0;
         border: 0;
     }
@@ -24,9 +36,10 @@
         width: 100%;
         height: 100dvh;
     }
+
     #guideBox {
         display: flex;
-        background-color: #ffffffd4;
+        background-color: #fffffff7;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -37,19 +50,28 @@
         flex-direction: column;
         gap: 1rem;
         justify-content: center;
-        padding: 1rem 3rem;
+        padding: 2rem 3rem;
         border-radius: .5rem;
 
         transition: all ease .3s;
         margin-top: -300%;
-    }
-    #guideBox p {
-        margin: 0;
-    }
-    #guideBox.enabled {
-        margin-top: 0;
 
+        p {
+            margin: 0;
+        }
+
+        &.enabled {
+            margin-top: 0;
+
+        }
+
+        >div {
+            gap: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
     }
+
     #guideButton {
         position: absolute;
         z-index: 1;
@@ -57,98 +79,433 @@
         left: 1rem;
         border: 1px solid #000;
         padding: .5rem 1rem;
-        font-family: Courier, Arial;
         cursor: pointer;
         display: none;
         background: #ffffffbd;
+
+        &.visible {
+            display: block;
+        }
+
     }
-    #guideButton.visible {
-        display: block;
+
+    .row {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
     }
+
+    .keys {
+
+        span {
+            text-align: center;
+            padding: .1rem .2rem;
+            min-width: 1rem;
+            line-height: 1rem;
+            font-size: 0.8rem;
+            border-radius: 2px;
+            border: 4px solid #eee;
+            border-style: inset;
+            border-width: 3px 4px 5px;
+            background: #fff;
+        }
+
+        .row:first-of-type {
+            align-items: flex-end;
+        }
+    }
+
+    .buttons {
+        span {
+            border: 1px solid #ff0000;
+            background-color: #000;
+            color: #fff;
+            border-radius: 50%;
+            width: 1rem;
+            height: 1rem;
+            padding: .1rem .1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .arrows {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        width: min-content;
+        gap: .1rem;
+
+        span.up {
+            grid-column: span 3;
+            margin: auto;
+        }
+    }
+
+    .joystick {
+        width: 1.3rem;
+        height: .4rem;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgb(53, 53, 53) 10%, rgb(189, 189, 189) 70%);
+
+        .top {
+            width: 1rem;
+            height: .2rem;
+            background: #000;
+            margin: auto;
+            margin-top: auto;
+            border-radius: 50% 50% 0 0;
+            margin-top: -.5rem;
+        }
+
+        .bottom {
+            width: .3rem;
+            height: .7rem;
+            background: #000;
+            margin: auto;
+        }
+    }
+
+    
 </style>
+
 <body>
-    <span id="guideButton">GUIA</span>
+    <span id="guideButton"></span>
     <div id="app">
         <div id="game-container"></div>
     </div>
     <div id="guideBox">
-        
+
     </div>
 </body>
+<span></span>
 <script>
     const userLang = navigator.language || navigator.userLanguage;
-    let userLanguage = userLang.substring(0,2);
+    let userLanguage = userLang.substring(0, 2);
     userLanguage = userLanguage === 'es' ? 'es' : 'en';
-    console.log('lang',userLanguage);
+    console.log('lang', userLanguage);
     let guideShown = false;
+    const guideButtonText = {
+        'es': [ 'Guía', 'Cerrar'],
+        'en': [ 'Guide', 'Close'],
+    };
     const buttonsList = {
-            'es': `
-(Joystic) -> Mover
-(A) -> Saltar 
-(Joystic abajo + A) -> Saltar abajo
-(B) -> Puñetazo 
-(B + B) -> Patada
-(X) -> Golpe de escudo
-(Mantén X) -> Escudo boomerang
-(Y) -> Látigo
-(Mantén Y) -> Ataque Especial 
-(B + Y) -> Disparo ráfaga
+        'es': `
+<div class="buttons">
+
+    <div class="row">
+        <strong>Mover:</strong>
+        &#xFFE9;
+        <div class="joystick" >
+            <div class="top" ></div>
+            <div class="bottom"></div>
+        </div>
+        &#xFFEB;
+    </div>
+
+    <div class="row">
+        <strong>Saltar:</strong>
+        <span>A</span>
+    </div>
+
+    <div class="row">
+        <strong>Saltar abajo:</strong>    
+        <div class="joystick" >
+            <div class="top" ></div>
+            <div class="bottom"></div>
+        </div>
+        &#xFFEC;
+        +
+        <span>A</span>
+    </div>
+
+    <div class="row">
+        <strong>Puñetazo :</strong>
+        <span>B</span>
+    </div>
+    
+    <div class="row">
+        <strong>Patada:</strong>
+        <span>B</span>
+        +
+        <span>B</span>
+    </div>
+
+    <div class="row">
+        <strong>Golpe de escudo:</strong>
+        <span>X</span>
+    </div>
+
+    <div class="row">
+        <strong>Escudo boomerang:</strong>
+        Mantén
+        <span>X</span>
+    </div>
+
+    <div class="row">
+        <strong>Látigo:</strong>
+        <span>Y</span>
+    </div>
+
+    <div class="row">
+        <strong>Ataque Especial :</strong>
+        Mantén
+        <span>Y</span>
+    </div>
+
+    <div class="row">
+        <strong>Disparo ráfaga:</strong>
+        <span>B</span>
+        +
+        <span>Y</span>
+    </div>
+
+</div>
             `,
-            'en': `
-(Joystic) -> Move
-(Joystic down + A) -> Jump down
-(A) -> Jump 
-(B) -> Punch 
-(B + B) -> Kick
-(X) -> Shield hit 
-(Hold X) -> Shield throw 
-(Y) -> Whip 
-(Hold Y) -> Special 
-(B + Y) -> Burst fire
+        'en': `
+<div class="buttons">
+
+    <div class="row">
+        <strong>Move:</strong>
+        &#xFFE9;
+        <div class="joystick" >
+            <div class="top" ></div>
+            <div class="bottom"></div>
+        </div>
+        	&#xFFEB;
+    </div>
+
+    <div class="row">
+        <strong>Jump:</strong>
+        <span>A</span>
+    </div>
+
+    <div class="row">
+        <strong>Jump down:</strong>    
+        <div class="joystick" >
+            <div class="top" ></div>
+            <div class="bottom"></div>
+        </div>
+        &#xFFEC;
+        +
+        <span>A</span>
+    </div>
+
+    <div class="row">
+        <strong>Punch:</strong>
+        <span>B</span>
+    </div>
+    
+    <div class="row">
+        <strong>Kick:</strong>
+        <span>B</span>
+        +
+        <span>B</span>
+    </div>
+
+    <div class="row">
+        <strong>Shield hit:</strong>
+        <span>X</span>
+    </div>
+
+    <div class="row">
+        <strong>Shield boomerang:</strong>
+        Hold
+        <span>X</span>
+    </div>
+
+    <div class="row">
+        <strong>Whip:</strong>
+        <span>Y</span>
+    </div>
+
+    <div class="row">
+        <strong>Special Attack:</strong>
+        Hold
+        <span>Y</span>
+    </div>
+
+    <div class="row">
+        <strong>Burst fire:</strong>
+        <span>B</span>
+        +
+        <span>Y</span>
+    </div>
+
+</div>
 `
-        };
+    };
 
     const keyssList = {
-            'es': `
-(Flechas/WSAD) -> Mover
-(W / Flecha arriba) -> Saltar 
-(S / Flecha abajo) + Barra espacio) -> Saltar abajo
-(Barra espacio) -> Puñetazo 
-(Espacio + Espacio) -> Patada
-(Q) -> Golpe escudo
-(Mantén Q) -> Escudo boomerang
-(E) -> Látigo
-(Mantén E) -> Ataque Especial 
-(Espacio + E) -> Disparo rafaga
+        'es': `
+<div class="keys">
+
+    <div class="row">
+        <strong>Mover: </strong>
+        <div class="arrows">
+            <span class="up">&#x2b9d;</span>
+            <span class="left">&#x2b9c;</span>    
+            <span class="down">&#x2b9f;</span>
+            <span class="right">&#11166;</span>
+        </div>
+        /
+        <div class="arrows">
+            <span class="up">W</span>
+            <span class="left">A</span>    
+            <span class="down">S</span>
+            <span class="right">D</span>
+        </div>
+        
+    </div>
+
+    <div class="row">
+        <strong>Saltar:</strong>
+        <span>W</span> / 
+        <span>&#x2b89;</span>
+    </div>
+
+    <div class="row">
+        <strong>Saltar abajo:</strong>
+        <span>S</span> 
+        / 
+        <span>&#x2b9f;</span>
+        + 
+        <span>Barra espacio</span> 
+    </div>
+
+    <div class="row">
+        <strong>Puñetazo:</strong>
+        <span>Barra espacio</span>
+    </div>
+
+    <div class="row">
+        <strong>Patada:</strong>
+        <span>Espacio</span>
+        +
+        <span>Espacio</span>
+    </div>
+
+    <div class="row">
+        <strong>Golpe escudo:</strong>
+        <span>Q</span>
+    </div>
+
+    <div class="row">
+        <strong>Escudo boomerang:</strong>
+        Mantén <span>Q</span>
+    </div>
+
+    <div class="row">
+        <strong>Látigo:</strong>
+        <span>E</span>
+    </div>
+
+    <div class="row">
+        <strong>Ataque Especial:</strong>
+        Mantén <span>E</span>
+    </div>
+
+    <div class="row">
+        <strong>Disparo rafaga:</strong>
+        <span>Espacio</span>
+        + 
+        <span>E</span>
+    </div>
+</div>
             `,
-            'en': `
-(Arrows / WSAD) -> Move
-(W / Arrow up) -> Jump 
-(S / Arrow down + Space bar) -> Jump down
-(Space bar) -> Punch 
-(Space bar + Space bar) -> Kick
-(Q) -> Shield hit
-(Hold Q) -> Shield boomerang
-(E) -> Whip
-(Hold E) -> Special Attack 
-(Space bar + E) -> Burst fire
+        'en': `
+<div class="keys">
+
+    <div class="row">
+        <strong>Move: </strong>
+        <div class="arrows">
+            <span class="up">&#x2b9d;</span>
+            <span class="left">&#x2b9c;</span>    
+            <span class="down">&#x2b9f;</span>
+            <span class="right">&#11166;</span>
+        </div>
+        /
+        <div class="arrows">
+            <span class="up">W</span>
+            <span class="left">A</span>    
+            <span class="down">S</span>
+            <span class="right">D</span>
+        </div>
+        
+    </div>
+
+    <div class="row">
+        <strong>Jump:</strong>
+        <span>W</span> / 
+        <span>&#x2b9d;</span>
+    </div>
+
+    <div class="row">
+        <strong>Jump down:</strong>
+        <span>S</span> 
+        / 
+        <span>&#x2b9f;</span>
+        + 
+        <span>Space bar</span> 
+    </div>
+
+    <div class="row">
+        <strong>Punch:</strong>
+        <span>Space bar</span>
+    </div>
+
+    <div class="row">
+        <strong>Kick:</strong>
+        <span>Space bar</span>
+        +
+        <span>Space bar</span>
+    </div>
+
+    <div class="row">
+        <strong>Shield hit:</strong>
+        <span>Q</span>
+    </div>
+
+    <div class="row">
+        <strong>Shield boomerang:</strong>
+        Hold <span>Q</span>
+    </div>
+
+    <div class="row">
+        <strong>Whip:</strong>
+        <span>E</span>
+    </div>
+
+    <div class="row">
+        <strong>Special Attack:</strong>
+        Hold <span>E</span>
+    </div>
+
+    <div class="row">
+        <strong>Burst fire:</strong>
+        <span>Space bar</span>
+        + 
+        <span>E</span>
+    </div>
+</div>
 `
-        };
+    };
     const guideBox = document.querySelector('#guideBox');
     const guideButton = document.querySelector('#guideButton');
+    guideButton.textContent = guideButtonText[userLanguage][0];
     const showGuide = () => {
         guideBox.classList.add('enabled');
     }
 
     guideButton.addEventListener('pointerdown', () => {
-        
-        if(guideShown) {
+
+        if (guideShown) {
             guideBox.classList.remove('enabled');
-            guideButton.textContent = 'GUIA';
+            guideButton.textContent = guideButtonText[userLanguage][0];
             guideShown = false;
         } else {
             guideBox.classList.add('enabled');
-            guideButton.textContent = 'CERRAR';
+            guideButton.textContent = guideButtonText[userLanguage][1];
             guideShown = true;
         }
     });
@@ -164,14 +521,11 @@
 
     const isMobile = isMobileDevice() || isTouchDevice();
     const dinamicText = isMobile ? buttonsList[userLanguage] : keyssList[userLanguage];
-    const textArray = dinamicText.split('\n');
-    // console.log(textArray);
-    textArray.forEach(line => {
-        
-        let textNode = document.createElement('p');
-        textNode.textContent = line;
-        guideBox.appendChild(textNode);
-    });
+
+
+
+    guideBox.innerHTML = dinamicText;
 
 </script>
+
 </html>
