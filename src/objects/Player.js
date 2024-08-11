@@ -304,7 +304,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             });
         } else {
             this.sounds['error'].play();
-            this.scene.uiContainer.uiBlink(this.scene.ammoMarker, 2, true);
+            this.scene.uiContainer.uiBlink('ammoMarker', 2, true);
 
         }
     }
