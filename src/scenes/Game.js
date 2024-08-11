@@ -63,7 +63,7 @@ export class Game extends Scene {
                 this.player.isJumpingDown = false;
 
             }
-            
+
             if (this.player.body.velocity.y <= -20) {
                 this.player.movingDirection = 'down';
 
@@ -262,7 +262,6 @@ export class Game extends Scene {
         ) {
             this.player.move('left');
             this.moveBackground(-1);
-            // this.cameras.main.scrollX -= 5;
         }
         // pressed right or D
         else if (
@@ -272,7 +271,6 @@ export class Game extends Scene {
         ) {
             this.player.move('right');
             this.moveBackground(1);
-            // this.cameras.main.scrollX += 5;
         }
     }
 
@@ -430,7 +428,7 @@ export class Game extends Scene {
     handleBodyCollision(player, enemy) {
 
         let currentState = this.player.state;
-        
+
         switch (currentState) {
             case 'kick':
                 this.player.sounds['hit'].play();
@@ -486,23 +484,21 @@ export class Game extends Scene {
         let x = gamewidth === bgWidth ? 0 : (bgWidth - gamewidth) / 2;
         let y = gameheight === bgHeight ? 0 : (bgHeight - gameheight) / 2;
 
-        this.bg1 = this.add.tileSprite(x, y, gamewidth, gameheight, 'bg1')
-            .setScrollFactor(0)
-            .setOrigin(0, 0);
-        this.bg2 = this.add.tileSprite(x, y, gamewidth, gameheight, 'bg2')
-            .setScrollFactor(0)
-            .setOrigin(0, 0);
-        this.bg3 = this.add.tileSprite(x, y, gamewidth, gameheight, 'bg3')
-            .setScrollFactor(0)
-            .setOrigin(0, 0);
-        this.bg4 = this.add.tileSprite(x, y, gamewidth, gameheight, 'bg4')
-            .setScrollFactor(0)
-            .setOrigin(0, 0);
-        this.bg5 = this.add.tileSprite(x, y, gamewidth, gameheight, 'bg5')
-            .setScrollFactor(0)
-            .setOrigin(0, 0);
+        const backgroundLayers = [
+            'bg1',
+            'bg2',
+            'bg3',
+            'bg4',
+            'bg5',
+        ];
 
-        this.uiContainer = new UiContainer( this, x, y, gamewidth);
+        backgroundLayers.forEach(layer => {
+            this[layer] = this.add.tileSprite(x, y, gamewidth, gameheight, layer)
+                .setScrollFactor(0)
+                .setOrigin(0, 0);
+        });
+
+        this.uiContainer = new UiContainer(this, x, y, gamewidth);
 
     }
 
@@ -590,7 +586,7 @@ export class Game extends Scene {
 
                 }
             });
-            
+
             let box = new Box(this, boxData.x, boxData.y, 'chest', potionName, flip);
             box.id = boxData.id;
             boxesGroup.add(box);
