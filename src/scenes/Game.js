@@ -48,11 +48,8 @@ export class Game extends Scene {
 
     update(time, delta) {
 
-        // console.log('time',time);
-        // console.log('delta',delta);
         // console.log('fps', this.game.loop.actualFps);
 
-        // Incrementar el contador de cuadros
         this.frameCount = (this.frameCount || 0) + 1;
         let checkingRate = this.game.loop.actualFps < 50 ? 4 : 1;
 
@@ -530,12 +527,23 @@ export class Game extends Scene {
 
         const greenTiles = this.map.addTilesetImage('greenTiles2', 'tilemapImage2');
         this.greenTilesLayer = this.map.createLayer('greenPlatforms', greenTiles);
+        this.greenTilesLayer
+            .setDepth(3)
+            .setCollisionByProperty({ collider: true });
+        this.physics.add.collider(this.player, this.greenTilesLayer, null, this.platformCollisionCheck);
+
         this.walls = this.map.createLayer('walls', greenTiles);
         this.walls
             .setDepth(1)
             .setCollisionByProperty({ collider: true });
         this.physics.add.collider(this.player, this.walls);
 
+        this.addDecoration();
+        this.addBoxes();
+
+    }
+
+    addDecoration() {
         const decoTiles = this.map.addTilesetImage('newObjectSet', 'objectsTilemap');
         const backObjectLayer = this.map.createLayer('background', decoTiles);
         const buildings = this.map.createLayer('buildings', decoTiles);
@@ -543,32 +551,12 @@ export class Game extends Scene {
         const frontObjectLayer = this.map.createLayer('foreground', decoTiles);
 
         farBackObjectLayer.setDepth(0);
-
-
         buildings.setDepth(2);
         backObjectLayer.setDepth(4);
         frontObjectLayer.setDepth(5);
+    }
 
-        this.greenTilesLayer
-            .setDepth(3)
-            .setCollisionByProperty({ collider: true });
-
-
-        this.physics.add.collider(this.player, this.greenTilesLayer, null, (player, platform) => {
-            let playerGoesUp = player.body.velocity.y > 0;
-
-            if (player.isJumpingDown && !player.blockedJumpDown) {
-                return false;
-            }
-
-            if (playerGoesUp) {
-                player.isJumpingDown = false;
-                return true;
-            } else {
-                return false;
-            }
-        });
-
+    addBoxes() {
         let boxesGroup = this.physics.add.group();
         let boxesPosition = this.map.getObjectLayer('boxes');
 
@@ -597,8 +585,21 @@ export class Game extends Scene {
         this.physics.add.collider(this.greenTilesLayer, boxesGroup);
         this.physics.add.collider(this.walls, boxesGroup);
         this.physics.add.overlap(this.player, boxesGroup, this.boxInteraction, null, this);
+    }
 
+    platformCollisionCheck(player, platform) {
+        let playerGoesUp = player.body.velocity.y > 0;
 
+        if (player.isJumpingDown && !player.blockedJumpDown) {
+            return false;
+        }
+
+        if (playerGoesUp) {
+            player.isJumpingDown = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     boxInteraction(player, box) {

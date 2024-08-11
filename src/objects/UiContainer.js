@@ -115,8 +115,7 @@ export class UiContainer extends Phaser.GameObjects.Container {
             .fillRect(10, 10, this.player.health, 15);
 
         if (this.player.health <= 0) {
-            // this.gameOver = true;
-            this.endGame();
+            this.scene.endGame();
         }
     }
 
