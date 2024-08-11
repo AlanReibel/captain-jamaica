@@ -389,7 +389,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
             this.scene.time.delayedCall(740, () => {
                 if (this.state === 'whip') {
-                    // this.sounds['whip'].play();
                     this.setSize(135, 64);
                     this.power -= 25;
                     this.scene.uiContainer.powerbarUpdate();
@@ -458,7 +457,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             }
 
             this.on('animationcomplete-jump', (anim, frame) => {
-                // this.anims.play('idle');
                 this.state = 'idle';
                 this.idle();
                 this.isJumping = false;
