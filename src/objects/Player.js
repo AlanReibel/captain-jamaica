@@ -300,7 +300,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.fightEnds = true;
                 this.blockedMovement = false;
                 this.ammoEnabled = false;
-                this.scene.disableAmmoMarker();
+                this.scene.uiContainer.disableAmmoMarker();
             });
         } else {
             this.sounds['error'].play();
@@ -392,7 +392,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                     // this.sounds['whip'].play();
                     this.setSize(135, 64);
                     this.power -= 25;
-                    this.scene.powerbarUpdate();
+                    this.scene.uiContainer.powerbarUpdate();
                 }
             });
 
@@ -490,7 +490,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.anims.stop();
             this.state = 'special';
             this.specialEnabled = false;
-            this.scene.disableSpecialMarker();
+            this.scene.uiContainer.disableSpecialMarker();
             this.scene.cameras.main.stopFollow();
             this.vulnerable = false;
             let originalX = this.x;
