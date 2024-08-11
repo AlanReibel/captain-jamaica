@@ -1,4 +1,4 @@
-import { enemies } from './enemyConfig';
+import { enemies } from '../config/enemyConfig';
 
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
@@ -28,7 +28,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         super(scene, x, y, `${name}-Idle`);
         this.name = name;
-        // Agregar el sprite a la escena
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
@@ -39,7 +38,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.startPosition = { x: this.x, y: this.y }
         this.anims.play(`${name}-Idle`);
 
-        // Establecer propiedades básicas
         this.scene = scene;
         this.health = enemies[name].health;
         this.speed = enemies[name].speed;
@@ -109,9 +107,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             }
 
         } else {
-            // this.state = 'attacking';
             this.scene.time.delayedCall(this.nextAttackWait, () => {
-                // this.idle();
                 this.attackCounter = 0;
             });
         }

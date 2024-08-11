@@ -1,4 +1,4 @@
-import { animals } from './animalsConfig';
+import { animals } from '../config/animalsConfig';
 
 export class Animal extends Phaser.Physics.Arcade.Sprite {
 
@@ -26,7 +26,6 @@ export class Animal extends Phaser.Physics.Arcade.Sprite {
         this.body.collideWorldBounds = true;
 
         this.focusTo = flip ? 'left' : 'right';
-        // this.setSize(this.width,this.height);
         if(configData.offSet) {
 
             this.setOffset(configData.offSet.x, configData.offSet.y);
@@ -81,9 +80,7 @@ export class Animal extends Phaser.Physics.Arcade.Sprite {
 
     stop() {
             this.setVelocityX(0);
-            // this.state = 'idle';
 
-            // let flip = this.focusTo === 'left';
             this.anims.play(`${this.name}-Idle`, true);
     }
 
