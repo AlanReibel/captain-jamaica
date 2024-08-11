@@ -1,4 +1,5 @@
 import { Bullet } from '../objects/Bullet.js';
+import { animationConfig } from '../config/playerAnimations.js';
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
 
@@ -77,85 +78,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     static createAnimations(scene) {
-        scene.anims.create({
-            key: 'idle',
-            frames: scene.anims.generateFrameNumbers('captain-idle', { start: 0, end: 6 }),
-            frameRate: 12,
-            repeat: -1
-        });
+        
+        animationConfig.forEach( animation => {
 
-        scene.anims.create({
-            key: 'run',
-            frames: scene.anims.generateFrameNumbers('captain-run', { start: 0, end: 9 }),
-            frameRate: 12,
-            repeat: -1
-        });
+            let { texture, frames } = animation;
+            scene.anims.create({
+                ...animation,
+                frames: scene.anims.generateFrameNumbers(texture, frames),
+            });
 
-        scene.anims.create({
-            key: 'punch',
-            frames: scene.anims.generateFrameNumbers('captain-fight', { start: 1, end: 3 }),
-            frameRate: 12,
-            repeat: 0
-        });
-
-        scene.anims.create({
-            key: 'kick',
-            frames: scene.anims.generateFrameNumbers('captain-fight', { start: 4, end: 7 }),
-            frameRate: 12,
-            repeat: 0
-        });
-
-        scene.anims.create({
-            key: 'shield',
-            frames: scene.anims.generateFrameNumbers('captain-fight', { start: 8, end: 11 }),
-            frameRate: 12,
-            repeat: 0
-        });
-
-        scene.anims.create({
-            key: 'throw',
-            frames: scene.anims.generateFrameNumbers('shield-throw', { start: 0, end: 5 }),
-            frameRate: 12,
-            repeat: 0
-        });
-
-        scene.anims.create({
-            key: 'catch',
-            frames: scene.anims.generateFrameNumbers('shield-throw', { start: 12, end: 15 }),
-            frameRate: 12,
-            repeat: 0
-        });
-
-        scene.anims.create({
-            key: 'fly',
-            frames: scene.anims.generateFrameNumbers('shield-fly', { start: 0, end: 7 }),
-            frameRate: 12,
-            repeat: 0
-        });
-
-        scene.anims.create({
-            key: 'whip',
-            frames: scene.anims.generateFrameNumbers('whip', { start: 0, end: 19 }),
-            frameRate: 15,
-            repeat: 0
-        });
-
-        scene.anims.create({
-            key: 'special',
-            frames: scene.anims.generateFrameNumbers('special', { start: 0, end: 45 }),
-            frameRate: 18,
-            repeat: 0
-        });
-
-        scene.anims.create({
-            key: 'block',
-            frames: scene.anims.generateFrameNumbers('special', { start: 0, end: 10 }),
-            frameRate: 12,
-            repeat: 0
         });
 
         scene.anims.createFromAseprite('shot');
-
 
     }
 
@@ -181,19 +115,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.blockedMovement = false;
                 this.state = 'idle';
                 this.idle();
-                // console.log(`anim: ${anim.key} finish`, {
-                //     state: this.state,
-                //     isJumping: this.isJumping,
-                //     blockedJump: this.blockedJump,
-                //     shieldThrown: this.shieldThrown,
-                //     shieldCached: this.shieldCached,
-                //     vulnerable: this.vulnerable,
-                //     movingDirection: this.movingDirection,
-                //     focusTo: this.focusTo,
-                //     blockedMovement: this.blockedMovement,
-                //     fightEnds: this.fightEnds,
-                //     blockedFight: this.blockedFight,
-                // });
+
             }
         });
     }
@@ -269,7 +191,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
             this.shield = this.scene.physics.add.sprite(this.x, this.y, 'shield-fly');
             this.shield.setVisible(false);
-            // this.shield.body.setAllowGravity(false);
             this.shield.setScale(0.6);
             this.shield.setDepth(5);
             this.bullets.add(this.shield);
@@ -279,9 +200,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.state = 'throw';
 
             this.scene.time.delayedCall(400, () => {
-                // if (this.state === 'throw') {
                 this.sounds['boomerang'].play();
-                // }
             });
 
             this.scene.time.delayedCall(375, () => {
@@ -586,9 +505,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.setVisible(false);
 
             let special = this.scene.physics.add.sprite(originalX + 3, (originalY - height / 2) + 3, 'special');
-            // special.setOffset(special.width - this.originalWidth, special.height - this.originalHeight);
 
-            // console.log('special', special.width , special.height);
             special.setSize(this.originalWidth, this.originalHeight);
             special.setDepth(5);
             special.setFlipX(flip);
