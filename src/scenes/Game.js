@@ -15,8 +15,6 @@ export class Game extends Scene {
     inputHandler;
     score = 0;
     textScore;
-    lives = 3;
-    textLives;
     map;
 
     enemies;
@@ -112,6 +110,7 @@ export class Game extends Scene {
 
     }
 
+    // actions
     eventListeners() {
 
         this.inputHandler.emitter.on('fightActionPressed', this.handleFightActions, this);
@@ -163,24 +162,7 @@ export class Game extends Scene {
 
     }
 
-    endGame() {
-        this.music.stop();
-        this.scene.start('GameOver', { inputHandler: this.inputHandler });
-    }
-
-    updateChars(charGroup) {
-        const characters = charGroup.getChildren();
-        for (let i = 0; i < characters.length; i++) {
-            const char = characters[i];
-            if (this.isCharInCameraView(char, this.cameras.main.worldView)) {
-                char.update();
-            }
-        }
-    }
-
     handleJump() {
-
-
         if (this.player.body.blocked.down && !this.player.isJumpingDown) {
             this.player.handleJump();
         }
@@ -281,104 +263,6 @@ export class Game extends Scene {
         }
     }
 
-    createEnemies() {
-        this.landEnemies = this.physics.add.group();
-
-        this.flyingEnemies = this.physics.add.group({
-            allowGravity: false,
-        });
-
-        let enemiesPositions = this.map.getObjectLayer('enemies');
-
-        const enemySoundsList = [
-            'enemy-die',
-            'enemy-shot',
-            'enemy-punch',
-        ];
-        let enemySounds = {};
-        enemySoundsList.forEach(sound => {
-            enemySounds[sound] = this.sound.add(sound);
-        });
-
-        enemiesPositions.objects.forEach(enemyData => {
-
-            let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
-            newEnemy.sounds = enemySounds;
-
-            this.physics.add.collider(this.walls, newEnemy);
-            this.physics.add.overlap(this.player, newEnemy, this.handleBodyCollision, null, this);
-            if (newEnemy.fly) {
-                this.flyingEnemies.add(newEnemy);
-
-            } else {
-                this.landEnemies.add(newEnemy);
-                this.physics.add.collider(this.greenTilesLayer, newEnemy);
-            }
-
-            if (newEnemy.shot) {
-                this.physics.add.overlap(newEnemy.bullets, this.player, this.playerFired, null, this);
-                this.physics.add.collider(newEnemy.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
-                this.physics.add.collider(newEnemy.bullets, this.walls, this.destroyBullet, null, this);
-            }
-
-        });
-
-        this.physics.add.collider(this.landEnemies, this.landEnemies, null, null, this);
-
-        this.physics.add.overlap(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
-        this.physics.add.overlap(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
-        this.physics.add.collider(this.player.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
-        this.physics.add.collider(this.player.bullets, this.walls, this.destroyBullet, null, this);
-
-    }
-
-    createAnimals() {
-        this.landAnimals = this.physics.add.group();
-
-        this.flyingAnimals = this.physics.add.group({
-            allowGravity: false,
-        });
-
-        let animalsPositions = this.map.getObjectLayer('animals');
-
-        animalsPositions.objects.forEach(animalData => {
-            // console.log('animalData',animalData);
-            let flip = false;
-
-
-            animalData.properties?.forEach(property => {
-                if (property.name === 'flip') {
-                    flip = property.value;
-                }
-            });
-
-            let newAnimal = new Animal(this, animalData.x, animalData.y, animalData.name, flip);
-
-            if (newAnimal.fly) {
-                this.flyingAnimals.add(newAnimal);
-
-            } else {
-                this.landAnimals.add(newAnimal);
-                this.physics.add.collider(this.greenTilesLayer, newAnimal);
-            }
-
-        });
-
-        this.physics.add.collider(this.flyingAnimals, this.walls);
-        this.physics.add.collider(this.landAnimals, this.walls);
-
-
-    }
-
-    isCharInCameraView(char, visibleArea) {
-        return (
-            char.x + char.width > visibleArea.x &&
-            char.x < visibleArea.x + visibleArea.width &&
-            char.y + char.height > visibleArea.y &&
-            char.y < visibleArea.y + visibleArea.height
-        );
-    }
-
     destroyBullet(bullet, map) {
 
         if (bullet.texture.key !== 'shield-fly') {
@@ -467,6 +351,96 @@ export class Game extends Scene {
         this.music = this.sound.add('bitest');
         this.music.play();
         this.music.setLoop(true);
+
+    }
+
+    // world
+    createEnemies() {
+        this.landEnemies = this.physics.add.group();
+
+        this.flyingEnemies = this.physics.add.group({
+            allowGravity: false,
+        });
+
+        let enemiesPositions = this.map.getObjectLayer('enemies');
+
+        const enemySoundsList = [
+            'enemy-die',
+            'enemy-shot',
+            'enemy-punch',
+        ];
+        let enemySounds = {};
+        enemySoundsList.forEach(sound => {
+            enemySounds[sound] = this.sound.add(sound);
+        });
+
+        enemiesPositions.objects.forEach(enemyData => {
+
+            let newEnemy = new Enemy(this, enemyData.x, enemyData.y, enemyData.name);
+            newEnemy.sounds = enemySounds;
+
+            this.physics.add.collider(this.walls, newEnemy);
+            this.physics.add.overlap(this.player, newEnemy, this.handleBodyCollision, null, this);
+            if (newEnemy.fly) {
+                this.flyingEnemies.add(newEnemy);
+
+            } else {
+                this.landEnemies.add(newEnemy);
+                this.physics.add.collider(this.greenTilesLayer, newEnemy);
+            }
+
+            if (newEnemy.shot) {
+                this.physics.add.overlap(newEnemy.bullets, this.player, this.playerFired, null, this);
+                this.physics.add.collider(newEnemy.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
+                this.physics.add.collider(newEnemy.bullets, this.walls, this.destroyBullet, null, this);
+            }
+
+        });
+
+        this.physics.add.collider(this.landEnemies, this.landEnemies, null, null, this);
+
+        this.physics.add.overlap(this.player.bullets, this.landEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.overlap(this.player.bullets, this.flyingEnemies, this.handleBulletCollision, null, this);
+        this.physics.add.collider(this.player.bullets, this.greenTilesLayer, this.destroyBullet, null, this);
+        this.physics.add.collider(this.player.bullets, this.walls, this.destroyBullet, null, this);
+
+    }
+
+    createAnimals() {
+        this.landAnimals = this.physics.add.group();
+
+        this.flyingAnimals = this.physics.add.group({
+            allowGravity: false,
+        });
+
+        let animalsPositions = this.map.getObjectLayer('animals');
+
+        animalsPositions.objects.forEach(animalData => {
+            // console.log('animalData',animalData);
+            let flip = false;
+
+
+            animalData.properties?.forEach(property => {
+                if (property.name === 'flip') {
+                    flip = property.value;
+                }
+            });
+
+            let newAnimal = new Animal(this, animalData.x, animalData.y, animalData.name, flip);
+
+            if (newAnimal.fly) {
+                this.flyingAnimals.add(newAnimal);
+
+            } else {
+                this.landAnimals.add(newAnimal);
+                this.physics.add.collider(this.greenTilesLayer, newAnimal);
+            }
+
+        });
+
+        this.physics.add.collider(this.flyingAnimals, this.walls);
+        this.physics.add.collider(this.landAnimals, this.walls);
+
 
     }
 
@@ -673,6 +647,31 @@ export class Game extends Scene {
             });
         }
 
+    }
+
+    updateChars(charGroup) {
+        const characters = charGroup.getChildren();
+        for (let i = 0; i < characters.length; i++) {
+            const char = characters[i];
+            if (this.isCharInCameraView(char, this.cameras.main.worldView)) {
+                char.update();
+            }
+        }
+    }
+
+    isCharInCameraView(char, visibleArea) {
+        return (
+            char.x + char.width > visibleArea.x &&
+            char.x < visibleArea.x + visibleArea.width &&
+            char.y + char.height > visibleArea.y &&
+            char.y < visibleArea.y + visibleArea.height
+        );
+    }
+    
+    // game ending
+    endGame() {
+        this.music.stop();
+        this.scene.start('GameOver', { inputHandler: this.inputHandler });
     }
 
     finishGame() {
