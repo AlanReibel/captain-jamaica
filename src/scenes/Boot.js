@@ -52,8 +52,6 @@ export class Boot extends Scene {
                 fontFamily: 'Courier', 
                 fontSize: 20, 
                 color: '#ffffff',
-                // stroke: '#ffffff', 
-                // strokeThickness: 2,
                 align: 'center'
             }
         )
@@ -68,7 +66,6 @@ export class Boot extends Scene {
             targets: skip,
             duration: 500,
             y: gameheight / 2 + 1,
-            // scale: 0.9,
             yoyo: true,
             repeat: -1,
         });

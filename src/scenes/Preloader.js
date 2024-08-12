@@ -129,7 +129,6 @@ export class Preloader extends Scene {
     }
     
     loadTileMaps() {
-        // this.load.image('tilemapImage', 'tiles/Tileset.png');
         this.load.image('tilemapImage2', 'tiles/greenTiles2.png');
         this.load.image('objectsTilemap', 'tiles/newObjectSet.png');
         this.load.tilemapTiledJSON('tilemapJson', 'tiles/world.json');

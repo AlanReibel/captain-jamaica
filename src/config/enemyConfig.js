@@ -233,7 +233,6 @@ export const enemies = {
                 enemy.focusTo = 'right';
             }
 
-            // console.log('difference',difference);
             if (isNear) {
 
                 if (distance <= 30) {
@@ -287,7 +286,6 @@ export const enemies = {
                 enemy.focusTo = 'right';
             }
 
-            // console.log('difference',difference);
             if (isNear) {
 
                 if (distance <= 30) {

@@ -14,7 +14,6 @@ export class UIScene extends Phaser.Scene {
         this.comboSequences = [];
         this.comboTimeout = null;
         this.comboList = [
-            // { sequence: ['A', 'B'], action: 'combo1' },
             { sequence: ['B', 'Y'], action: 'combo2' },
             { sequence: ['B', 'B'], action: 'combo3' },
         ];
@@ -122,7 +121,6 @@ export class UIScene extends Phaser.Scene {
         this.time.delayedCall(this.inputHandler.holdingTime, () => {
             if(this.inputHandler.buttons[key]) {
                 this.inputHandler.holding[key] = true;
-                // console.log('holded',this.inputHandler.holding);
                 this.inputHandler.emitter.emit('holdAction');
 
             }

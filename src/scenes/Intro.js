@@ -79,7 +79,7 @@ The battle for justice has only just begun.`
             'reborn'
         ];
         this.currentLineIndex = 0;
-        this.typing = false; // Indica si está en proceso de escritura
+        this.typing = false;
         this.speed = 50;
         this.images = {
             es: {
@@ -124,7 +124,6 @@ The battle for justice has only just begun.`
         this.text = this.add.text(20, height + 30, '', style);
         
         this.addInitialLines();
-// 
         this.time.addEvent({
             delay: 1600, 
             callback: () => {
@@ -153,12 +152,10 @@ The battle for justice has only just begun.`
 
     }
 
-    // Método que se llama cuando esta escena se apaga
     shutdown() {
         this.cleanup();
     }
 
-    // Método que se llama cuando esta escena se destruye
     destroy() {
         this.cleanup();
     }
@@ -192,8 +189,6 @@ The battle for justice has only just begun.`
                 fontFamily: 'Courier', 
                 fontSize: 15, 
                 color: '#ffffff',
-                // stroke: '#ffffff', 
-                // strokeThickness: 2,
                 align: 'center'
             }
         )
@@ -208,7 +203,6 @@ The battle for justice has only just begun.`
             targets: this.skip,
             duration: 300,
             y: gameheight - 15,
-            // scale: 0.9,
             yoyo: true,
             repeat: -1,
         });

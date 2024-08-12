@@ -4,7 +4,6 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.scene.physics.world.enable(this);
         this.scene.add.existing(this);
-        // this.postFX.addBloom(0xffffff, 1, 1, 0.5, 1);
         this.setCollideWorldBounds(true);
     }
 
@@ -43,7 +42,6 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
         graphics.fillCircle(x, y, 10); 
         graphics.postFX.addBloom(0xffffff, 1, 1, 1, 2);
     
-        // graphics.postFX.addBloom();
         this.scene.tweens.add({
             targets: graphics,
             x: x,
@@ -52,7 +50,6 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
             opacity: 0,
             duration: 100,
             onComplete: () => { graphics.destroy(); } 
-            // Destruir el destello al finalizar la animación
         });
     }
 }

@@ -47,12 +47,6 @@ export const animals = {
             Idle: { frameWidth: 32, frameHeight: 32, frames: 4, frameRate: 8, repeat: -1 },
             Walk: { frameWidth: 32, frameHeight: 32, frames: 5, frameRate: 18, repeat: -1 },
         },
-        // width: 16,
-        // height: 16,
-        // offSet: {
-        //     x: 0,
-        //     y: 2
-        // },
         behavior: (scene, animal) => {
 
             let {worldView} = scene.cameras.main;

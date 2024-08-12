@@ -434,9 +434,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     handleJump() {
-        // console.log('before jump state', this);
         if (!this.blockedJump) {
-            // this.anims.pause();
             if (this.state === 'whip' || this.state === 'throw') {
                 this.resetSprite();
             }

@@ -7,16 +7,12 @@ import { GameOver } from './scenes/GameOver.js';
 import { Finish } from './scenes/Finish.js';
 import { Intro } from './scenes/Intro.js';
 import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
-//  Find out more information about the Game Config at:
-//  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 
 const config = {
     type: Phaser.AUTO,
-    // type: Phaser.WEBGL,
     width: 400,
     height: 300,
     parent: 'game-container',
-    // backgroundColor: '#028af8',
     fullscreenTarget: 'game-container',
     scale: {
         mode: Phaser.Scale.FIT,
@@ -46,16 +42,13 @@ const config = {
             plugin: VirtualJoystickPlugin,
             start: true
         },
-        // ...
         ]
     },
     input: {
-        activePointers: 3 // Permitir hasta 3 punteros activos
+        activePointers: 3 
     },
     fps: {
         target: 60,
-
-        // forceSetTimeOut: true // Fuerza el uso de setTimeout en lugar de requestAnimationFrame
     },
 
 };

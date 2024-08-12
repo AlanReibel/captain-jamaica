@@ -59,7 +59,6 @@ export class Finish extends Scene
         };
 
         this.add.image(screenSize.width / 2, screenSize.height / 2, 'finish')
-            // .setOrigin(0)
             .setAlpha(0.8)
             .setScale(scale);
 
